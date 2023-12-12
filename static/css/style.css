@@ -1,0 +1,168 @@
+/* test css for about page */
+body.dark-mode {
+    background-color: #121212;
+    color: #ffffff;
+}
+
+/* fixes leaflet tile bug */
+.leaflet-container.leaflet-touch-drag {
+    -ms-touch-action: pinch-zoom;
+    touch-action: none;
+    touch-action: pinch-zoom;
+    width: 100%;
+    height: 100vh;
+}
+
+/* map containter */
+.map-container {
+    width: 100%;
+    padding-bottom: 100%; /* sets height equal to width, a square */
+    position: relative;
+}
+
+/*size chart  */
+.chartBox {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.chart-left {
+  width: 48%; /* top 10 property type  */
+}
+
+.chart-right {
+  width: 48%; /* top 10 neighborhood*/
+}
+/* Format table license*/
+ /* Style the table */
+#licenseTable {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 20px;
+}
+
+/* Style the table header cells */
+#licenseTable th {
+    background-color: #4CAF50;
+    color: white;
+    text-align: left;
+    padding: 10px;
+    font-weight: bold;
+}
+
+/* Style the table data cells */
+#licenseTable td {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 10px;
+}
+
+/* Apply background color to alternate rows */
+#licenseTable tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+/* Hover effect for rows */
+#licenseTable tbody tr:hover {
+    background-color: #dddddd;
+} 
+/* Format the tablecount listing*/
+/* Style the radio button container */
+#apiSelectionDiv {
+    margin-bottom: 20px;
+  }
+
+  /* Style the table */
+  #apiTable {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 20px;
+  }
+
+  /* Style table headers */
+  #apiTable th {
+    background-color: #f2f2f2;
+    text-align: left;
+    padding: 8px;
+  }
+
+  /* Style table rows */
+  #apiTable tr {
+    border-bottom: 1px solid #ddd;
+  }
+
+  /* Style alternating row colors for better readability */
+  #apiTable tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+
+  /* Style table cells */
+  #apiTable td {
+    padding: 8px;
+  }
+  /* Custom the textarea*/
+  .custom-textarea {
+    width: 250%;
+    height: 150px;}
+
+
+/* map container */
+.map-container {
+  width: 100%;
+  padding-bottom: 100%; /* sets height equal to width, a square */
+  position: relative;
+}
+
+/* fixes leaflet tile bug */
+.leaflet-container.leaflet-touch-drag {
+  -ms-touch-action: pinch-zoom;
+  touch-action: none;
+  touch-action: pinch-zoom;
+  width: 100%;
+  height: 100vh;
+}
+
+/* marker css */
+.marker-popup {
+  font-size: 16px;
+  border: 2px solid gray;
+  border-radius: 5px;
+}
+
+/* neighborhood summary css */
+.neighborhood-info {
+  font-size: 16px;
+  background-color: white;
+  padding: 10px;
+  border: 2px solid gray;
+  border-radius: 5px;
+}
+
+/* neighborhood drop down */
+.neighborhood-control {
+  background-color: white;
+  padding: 10px;
+  border: 2px solid gray;
+  border-radius: 5px;
+}
+
+.neighborhood-control label,
+.neighborhood-control select {
+  font-size: 16px;
+  padding: 5px;
+}
+
+/* width when untouched */
+#neighborhoods-dropdown {
+  width: 200px;
+}
+
+/* width during user interaction */
+#neighborhoods-dropdown:focus {
+  width: auto;
+}
+
+.infoBox-chart {
+  width: 100%,
+}

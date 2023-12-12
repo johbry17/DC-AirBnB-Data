@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>DC AirBnB Debate</title>
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+  crossorigin="" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/static/CSS/style.css">
+</head>
+
+<body>
+
+  <br>
+  <div class="container">
+    <div class="row">
+        <div class="col-md-12 jumbotron text-center" style="background-image: url('/static/images/background.jpg'); background-size: cover; background-repeat: no-repeat; background-position: center center">
+        <h1 style="color: white">Washington DC's AirBnB</h1>
+        <p style="color: white">Exploration of the Best Airbnbs, 18 June-13 September 2023</p>
+        
+      </div>
+    </div>
+
+<!-- Listing Info -->
+    <div class="container">
+      <div class="row">
+          <div class="col-md-5">
+              <div class="well">
+                  <h2>Listing Info By ID</h2>
+                  <h5>Listing ID No.:</h5>
+                  <select id="listingSelect" onchange="fetchListingInfo(this.value)">
+                  </select>
+              </div>
+  
+              <div class="panel panel-primary">
+                  <div class="panel-heading">
+                      <h3 class="panel-title">Listing Info</h3>
+                  </div>
+                  <div id="sample-metadata" class="panel-body">
+                      <!-- Details will be here -->
+                  </div>
+              </div>
+          </div>
+          <div class="col-md-2">
+            <br><br><br><br>
+            <h4> Listing Description</h4>
+              <textarea id="textInput" placeholder="Listing Description" readonly class="custom-textarea"></textarea>
+          </div>
+      </div>
+  </div>
+  
+  <br><br>
+  <!-- Details Info with the best rating -->
+  <div class="row">
+      <div class="col-md-5">
+          <div class="well">
+              <h2>All Listings with Review Scores Rating = 5</h2>
+              <select id="selectOption" onchange="populateDetails()">
+              </select>
+              <button id="bestreviewsbutton" onclick="populateSelectbests()">Best listings</button>
+          </div>
+          <div class="panel panel-primary">
+              <div class="panel-heading">
+                  <h3 class="panel-title">Details</h3>
+              </div>
+              <div class="panel-body" id="details">
+                  <!-- Details will be here -->
+              </div>
+          </div>
+      </div>
+  </div>
+
+<!-- Price -->
+  <div class="row">
+          <div class="panel panel-default">
+              <div class="panel-heading">
+                  <class="panel-title"><h2>Research By Price</h2>
+                  
+              </div>
+              <div class="panel-body" id="details">
+                <div class="input">
+                  <br> <h3>Research Min and Max Price</h3><br>
+                  <button id="reserch" onclick="researchprice()">Research</button><br>
+                  <input type="text" id="min_price" name="min"readonly><b> Min Price</b><br>
+                  <input type="text" id="max_price" name="max"readonly><b> Max Price</b><br>
+                  <br> <h3>Number of Listing By Price<br><h5>Type your Min and Max price</h5><br>
+                  <input type="text" id="your_min_price" name="min"> <b>Min Price</b><br>
+                  <input type="text" id="your_max_price" name="max"> <b>Max Price</b><br>
+                  <input type="text" id="number_l" name="num"readonly> <b>Number of Listing</b><br>
+                  <button id="your_reserch" onclick="researchnumberprice()">Research</button><br>
+                </div>
+              </div>
+          </div>
+      
+  </div>
+  <hr>
+<!-- Ten most number reviews -->
+<p><h2> Top Ten By Total Number of Reviews</h2></p>
+<br><br>
+  <div class="chartBox">
+    <div class="chart-left">
+      <canvas id="property_type_chart_container" width="800" height="400"></canvas>
+    </div>
+    <div class="chart-right">
+      <canvas id="neighborhood_chart_container" width="800" height="400"></canvas>
+    </div>
+  </div>
+    
+  <br><br>
+  <br><br>
+  <hr>
+  <!-- Avg Price By Neighborhood -->
+    <div class="col-md-12">
+      <h2>Average Price By Neighborhood</h2>
+      <br> <br>
+      <div id="bar"></div>
+    </div>
+    <br><br>
+    <hr>
+<!-- Room Type Distribution -->
+    <div id="chart-type-room">
+      <hr>
+    <h2>  Room Type Distribution</h2> <div id="roomTypeChart"></div>
+    </div>
+
+<!-- License -->
+    <div id="tableContainer">
+      <hr>
+    <table id="licenseTable">
+      <h2>License Type</h2>
+        <thead>
+            <tr>
+                <th>License Type</th>
+                <th>Count</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Table will be here -->
+        </tbody>
+    </table>
+</div>
+
+<br> <br>
+<!-- Count Listing By Type Property-->
+  <div class="row">
+    <div class="col-md-5">
+      <canvas id="licenseChart" width="400" height="400"></canvas>
+
+      <div id="donuts"></div>
+    </div>
+  </div>
+  <br>
+  <hr>
+  
+  <div id="apiSelectionDiv">
+    <h2>Number of the Total Host Listing By Type of Property (Entiere Homes, Private Rooms, Shared Rooms)</h2><br>
+
+    <input type="radio" name="apiOption" value="1" checked> <b> Entiere Homes  </b>
+    <input type="radio" name="apiOption" value="2"> <b> Private Rooms  </b>
+    <input type="radio" name="apiOption" value="3"> <b> Shared Rooms  </b>
+  </div>
+  <table id="apiTable"><br><br>
+    <thead>
+      <tr>
+        <th>Calculated Host Listings</th>
+        <th>Total Calculated Host Listings</th>
+        
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Table will be here -->
+    </tbody>
+  </table>
+<br> <br>
+<div>
+  <div id="chartContainer"></div>
+<hr>
+
+<!-- Min Max Number Nights -->
+  <h2> Min/Max Night</h2>
+  <input type="text" id="input3" placeholder="Click here"onfocus="minMin()"><b>The Minimum of the Minimum of the Minimum of Night</b><br>
+  <input type="text" id="input4" placeholder="Click here"onfocus="maxMax()"><b>The Maximum of the Maximum of the Maximum of Night</b><br><br>
+  <p><i>The Minimum of the Minimum of the Minimum of Night:The Minimum of a set of values representing the minimum number of nights required for booking various listings.</i></p>
+  <p><i>The Maximum of the Maximum of the Maximum of Night:The Maximum of a set of values representing the maximum number of nights required for booking various listings.</i></p>
+</div>
+<br><br>
+<div>
+  <div id="test"></div>
+<hr>
+<!-- Price/Adjusted Price -->
+  <h2>Average Price vs. Average Adjusted Price</h2>
+  <label for="showPrice">Show Average Price:</label>
+  <input type="checkbox" id="showPrice">
+  <br>
+  <label for="showAdjustedPrice">Show Average Adjusted Price:</label>
+  <input type="checkbox" id="showAdjustedPrice">
+  <br>
+  <p>Average Price: <span id="averagePrice">-</span></p>
+  <p>Average Adjusted Price: <span id="averageAdjustedPrice">-</span></p>
+</div>
+<br><br>
+<hr>
+
+<!-- Hosts Info -->
+<div class="row">
+  <div class="col-md-5">
+    <div class="well">
+      <h5>Host ID No.:</h5>
+      <select id="hostSelect" onchange="fetchHostInfo(this.value)">
+      </select>
+    </div>
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h3 class="panel-title">Host Info</h3>
+      </div>
+      <div id="host-metadata" class="panel-body"></div>
+      <!-- Details will be here -->
+    </div>
+  </div>
+</div>
+<br><br>
+<!-- Map -->
+<div class="row">
+  <div class="col-md-12">
+    <div class="map-container">
+      <div id="map-id"></div>
+    </div>
+  </div>
+</div>
+<br> <br>
+
+
+  <!-- DELETE EVENTUALLY -->
+<!-- biodiversity belly button detritus -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <!-- DELETE EVENTUALLY -->
+
+
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+  integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+  crossorigin=""></script>
+  <!-- ESRI plugin for base layers -->
+  <script src="https://cdn.jsdelivr.net/npm/esri-leaflet@2.3.3/dist/esri-leaflet.js"></script>
+  <!-- Chart JS -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- map JS -->
+  <script src="/static/js/map.js"></script>
+  <!-- main JS -->
+  <script src="/static/js/logic.js"></script>
+
+</body>
+
+</html>
