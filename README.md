@@ -14,7 +14,7 @@ Development on this project has stopped.
 
 ## Description
 
-A detialed analysis of Washington D.C.'s AirBnB's, offering a wide variety of metrics for evaluating AirBnB's in Washington, DC, deisgned to help a consumer choose their personal perfect AirBnB. We generate a variety of charts, tables, and an interactive map and make them avialable to the user.
+A detialed analysis of Washington D.C.'s AirBnB's, offering a wide variety of metrics for evaluating AirBnB's in Washington, DC, designed to help a consumer choose their personal perfect AirBnB. We generate a variety of charts, tables, and an interactive map and make them avialable to the user.
 
 ## Usage
 
