@@ -28,7 +28,7 @@ def home():
 # app routes
 @app.route('/api/listings')
 def get_listings():
-    # hosts has nulls, so LEFT JOIN
+    # some have nulls, so LEFT JOIN
     query = text(f"""SELECT * FROM listings
 LEFT JOIN listing_description ON listings.listing_id = listing_description.id
 LEFT JOIN listing_reviews ON listings.listing_id = listing_reviews.listing_id
