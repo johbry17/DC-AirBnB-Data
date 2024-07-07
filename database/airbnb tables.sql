@@ -5,8 +5,8 @@ DROP TABLE IF EXISTS availability;
 DROP TABLE IF EXISTS listing_reviews;
 DROP TABLE IF EXISTS calculated_host_listings;
 Drop table IF EXISTS listing_description;
-DROP TABLE IF EXISTS listings;
 DROP TABLE IF EXISTS calendar;
+DROP TABLE IF EXISTS listings;
 
 select* from reviews;
 select* from  hosts;
@@ -25,7 +25,7 @@ CREATE TABLE listings(
 	listing_url VARCHAR(1500),
 	neighborhood_overview VARCHAR,
 	picture_url VARCHAR,
-	neighberhood VARCHAR,
+	neighbourhood VARCHAR,
 	neighbourhood_cleansed VARCHAR,
 	latitude FLOAT,
 	longitude FLOAT,
@@ -69,7 +69,7 @@ CREATE TABLE hosts(
 	host_total_listings_count INT,
 	host_verifications VARCHAR,
 	host_has_profile_pic BOOLEAN,
-	host_identity_verified BOOLEAN
+	host_identity_verified BOOLEAN,
 );
 
 
@@ -92,7 +92,7 @@ CREATE TABLE availability(
     availability_60 INT,
 	availability_90 INT,
     availability_365 INT,
-	last_review,
+	last_review DATE,
     instant_bookable BOOLEAN
 );
 

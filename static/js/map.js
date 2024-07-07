@@ -123,7 +123,7 @@ function createMarkers(data) {
 // populates popup
 function createPopupContent(listing) {
   price = parseFloat(listing.price);
-  hostVerified = listing.host_identity_verified === 't' ? 'Verified' : 'Unverified'
+  hostVerified = listing.host_identity_verified === true ? 'Verified' : 'Unverified'
 
   return `<h4>${listing.hover_description}</h4>
   <a href="${listing.listing_url}" target="_blank">Link to listing</a><br>
