@@ -248,7 +248,7 @@ function updateInfoBox(neighborhoodDesignation) {
 
   // filter to selected neighborhood
   let neighborhoodListings = listingsData.filter(
-    (listing) => listing.neighbourhood_cleansed === neighborhoodDesignation
+    (listing) => listing.neighbourhood === neighborhoodDesignation
   );
   
   // Find the info box element
