@@ -29,10 +29,32 @@ def home():
 @app.route('/api/listings')
 def get_listings():
     # some have nulls, so LEFT JOIN
-    query = text(f"""SELECT * FROM listings
-LEFT JOIN listing_description ON listings.listing_id = listing_description.id
-LEFT JOIN listing_reviews ON listings.listing_id = listing_reviews.listing_id
-LEFT JOIN hosts ON hosts.host_id = listings.host_id""")
+#     query = text(f"""SELECT * FROM listings
+# LEFT JOIN listing_description ON listings.listing_id = listing_description.id
+# LEFT JOIN listing_reviews ON listings.listing_id = listing_reviews.listing_id
+# LEFT JOIN hosts ON hosts.host_id = listings.host_id""")
+    query = text(f"""SELECT 
+    l.latitude,
+    l.longitude,
+    lc.hover_description,
+    lc.listing_url,
+    l.price,
+    lc.property_type,
+    l.accommodates,
+    lr.review_scores_rating,
+    h.host_name,
+    h.host_identity_verified,
+    h.host_total_listings_count,
+    lc.license
+FROM 
+    listings l
+JOIN 
+    listings_categorical lc ON l.listing_id = lc.listing_id
+JOIN 
+    listing_reviews lr ON l.listing_id = lr.listing_id
+JOIN 
+    hosts h ON l.host_id = h.host_id
+""")
     return jsonify(fetch(query))
 
 @app.route('/api/listings1')
