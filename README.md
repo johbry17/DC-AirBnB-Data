@@ -1,6 +1,18 @@
-# GW Project 3, 10 October 2023
+# DC AirBnB
 
-Development on this project has stopped.
+## Ideas
+
+Chloropleth map of price (ratings, number of listings, etc)?
+
+Organized list of Max/Median price per neighbourhood, highlight chosen neighbourhood
+
+
+
+<hr>
+<hr>
+<hr>
+
+Development on this project has restarted.
 
 ## Table of Contents
 
