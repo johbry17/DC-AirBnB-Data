@@ -4,9 +4,15 @@
 
 Chloropleth map of price (ratings, number of listings, etc)?
 
-Organized list of Max/Median price per neighbourhood, highlight chosen neighbourhood
+Color code map markers by property type (entire home, room...)
 
+Sorted list of Max/Median price per neighbourhood, highlight chosen neighbourhood
 
+Plot host license percentages (licensed or not)
+
+Plot property type distribution (% entire house, private room...)
+
+List top 10 hosts with most listings
 
 <hr>
 <hr>
