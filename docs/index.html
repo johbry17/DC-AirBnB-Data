@@ -12,16 +12,21 @@
   integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
   crossorigin="" />
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <!-- <link rel="stylesheet" href="/static/CSS/style.css"> --> <!-- for flask app -->
-  <!-- <link rel="stylesheet" href="./static/css/style.css"> --> <!-- for github pages -->
-
-  <!-- conditional CSS Loading -->
+  <!-- Conditional CSS Loading -->
   <script>
     const isGitHubPages = window.location.hostname.includes('github.io');
-    const isLocalhost = window.location.hostname.includes('127.0.0.1');
+    const isLocalhost = window.location.hostname.includes('127.0.0.1') || window.location.hostname.includes('localhost');
     const link = document.createElement('link');
     link.rel = 'stylesheet';
-    link.href = isGitHubPages || isLocalhost ? './static/css/style.css' : '/static/css/style.css';
+    
+    if (isGitHubPages || (isLocalhost && !window.location.hostname.includes(':5000'))) {
+      // GitHub Pages or localhost for GitHub Pages
+      link.href = './static/css/style.css';
+    } else {
+      // Flask or localhost for Flask
+      link.href = '/static/css/style.css';
+    }
+    
     document.head.appendChild(link);
   </script>
 
@@ -33,9 +38,10 @@
   <p>
     <h1 style="text-align: center;">DC AirBnB Debate</h1>
   </p>
+  <p style="text-align: center;">Under Daily Active Development</p>
 
   <br>
-  
+
 <!-- Map -->
 <div class="row">
   <div class="col-md-12">
@@ -63,18 +69,22 @@
   <script src="https://cdn.jsdelivr.net/npm/esri-leaflet@2.3.3/dist/esri-leaflet.js"></script>
   <!-- Chart JS -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- map JS -->
-  <!-- <script src="./static/js/map.js"></script> --> <!-- for github pages -->
-  <!-- <script src="/static/js/map.js"></script> --> <!-- for flask app -->
-  <!-- main JS -->
-  <!-- <script src="/static/js/logic.js"></script> -->
-
-  <!-- conditional JS Loading -->
+  
+  <!-- Conditional JS Loading -->
   <script>
     const script = document.createElement('script');
-    script.src = isGitHubPages || isLocalhost ? './static/js/map.js' : '/static/js/map.js';
+    
+    if (isGitHubPages || (isLocalhost && !window.location.hostname.includes('localhost'))) {
+      // GitHub Pages or localhost for GitHub Pages
+      script.src = './static/js/map.js';
+    } else {
+      // Flask or localhost for Flask
+      script.src = '/static/js/map.js';
+    }
+    
     document.body.appendChild(script);
   </script>
+
 
 </body>
 
