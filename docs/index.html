@@ -13,13 +13,29 @@
   crossorigin="" />
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <!-- <link rel="stylesheet" href="/static/CSS/style.css"> --> <!-- for flask app -->
-  <link rel="stylesheet" href="./static/css/style.css"> <!-- for github pages -->
+  <!-- <link rel="stylesheet" href="./static/css/style.css"> --> <!-- for github pages -->
+
+  <!-- conditional CSS Loading -->
+  <script>
+    const isGitHubPages = window.location.hostname.includes('github.io');
+    const isLocalhost = window.location.hostname.includes('127.0.0.1');
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = isGitHubPages || isLocalhost ? './static/css/style.css' : '/static/css/style.css';
+    document.head.appendChild(link);
+  </script>
+
 </head>
 
 <body>
 
   <br>
+  <p>
+    <h1 style="text-align: center;">DC AirBnB Debate</h1>
+  </p>
 
+  <br>
+  
 <!-- Map -->
 <div class="row">
   <div class="col-md-12">
@@ -48,10 +64,17 @@
   <!-- Chart JS -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <!-- map JS -->
-  <script src="./static/js/map.js"></script> <!-- for github pages -->
+  <!-- <script src="./static/js/map.js"></script> --> <!-- for github pages -->
   <!-- <script src="/static/js/map.js"></script> --> <!-- for flask app -->
   <!-- main JS -->
   <!-- <script src="/static/js/logic.js"></script> -->
+
+  <!-- conditional JS Loading -->
+  <script>
+    const script = document.createElement('script');
+    script.src = isGitHubPages || isLocalhost ? './static/js/map.js' : '/static/js/map.js';
+    document.body.appendChild(script);
+  </script>
 
 </body>
 

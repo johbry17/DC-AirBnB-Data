@@ -3,19 +3,37 @@ let map; // main map
 let neighborhoodsLayer; // polygons of neighborhoods
 let listingsData; // to reload marker popups in neighborhood view
 
-// call for data from server
-d3.csv("./static/resources/airbnb_data.csv") // for gitHub Pages
-// fetch("/api/listings") // for flask app
-//   .then((response) => response.json()) // for flask app
-  .then((data) => {
-    listingsData = data;
-    [dcMeanPrice, dcMedianPrice, dcMeanRating, dcMedianRating] = calculateDCStats(data);
-    fetch("./static/resources/neighbourhoods.geojson")
-      .then((response) => response.json())
-      .then((neighborhoodData) => {
-        createMap(createMarkers(data), neighborhoodData);
-      });
-  });
+// check if running on GitHub Pages or Flask app
+const isGitPages = window.location.hostname.includes('github.io');
+const isHostedLocally = window.location.hostname.includes('127.0.0.1');
+
+// fetch data based on environment
+if (isGitPages || isHostedLocally) {
+  // for GitHub Pages
+  d3.csv("./static/resources/airbnb_data.csv")
+    .then((data) => {
+      listingsData = data;
+      [dcMeanPrice, dcMedianPrice, dcMeanRating, dcMedianRating] = calculateDCStats(data);
+      fetch("./static/resources/neighbourhoods.geojson")
+        .then((response) => response.json())
+        .then((neighborhoodData) => {
+          createMap(createMarkers(data), neighborhoodData);
+        });
+    });
+} else {
+  // for Flask app
+  fetch("/api/listings")
+    .then((response) => response.json())
+    .then((data) => {
+      listingsData = data;
+      [dcMeanPrice, dcMedianPrice, dcMeanRating, dcMedianRating] = calculateDCStats(data);
+      fetch("/static/resources/neighbourhoods.geojson")
+        .then((response) => response.json())
+        .then((neighborhoodData) => {
+          createMap(createMarkers(data), neighborhoodData);
+        });
+    });
+}
 
 // main map creation
 function createMap(airbnbs, neighborhoods) {
