@@ -4,14 +4,13 @@ let neighborhoodsLayer; // polygons of neighborhoods
 let listingsData; // to reload marker popups in neighborhood view
 
 // call for data from server
-// fetch("/api/listings")
-  // .then((response) => response.json())
-fetch("../static/resources/airbnb_data.csv")
-  .then((response) => response.text())
+d3.csv("./static/resources/airbnb_data.csv") // for gitHub Pages
+// fetch("/api/listings") // for flask app
+//   .then((response) => response.json()) // for flask app
   .then((data) => {
     listingsData = data;
     [dcMeanPrice, dcMedianPrice, dcMeanRating, dcMedianRating] = calculateDCStats(data);
-    fetch("../static/resources/neighbourhoods.geojson")
+    fetch("./static/resources/neighbourhoods.geojson")
       .then((response) => response.json())
       .then((neighborhoodData) => {
         createMap(createMarkers(data), neighborhoodData);
