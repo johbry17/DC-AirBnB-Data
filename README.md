@@ -25,6 +25,7 @@ Development on this project has restarted.
 - [Description](#description)
 - [Usage](#usage)
 - [Gallery](#gallery)
+- [Certificate](#certificate)
 - [References](#references)
 - [Licenses](#licenses)
 - [Acknowledgements](#acknowledgements)
@@ -65,6 +66,10 @@ Map:
 ERD:
 
 ![ERD](./static/images/ERD.png)
+
+## Certificate
+
+![cs50SQL Certificate](./resources/images/CS50SQL.png)
 
 ## References
 
