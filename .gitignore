@@ -1,5 +1,7 @@
-# hide config.py
+# hide config.py and large csv files over 100MB (git won't upload files over 100MB)
 config.py
+./resources/data/cleaned_data/reviews_cleaned.csv
+
 
 
 # Byte-compiled / optimized / DLL files
