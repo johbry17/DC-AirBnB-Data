@@ -41,9 +41,11 @@ A detialed analysis of Washington D.C.'s AirBnB's, offering a wide variety of me
 
 The `/docs/` folder contains a GitHub Pages version of the same website, hosted live at [johbry17.github.io/DC-AirBnB-Data/](https://johbry17.github.io/DC-AirBnB-Data/).
 
-`airbnb` is a backup of the database, that a user can load into a postgres database.
+`airbnb` is a backup of the database, that a user can load into a PostgreSQL database.
 
-The `/resources/data` folder contains the csv's and SQL code used to create the database. `/resources/data/cleaned_data/data_cleaning.ipynb` shows the ETL process. This was the final project for [cs50's Introduction to Databases with SQL](https://cs50.harvard.edu/sql/2024/), which can be found in my [DC-AirBnB-SQL-Database](https://github.com/johbry17/DC-AirBnB-SQL-Database) repo.
+The `/resources/data` folder contains the csv's and SQL code used to create the database. `/resources/data/cleaned_data/data_cleaning.ipynb` shows the ETL process. This was the final project for [cs50's Introduction to Databases with SQL](https://cs50.harvard.edu/sql/2024/), which can be found in my [DC-AirBnB-SQL-Database](https://github.com/johbry17/DC-AirBnB-SQL-Database) repo. `data_cleaning.ipynb` not only cleans the data, it also automatically loads it into the PostgreSQL database, and extracts it into a csv for the GitHub Pages version of the site, neatly preparing the data for Flask version and the static version.
+
+Don't forget to .gitignore any files over 100MB.
 
 `/exploratory_data_analysis` contains `eda.ipynb`, showing the exploratory data analysis.
 
