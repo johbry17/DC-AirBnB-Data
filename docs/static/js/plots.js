@@ -71,8 +71,8 @@ function updatePriceAndRatingsPlot(plotType, selectedNeighborhood, mean, median,
     marker: {
       color:
         selectedNeighborhood === "Washington, D.C."
-          ? ["red", "red"]
-          : ["blue", "blue", "red", "red"],
+          ? ["blue", "blue"]
+          : ["orange", "orange", "blue", "blue"],
       line: {
         color: "black",
         width: 1,

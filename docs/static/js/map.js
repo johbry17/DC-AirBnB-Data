@@ -16,7 +16,7 @@ function createMap(airbnbs, neighborhoods, listingsData) {
   const neighborhoodsLayer = L.geoJSON(neighborhoods, {
     style: {
       // opacity: 0,
-      color: "blue",
+      color: "black",
       weight: 3,
     },
   });
@@ -88,7 +88,7 @@ function createMarkers(data) {
   // marker design
   const markerOptions = {
     radius: 2,
-    fillColor: "red",
+    fillColor: "blue",
     color: "black",
     weight: 1,
     fillOpacity: 1,
