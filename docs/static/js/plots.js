@@ -1,136 +1,94 @@
-// infoBox for all of DC
-function dcInfoBox(listingsData, neighborhoodsLayer) {
-    let infoBoxElement = document.querySelector("#info-box");
-  
-    const dcStats = calculateDCStats(listingsData);
-    const { dcMeanPrice, dcMedianPrice, dcMeanRating, dcMedianRating } = dcStats;
-    
-    infoBoxElement.innerHTML = `
-        <strong>Washington, D.C.</strong><br>
-        Number of AirBnB's: ${listingsData.length}<br>
-        Mean Price: $${dcMeanPrice.toFixed(2)}<br>
-        Median Price: $${dcMedianPrice.toFixed(2)}<br>
-        Mean Rating: ${dcMeanRating.toFixed(2)}<br>
-        Median Rating: ${dcMedianRating.toFixed(2)}<br>
-    `;
-  
-    // remove any boundaries from prior calls of zoomIn()
-    neighborhoodsLayer.resetStyle();
+// master function to call plots for all of DC
+function allDCPlots(listingsData) {
+  plotLocation(listingsData, "Washington, D.C.");
 }
 
-// changes infoBox summary for neighborhoods
-function updateInfoBox(listingsData, neighborhoodDesignation) {
-    // get the info box element
-    const infoBoxElement = document.querySelector("#info-box");
-    const neighborhoodListings = filterListingsByNeighborhood(listingsData, neighborhoodDesignation);
-
-    if (!infoBoxElement) return;
-  
-    infoBoxElement.innerHTML = 
-    `<strong>${neighborhoodDesignation}</strong><br>
-    Number of AirBnB's in Neighborhood: ${neighborhoodListings.length}
-    <div id="infoBox-container">
-        <div id="infoBox-chart" class = "infoBox-chart"></div>
-    <select id="infoBox-selector">
-        <option value="price">Price</option>
-        <option value="ratings">Ratings</option>
-    </select>
-    </div>`;
-  
-      // set to price by default
-    infoBoxChart(listingsData, neighborhoodDesignation, 'price');
-  
-    document.getElementById('infoBox-selector').addEventListener('change', (event) => {
-        const selectedChart = event.target.value;
-        infoBoxChart(listingsData, neighborhoodDesignation, selectedChart);
-    });
+// master function to call plots for neighborhoods
+function neighborhoodPlots(listingsData, selectedNeighborhood) {
+  plotLocation(listingsData, selectedNeighborhood);
 }
 
-// filter listings by neighborhood
-function filterListingsByNeighborhood(listingsData, neighborhoodDesignation) {
-    return listingsData.filter(listing => listing.neighbourhood === neighborhoodDesignation);
-}
+// conditional for data for all of DC or neighborhood
+function plotLocation(listingsData, selectedNeighborhood) {
+    const isDC = selectedNeighborhood === "Washington, D.C.";
+    const dcStats = calculateStats(listingsData);
 
-// calculate DC stats
-function calculateDCStats(listingsData) {
-    const prices = listingsData.map(listing => parseFloat(listing.price));
-    const ratings = listingsData.filter(listing => listing.review_scores_rating !== null).map(listing => parseFloat(listing.review_scores_rating));
+    let meanPrice, medianPrice, meanRating, medianRating;
 
-    return {
-        dcMeanPrice: calculateMean(prices),
-        dcMedianPrice: calculateMedian(prices),
-        dcMeanRating: calculateMean(ratings),
-        dcMedianRating: calculateMedian(ratings)
-    };
-}
-
-// calculate neighborhood stats
-function calculateNeighborhoodStats(neighborhoodListings) {
-    const prices = neighborhoodListings.map(listing => parseFloat(listing.price));
-    const ratings = neighborhoodListings.filter(listing => listing.review_scores_rating !== null).map(listing => parseFloat(listing.review_scores_rating));
-
-    return {
-        meanPrice: calculateMean(prices),
-        medianPrice: calculateMedian(prices),
-        meanRating: calculateMean(ratings),
-        medianRating: calculateMedian(ratings)
-    };
-}
-
-// calculate mean
-function calculateMean(data) {
-    return data.reduce((sum, value) => sum + value, 0) / data.length;
-}
-
-// calculate median
-function calculateMedian(data) {
-    const sortedData = data.sort((a, b) => a - b);
-    const mid = Math.floor(sortedData.length / 2);
-    return sortedData.length % 2 === 0 ? (sortedData[mid - 1] + sortedData[mid]) / 2 : sortedData[mid];
-}
-
-// neighborhood vs. DC chart function
-function infoBoxChart(listingsData, neighborhoodDesignation, chartType) {
-    const dcStats = calculateDCStats(listingsData);
-    const { dcMeanPrice, dcMedianPrice, dcMeanRating, dcMedianRating } = dcStats;
-
-    const neighborhoodStats = calculateNeighborhoodStats(filterListingsByNeighborhood(listingsData, neighborhoodDesignation));
-    const { meanPrice, medianPrice, meanRating, medianRating } = neighborhoodStats;
-
-    // determine which chart to plot
-    let chosenData, yTitle;
-    if (chartType === 'price') {
-        chosenData = [meanPrice, medianPrice, dcMeanPrice, dcMedianPrice];
-        yTitle = 'Price';
-        // to dynamically narrow y-axis to emphasize difference
-        minRange = Math.min(...chosenData) - 20;
-        maxRange = Math.max(...chosenData) + 20;
-    } else if (chartType === 'ratings') {
-        chosenData = [meanRating, medianRating, dcMeanRating, dcMedianRating];
-        yTitle = 'Rating';
-        minRange = Math.min(...chosenData) - .2;
-        maxRange = Math.max(...chosenData) + .2;
+    if (isDC) {
+        const neighborhoodStats = calculateStats(filterListingsByNeighborhood(listingsData, selectedNeighborhood));
+        ({ meanPrice, medianPrice, meanRating, medianRating } = neighborhoodStats);
+    } else {
+        ({ meanPrice, medianPrice, meanRating, medianRating } = dcStats);
     }
 
-    trace = {
-        x: ['Mean (Neighborhood)', 'Median (Neighborhood)', 'Mean (All of DC)', 'Median (All of DC)'],
-        y: chosenData,
-        type: 'bar',
-        hovertemplate: chartType === 'price' ? '%{y:$,.2f}' : '%{y:.2f}',
-        marker: {
-        color: ['blue', 'blue', 'red', 'red'],
-        line: {
-            color: 'black',
-            width: 1,
-        },
-        },
-    }
+    updatePriceAndRatingsPlot("price", selectedNeighborhood, meanPrice, medianPrice, dcStats.meanPrice, dcStats.medianPrice);
+    updatePriceAndRatingsPlot("ratings", selectedNeighborhood, meanRating, medianRating, dcStats.meanRating, dcStats.medianRating);
+}
 
-    layout = {
-        xaxis: { tickangle: 35, },
-        yaxis: { title: yTitle, range: [minRange, maxRange] },
-    }
+// plot of price and ratings for all of DC or a neighborhood
+function updatePriceAndRatingsPlot(plotType, selectedNeighborhood, mean, median, dcMean, dcMedian) {
+  // get container
+  let plotContainer = document.querySelector(`#${plotType}-plot`);
 
-    Plotly.newPlot("infoBox-chart", [trace], layout);
+  let chosenData, xLabels, yTitle;
+
+  if (plotType === "price") {
+    if (selectedNeighborhood === "Washington, D.C.") {
+      chosenData = [dcMean, dcMedian];
+      xLabels = ["Mean (All of DC)", "Median (All of DC)"];
+    } else {
+      chosenData = [mean, median, dcMean, dcMedian];
+      xLabels = [
+        "Mean (Neighborhood)",
+        "Median (Neighborhood)",
+        "Mean (All of DC)",
+        "Median (All of DC)",
+      ];
+    }
+    yTitle = "Price";
+  } else if (plotType === "ratings") {
+    if (selectedNeighborhood === "Washington, D.C.") {
+      chosenData = [dcMean, dcMedian];
+      xLabels = ["Mean (All of DC)", "Median (All of DC)"];
+    } else {
+      chosenData = [mean, median, dcMean, dcMedian];
+      xLabels = [
+        "Mean (Neighborhood)",
+        "Median (Neighborhood)",
+        "Mean (All of DC)",
+        "Median (All of DC)",
+      ];
+    }
+    yTitle = "Rating";
+  }
+
+  trace = {
+    x: xLabels,
+    y: chosenData,
+    type: "bar",
+    hovertemplate: plotType === "price" ? "%{y:$,.2f}" : "%{y:.2f}",
+    marker: {
+      color:
+        selectedNeighborhood === "Washington, D.C."
+          ? ["red", "red"]
+          : ["blue", "blue", "red", "red"],
+      line: {
+        color: "black",
+        width: 1,
+      },
+    },
+  };
+
+  layout = {
+    xaxis: { tickangle: 35 },
+    yaxis: { title: yTitle },
+    title:
+      selectedNeighborhood === "Washington, D.C."
+        ? `${yTitle} for Washington, D.C.`
+        : `Neighborhood <b>vs.</b> all of DC<br><b>${yTitle}</b> Comparison`,
+  };
+
+  Plotly.newPlot(plotContainer, [trace], layout);
 }
 

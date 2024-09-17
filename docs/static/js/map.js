@@ -24,18 +24,63 @@ function createMap(airbnbs, neighborhoods, listingsData) {
   // add markers
   airbnbs.addTo(map);
 
-  // call function to manage user interaction with neighborhoods
+  // initial call for controls, infoBox, and plots
   neighborhoodsControl(map, neighborhoods, neighborhoodsLayer, listingsData);
-
-  // call dcInfoBox to display stats for all of D.C. initially
-  calculateDCStats(listingsData);
-  dcInfoBox(listingsData, neighborhoodsLayer);
+  updateInfoBox(listingsData, neighborhoodsLayer, "Washington, D.C.");
+  allDCPlots(listingsData);
 
   // resize map to current container size
   map.invalidateSize();
 }
 
-// marker creation and settings
+// create dropdown for neighborhood interaction
+function neighborhoodsControl(
+  map,
+  neighborhoodsInfo,
+  neighborhoodsLayer,
+  listingsData
+) {
+  // create neighorhoods dropdown menu
+  const controlDiv = document.getElementById("neighborhoods-control");
+  const dropdown = document.createElement("select");
+  dropdown.id = "neighborhoods-dropdown";
+  controlDiv.innerHTML = `<div class="control-header">
+    <label for="neighborhoods-dropdown">Select a Neighborhood</label>
+    <br>
+    </div>`;
+  controlDiv.appendChild(dropdown);
+
+  // populate dropdown menu
+  const allDC = createOption("Washington, D.C.", "top");
+  dropdown.appendChild(allDC);
+  neighborhoodsInfo.features.forEach((feature) => {
+    const option = createOption(
+      feature.properties.neighbourhood,
+      feature.properties.neighbourhood
+    );
+    dropdown.appendChild(option);
+  });
+
+  // event listener, calls to update page to user's selection
+  dropdown.addEventListener("change", function () {
+    const selectedNeighborhood = this.value;
+    if (selectedNeighborhood === "top") {
+      resetMapView(map, neighborhoodsLayer, listingsData);
+    } else {
+      zoomIn(map, neighborhoodsLayer, selectedNeighborhood, listingsData);
+    }
+  });
+}
+
+// create dropdown options
+function createOption(text, value) {
+  const option = document.createElement("option");
+  option.text = text;
+  option.value = value;
+  return option;
+}
+
+// initialize markers with settings
 function createMarkers(data) {
   // empty marker layer
   const markers = L.layerGroup();
@@ -51,21 +96,23 @@ function createMarkers(data) {
 
   // loop to populate markers
   data.forEach((listing) => {
-    const marker = L.circleMarker([listing.latitude, listing.longitude], markerOptions);
-
-    // call function to fill in popup content
-    const popUpContent = createPopupContent(listing);
-
-    // marker info popups
-    marker.bindPopup(popUpContent, { className: "marker-popup" });
-
-    // boolean to track if a popup is open
-    let popupOpen = false;
+    const marker = L.circleMarker(
+      [listing.latitude, listing.longitude],
+      markerOptions
+    );
+    marker.bindPopup(createPopupContent(listing), {
+      className: "marker-popup",
+    });
 
     // open || close popup
+    let popupOpen = false; // boolean to track if a popup is open
     marker.on("mouseover", () => marker.openPopup());
-    marker.on("mouseout", () => { if (!popupOpen) marker.closePopup(); });
-    marker.on("click", () => { popupOpen = !popupOpen; });
+    marker.on("mouseout", () => {
+      if (!popupOpen) marker.closePopup();
+    });
+    marker.on("click", () => {
+      popupOpen = !popupOpen;
+    });
 
     markers.addLayer(marker);
   });
@@ -76,99 +123,53 @@ function createMarkers(data) {
 // populates popup
 function createPopupContent(listing) {
   const price = parseFloat(listing.price);
-  const hostVerified = listing.host_identity_verified === true ? 'Verified' : 'Unverified'
-  const hoverDescription = listing.hover_description ? `<h4>${listing.hover_description}</h4>` : '<h4>Description not available</h4>';
-  
-  return `${hoverDescription}
-  <a href="${listing.listing_url}" target="_blank">Link to listing</a><br>
-  Price: $${price.toFixed(2)}<br>
-  Property Type: ${listing.property_type}<br>
-  Accommodates: ${listing.accommodates}<br>
-  Rating: ${listing.review_scores_rating}<br>
-  Host: ${listing.host_name}<br>
-  Host Verified: ${hostVerified}<br>
-  Host Total Listings: ${listing.host_total_listings_count}<br>
-  License: ${listing.license}<br>
+  const hostVerified =
+    listing.host_identity_verified === true ? "Verified" : "Unverified";
+  const hoverDescription = listing.hover_description
+    ? `<h4>${listing.hover_description}</h4>`
+    : "<h4>Description not available</h4>";
+
+  return `
+    ${hoverDescription}
+    <a href="${listing.listing_url}" target="_blank">Link to listing</a><br>
+    Price: $${price.toFixed(2)}<br>
+    Property Type: ${listing.property_type}<br>
+    Accommodates: ${listing.accommodates}<br>
+    Rating: ${listing.review_scores_rating}<br>
+    Host: ${listing.host_name}<br>
+    Host Verified: ${hostVerified}<br>
+    Host Total Listings: ${listing.host_total_listings_count}<br>
+    License: ${listing.license}<br>
   `;
 }
 
-// create dropdown for neighborhood interaction
-function neighborhoodsControl(map, neighborhoodsInfo, neighborhoodsLayer, listingsData) {
-  // get dropdown element
-  const controlDiv = document.getElementById("neighborhoods-control");
-
-  // create box and text for dropdown
-  controlDiv.innerHTML = `
-    <div class="control-header">
-      <label for="neighborhoods-dropdown">Select a Neighborhood</label>
-      <br>
-      <select id="neighborhoods-dropdown"></select>
-    </div>`;
-
-  // get and populate dropdown menu
-  const dropdown = document.getElementById("neighborhoods-dropdown");
-
-  // set first dropdown choice for initial map view
-  const allDC = document.createElement("option");
-  allDC.text = "Washington, D.C.";
-  allDC.value = "top";
-  dropdown.appendChild(allDC);
-
-  // populate dropdown menu with neighborhoods
-  neighborhoodsInfo.features.forEach((feature) => {
-    names = feature.properties.neighbourhood;
-    option = document.createElement("option");
-    option.text = names;
-    option.value = names;
-    dropdown.appendChild(option);
-  });
-
-  // changes view to user's selection
-  dropdown.addEventListener("change", function () {
-    const selectedNeighborhood = this.value;
-
-    if (selectedNeighborhood === "top") {
-      map.setView([38.89511, -77.03637], 12);
-      // neighborhoodsLayer is on when zoomed in
-      map.removeLayer(neighborhoodsLayer);
-      // update infoBox for all DC
-      dcInfoBox(listingsData, neighborhoodsLayer);
-    } else {
-      zoomIn(map, neighborhoodsLayer, selectedNeighborhood, listingsData);
-    }
-  });
+// resets map view to all of D.C., updates infoBox and plots
+function resetMapView(map, neighborhoodsLayer, listingsData) {
+  map.setView([38.89511, -77.03637], 12);
+  map.removeLayer(neighborhoodsLayer);  // remove neighborhood boundaries from zoomIn()
+  // call to update infoBox and plots
+  updateInfoBox(listingsData, neighborhoodsLayer, "Washington, D.C.");
+  allDCPlots(listingsData);
 }
 
-// handles neighborhood view
-function zoomIn(map, neighborhoodsLayer, neighborhoodDesignation, listingsData) {
-  // initialize boundaries first, or it won't zoom
-  let boundaries;
-
-  // remove any boundaries from prior calls of zoomIn()
-  neighborhoodsLayer.resetStyle(boundaries);
-
-  // get borders of selected neighborhood
-  boundaries = neighborhoodsLayer
+// zooms map for neighborhood view, updates infoBox and plots
+function zoomIn(map, neighborhoodsLayer, selectedNeighborhood, listingsData) {
+  // find neighborhood
+  const boundaries = neighborhoodsLayer
     .getLayers()
-    .find((layer) => layer.feature.properties.neighbourhood === neighborhoodDesignation);
+    .find(
+      (layer) => layer.feature.properties.neighbourhood === selectedNeighborhood
+    );
 
-  // transparent boundary removes neighborhoodsLayer opacity from selected neighborhood
-  // the contrast makes the neighborhood stand out
-  boundaries.setStyle({
-    weight: 3,
-    color: "transparent",
-  });
-
-  // zoom in on selected neighborhood
-  map.fitBounds(boundaries.getBounds());
-
-  // add neighborhoodsLayer for contrast
-  neighborhoodsLayer.addTo(map);
-
-  // reload marker popups
-  const newMarkers = createMarkers(listingsData);
-  newMarkers.addTo(map);
-  
-  updateInfoBox(listingsData, neighborhoodDesignation);
+  // update map view
+  if (boundaries) {
+    boundaries.setStyle({ weight: 3, color: "transparent" });
+    map.fitBounds(boundaries.getBounds());
+    neighborhoodsLayer.addTo(map);
+    // update markers, infoBox, and plots
+    const newMarkers = createMarkers(listingsData);
+    newMarkers.addTo(map);
+    updateInfoBox(listingsData, selectedNeighborhood);
+    neighborhoodPlots(listingsData, selectedNeighborhood);
+  }
 }
-
