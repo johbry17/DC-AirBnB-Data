@@ -28,13 +28,8 @@ function updateInfoBox(listingsData, selectedNeighborhood) {
 
   // get stats for DC, maybe for neighborhood
   const stats = calculateStats(listingsData);
-  const neighborhoodStats =
-    selectedNeighborhood === "Washington, D.C."
-      ? null
-      : calculateStats(
-          filterListingsByNeighborhood(listingsData, selectedNeighborhood)
-        );
-
+  const filteredListings = filterListingsByNeighborhood(listingsData, selectedNeighborhood);
+  const neighborhoodStats = selectedNeighborhood === "Washington, D.C." ? null : calculateStats(filteredListings);
   // create HTML for infoBox
   const isDC = selectedNeighborhood === "Washington, D.C.";
   const statsHTML = isDC
@@ -48,7 +43,7 @@ function updateInfoBox(listingsData, selectedNeighborhood) {
     `
     : `
     <strong>${selectedNeighborhood}</strong><br>
-    Number of AirBnB's in Neighborhood: ${neighborhoodStats.length}<br>
+    Number of AirBnB's in Neighborhood: ${filteredListings.length}<br>
     <br>
     <strong>Neighborhood Stats:</strong><br>
     Mean Price: $${neighborhoodStats.meanPrice.toFixed(2)}<br>

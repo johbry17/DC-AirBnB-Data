@@ -26,7 +26,7 @@ function createMap(airbnbs, neighborhoods, listingsData) {
 
   // initial call for controls, infoBox, and plots
   neighborhoodsControl(map, neighborhoods, neighborhoodsLayer, listingsData);
-  updateInfoBox(listingsData, neighborhoodsLayer, "Washington, D.C.");
+  updateInfoBox(listingsData, "Washington, D.C.");
   allDCPlots(listingsData);
 
   // resize map to current container size
@@ -148,7 +148,7 @@ function resetMapView(map, neighborhoodsLayer, listingsData) {
   map.setView([38.89511, -77.03637], 12);
   map.removeLayer(neighborhoodsLayer);  // remove neighborhood boundaries from zoomIn()
   // call to update infoBox and plots
-  updateInfoBox(listingsData, neighborhoodsLayer, "Washington, D.C.");
+  updateInfoBox(listingsData, "Washington, D.C.");
   allDCPlots(listingsData);
 }
 

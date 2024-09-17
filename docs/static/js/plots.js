@@ -15,7 +15,7 @@ function plotLocation(listingsData, selectedNeighborhood) {
 
     let meanPrice, medianPrice, meanRating, medianRating;
 
-    if (isDC) {
+    if (!isDC) {
         const neighborhoodStats = calculateStats(filterListingsByNeighborhood(listingsData, selectedNeighborhood));
         ({ meanPrice, medianPrice, meanRating, medianRating } = neighborhoodStats);
     } else {
