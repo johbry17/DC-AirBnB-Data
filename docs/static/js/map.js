@@ -1,4 +1,4 @@
-// main map creation
+// map creation
 function createMap(airbnbs, neighborhoods, listingsData) {
   // initialize map
   const map = L.map("map-id", {
@@ -28,10 +28,8 @@ function createMap(airbnbs, neighborhoods, listingsData) {
   neighborhoodsControl(map, neighborhoods, neighborhoodsLayer, listingsData);
 
   // call dcInfoBox to display stats for all of D.C. initially
-  calculateDCStats(listingsData); // Ensure DC stats are calculated first
+  calculateDCStats(listingsData);
   dcInfoBox(listingsData, neighborhoodsLayer);
-  
-  updateInfoBox(listingsData, neighborhoodsLayer);
 
   // resize map to current container size
   map.invalidateSize();
@@ -40,10 +38,10 @@ function createMap(airbnbs, neighborhoods, listingsData) {
 // marker creation and settings
 function createMarkers(data) {
   // empty marker layer
-  markers = L.layerGroup();
+  const markers = L.layerGroup();
 
   // marker design
-  markerOptions = {
+  const markerOptions = {
     radius: 2,
     fillColor: "red",
     color: "black",
@@ -53,13 +51,10 @@ function createMarkers(data) {
 
   // loop to populate markers
   data.forEach((listing) => {
-    let marker = L.circleMarker(
-      [listing.latitude, listing.longitude],
-      markerOptions
-    );
+    const marker = L.circleMarker([listing.latitude, listing.longitude], markerOptions);
 
     // call function to fill in popup content
-    popUpContent = createPopupContent(listing);
+    const popUpContent = createPopupContent(listing);
 
     // marker info popups
     marker.bindPopup(popUpContent, { className: "marker-popup" });
@@ -67,26 +62,10 @@ function createMarkers(data) {
     // boolean to track if a popup is open
     let popupOpen = false;
 
-    // open popup on mouseover
-    marker.on("mouseover", (e) => marker.openPopup());
-
-    // close popup on mouseout
-    marker.on("mouseout", (e) => {
-      if (!popupOpen) {
-        marker.closePopup();
-      }
-    });
-
-    // open popup on click
-    marker.on("click", (e) => {
-      if (popupOpen) {
-        marker.closePopup();
-      } else {
-        marker.openPopup();
-      }
-      //toggle popupOpen boolean
-      popupOpen = !popupOpen;
-    });
+    // open || close popup
+    marker.on("mouseover", () => marker.openPopup());
+    marker.on("mouseout", () => { if (!popupOpen) marker.closePopup(); });
+    marker.on("click", () => { popupOpen = !popupOpen; });
 
     markers.addLayer(marker);
   });
@@ -96,9 +75,9 @@ function createMarkers(data) {
 
 // populates popup
 function createPopupContent(listing) {
-  price = parseFloat(listing.price);
-  hostVerified = listing.host_identity_verified === true ? 'Verified' : 'Unverified'
-  hoverDescription = listing.hover_description ? `<h4>${listing.hover_description}</h4>` : '<h4>Description not available</h4>';
+  const price = parseFloat(listing.price);
+  const hostVerified = listing.host_identity_verified === true ? 'Verified' : 'Unverified'
+  const hoverDescription = listing.hover_description ? `<h4>${listing.hover_description}</h4>` : '<h4>Description not available</h4>';
   
   return `${hoverDescription}
   <a href="${listing.listing_url}" target="_blank">Link to listing</a><br>
@@ -130,7 +109,7 @@ function neighborhoodsControl(map, neighborhoodsInfo, neighborhoodsLayer, listin
   const dropdown = document.getElementById("neighborhoods-dropdown");
 
   // set first dropdown choice for initial map view
-  let allDC = document.createElement("option");
+  const allDC = document.createElement("option");
   allDC.text = "Washington, D.C.";
   allDC.value = "top";
   dropdown.appendChild(allDC);
@@ -171,10 +150,7 @@ function zoomIn(map, neighborhoodsLayer, neighborhoodDesignation, listingsData) 
   // get borders of selected neighborhood
   boundaries = neighborhoodsLayer
     .getLayers()
-    .find(
-      (layer) =>
-        layer.feature.properties.neighbourhood === neighborhoodDesignation
-    );
+    .find((layer) => layer.feature.properties.neighbourhood === neighborhoodDesignation);
 
   // transparent boundary removes neighborhoodsLayer opacity from selected neighborhood
   // the contrast makes the neighborhood stand out
@@ -190,7 +166,7 @@ function zoomIn(map, neighborhoodsLayer, neighborhoodDesignation, listingsData) 
   neighborhoodsLayer.addTo(map);
 
   // reload marker popups
-  newMarkers = createMarkers(listingsData);
+  const newMarkers = createMarkers(listingsData);
   newMarkers.addTo(map);
   
   updateInfoBox(listingsData, neighborhoodDesignation);
