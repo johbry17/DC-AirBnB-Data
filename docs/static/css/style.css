@@ -8,8 +8,8 @@
 
 /* map containter */
 .map-container {
-    width: 90%;
-    height: 70vh;
+    width: 95%;
+    height: 80vh;
     margin: 0 auto;
     border: 2px solid gray;
     border-radius: 10px;
@@ -33,30 +33,58 @@
   border-radius: 5px;
 }
 
-/* neighborhood drop down */
-.neighborhood-control {
-  background-color: white;
+.navbar {
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
   padding: 10px;
-  border: 2px solid gray;
-  border-radius: 10px;
+  border-radius: 0px; /* Removes border radius */
+  text-align: center;
 }
 
-.neighborhood-control label,
-.neighborhood-control select {
-  font-size: 16px;
+/* neighborhood drop down */
+#neighborhoods-control {
+  /* background-color: white; */
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* border: 2px solid gray; */
+  /* border-radius: 10px; */
+}
+
+#neighborhoods-control label,
+#neighborhoods-control select {
+  /* font-size: 16px; */
   padding: 5px;
 }
 
 /* width when untouched */
 #neighborhoods-dropdown {
-  width: 200px;
+  width: auto;
+  min-width: 200px;
+  max-width: 100%;
+  border-radius: 10px;
+  padding: 5px;
+  box-sizing: border-box;
 }
 
 /* width during user interaction */
-#neighborhoods-dropdown:focus {
-  width: auto;
+#neighborhoods-dropdown option {
+  white-space: nowrap;
 }
 
-.infoBox-chart {
-  width: 100%,
+.col-md-12.jumbotron {
+  margin-bottom: 20px;
+}
+
+.welcome-box {
+  background-image: url('../images/background.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  color: white;
+  padding: 15px;
+  border: 2px solid white;
+  border-radius: 15px;
+  width: 50%;
+  margin: 0 auto;
 }

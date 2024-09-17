@@ -45,7 +45,7 @@ function neighborhoodsControl(
   const dropdown = document.createElement("select");
   dropdown.id = "neighborhoods-dropdown";
   controlDiv.innerHTML = `<div class="control-header">
-    <label for="neighborhoods-dropdown">Select a Neighborhood</label>
+    <label for="neighborhoods-dropdown" style="color: white;">Select a Neighborhood</label>
     <br>
     </div>`;
   controlDiv.appendChild(dropdown);
@@ -154,7 +154,10 @@ function resetMapView(map, neighborhoodsLayer, listingsData) {
 
 // zooms map for neighborhood view, updates infoBox and plots
 function zoomIn(map, neighborhoodsLayer, selectedNeighborhood, listingsData) {
-  // find neighborhood
+  // remove previous neighborhood boundaries
+  neighborhoodsLayer.resetStyle();
+
+  // get neighborhood boundaries
   const boundaries = neighborhoodsLayer
     .getLayers()
     .find(

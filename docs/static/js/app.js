@@ -23,7 +23,7 @@ Promise.all([getData, fetch(geojson).then((response) => response.json())]).then(
 );
 
 // infoBox
-function updateInfoBox(listingsData, neighborhoodsLayer, selectedNeighborhood) {
+function updateInfoBox(listingsData, selectedNeighborhood) {
   const infoBoxElement = document.querySelector("#info-box");
 
   // get stats for DC, maybe for neighborhood

@@ -43,11 +43,20 @@
 </head>
 <body>
 
-  <br>
-  <p>
-    <h1 style="text-align: center;">DC AirBnB Debate</h1>
-  </p>
-  <p style="text-align: center;">Under Daily Active Development</p>
+  <!-- navbar -->
+  <div class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <!-- <h2 style="color: white;">Select a Neighborhood</h2> -->
+      </div>
+      <div id="neighborhoods-control" class="navbar-right" style="margin-top: 10px; margin-right: 10px;"></div>
+    </div>
+  </div>
+
+  <div class="col-md-12 jumbotron text-center" style="background-image: url('./static/images/background.jpg'); background-size: cover; background-repeat: no-repeat; background-position: center center">
+    <h1 style="color: white;">DC AirBnB Debate</h1>
+    <p style="color: white;">Under Daily Active Development</p>
+  </div>
   <!-- <div class="row"> -->
     <!-- <div class="col-md-12"> -->
       <!-- <div class="container"> -->
@@ -64,9 +73,17 @@
       <!-- </div> -->
     <!-- </div> -->
   <!-- </div> -->
-  <p style="text-align: center;"><strong>Welcome to the map</strong><br>Choose a neighborhood for a closer look<br>Click on an AirBnB to investigate a listing</p>
+  <div></div>
+
+  <!-- Welcome box with background -->
+  <div class="welcome-box text-center">
+    <strong>Welcome to the map</strong><br>
+    Choose a neighborhood for a closer look<br>
+    Click on an AirBnB to investigate a listing
+  </div>
   <br>
-  <div id="neighborhoods-control" class="info legend" style="text-align: center;"></div>
+  <br>
+  <!-- <div id="neighborhoods-control" class="info legend" style="text-align: center;"></div> -->
   <br><br>
   <!-- Map -->
   <div class="row">
