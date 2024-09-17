@@ -12,22 +12,31 @@
   integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
   crossorigin="" />
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <!-- Conditional CSS Loading -->
+  <!-- conditional css and favicon loading -->
   <script>
     const isGitHubPages = window.location.hostname.includes('github.io');
     const isLocalhost = window.location.hostname.includes('127.0.0.1') || window.location.hostname.includes('localhost');
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
+
+    const favicon = document.createElement('link');
+    favicon.rel = 'icon';
+    favicon.type = 'image/x-icon';
+    
+    const cssLink = document.createElement('link');
+    cssLink.rel = 'stylesheet';
     
     if (isGitHubPages || (isLocalhost && !window.location.hostname.includes(':5000'))) {
       // GitHub Pages or localhost for GitHub Pages
-      link.href = './static/css/style.css';
+      console.log(favicon);
+      favicon.href = './static/images/favicon.ico';
+      cssLink.href = './static/css/style.css';
     } else {
       // Flask or localhost for Flask
-      link.href = '/static/css/style.css';
+      favicon.href = '/static/images/favicon.ico';
+      cssLink.href = '/static/css/style.css';
     }
     
-    document.head.appendChild(link);
+    document.head.appendChild(favicon);
+    document.head.appendChild(cssLink);
   </script>
 
 </head>
