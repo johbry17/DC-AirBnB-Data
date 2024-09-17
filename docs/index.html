@@ -31,7 +31,6 @@
   </script>
 
 </head>
-
 <body>
 
   <br>
@@ -39,26 +38,36 @@
     <h1 style="text-align: center;">DC AirBnB Debate</h1>
   </p>
   <p style="text-align: center;">Under Daily Active Development</p>
-
+  <!-- <div class="row"> -->
+    <!-- <div class="col-md-12"> -->
+      <!-- <div class="container"> -->
+        <!-- <div class="row"> -->
+          <!-- <div class="col-md-12"> -->
+            <!-- <div class="jumbotron"> -->
+              <!-- <h2>Project Description</h2> -->
+              <!-- <p> -->
+                <!-- This project is a data visualization project that aims to provide insights into the AirBnB market in Washington, D.C. The project uses data from Inside AirBnB and the DC Open Data Portal to create visualizations that help users understand the AirBnB market in the city. The project includes a map that shows the locations of AirBnB listings in the city, as well as charts that show the distribution of listings by neighborhood and the average price of listings in each neighborhood. The project also includes a dashboard that allows users to explore the data and compare different neighborhoods in the city. -->
+              <!-- </p> -->
+            <!-- </div> -->
+          <!-- </div> -->
+        <!-- </div> -->
+      <!-- </div> -->
+    <!-- </div> -->
+  <!-- </div> -->
+  <p style="text-align: center;"><strong>Welcome to the map</strong><br>Choose a neighborhood for a closer look<br>Click on an AirBnB to investigate a listing</p>
   <br>
-
-<!-- Map -->
-<div class="row">
-  <div class="col-md-12">
-    <div class="map-container">
-      <div id="map-id"></div>
+  <div id="neighborhoods-control" class="info legend" style="text-align: center;"></div>
+  <br><br>
+  <!-- Map -->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="map-container">
+        <div id="map-id"></div>
+      </div>
     </div>
   </div>
-</div>
-<br> <br>
-
-
-  <!-- DELETE EVENTUALLY -->
-<!-- biodiversity belly button detritus -->
-  <!-- <script src="https://d3js.org/d3.v7.min.js"></script> -->
-  <!-- <script src="https://cdn.plot.ly/plotly-latest.min.js"></script> -->
-  <!-- DELETE EVENTUALLY -->
-
+  <br><br>
+  <div id="info-box" class="info legend" style="text-align: center;"></div>
 
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <!-- Leaflet JS -->
@@ -86,12 +95,12 @@
     if (isGitHubPages || (isLocalhost && !window.location.hostname.includes(':5000'))) {
       // GitHub Pages or localhost for GitHub Pages
       loadScript('./static/js/map.js');
-      // loadScript('./static/js/plots.js');
+      loadScript('./static/js/plots.js');
       loadScript('./static/js/app.js');
     } else {
       // Flask or localhost for Flask
       loadScript('/static/js/map.js');
-      // loadScript('/static/js/plots.js');
+      loadScript('/static/js/plots.js');
       loadScript('/static/js/app.js'); 
     }
   </script>

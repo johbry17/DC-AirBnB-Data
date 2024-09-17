@@ -9,7 +9,7 @@ if (isGitPages || (isHostedLocally && !isFlaskApp)) {
   d3.csv("./static/resources/airbnb_data.csv")
     .then((data) => {
       // listingsData = data;
-      [dcMeanPrice, dcMedianPrice, dcMeanRating, dcMedianRating] = calculateDCStats(data);
+    //   [dcMeanPrice, dcMedianPrice, dcMeanRating, dcMedianRating] = calculateDCStats(data);
       fetch("./static/resources/neighbourhoods.geojson")
         .then((response) => response.json())
         .then((neighborhoodData) => {
@@ -22,7 +22,7 @@ if (isGitPages || (isHostedLocally && !isFlaskApp)) {
     .then((response) => response.json())
     .then((data) => {
       // listingsData = data;
-      [dcMeanPrice, dcMedianPrice, dcMeanRating, dcMedianRating] = calculateDCStats(data);
+    //   [dcMeanPrice, dcMedianPrice, dcMeanRating, dcMedianRating] = calculateDCStats(data);
       fetch("/static/resources/neighbourhoods.geojson")
         .then((response) => response.json())
         .then((neighborhoodData) => {

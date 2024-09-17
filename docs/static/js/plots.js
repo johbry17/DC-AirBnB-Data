@@ -1,6 +1,6 @@
 // infoBox for all of DC
 function dcInfoBox(listingsData, neighborhoodsLayer) {
-    let infoBoxElement = document.querySelector(".neighborhood-info");
+    let infoBoxElement = document.querySelector("#info-box");
   
     infoBoxElement.innerHTML = "";
     
@@ -24,7 +24,7 @@ function dcInfoBox(listingsData, neighborhoodsLayer) {
     );
     
     // Find the info box element
-    let infoBoxElement = document.querySelector(".neighborhood-info");
+    let infoBoxElement = document.querySelector("#info-box");
   
     // Update the content of the info box for neighborhoods
     if (infoBoxElement) {
@@ -108,7 +108,7 @@ function dcInfoBox(listingsData, neighborhoodsLayer) {
     dcMeanRating = nonNullRatings.reduce((sum, listing) => sum + parseFloat(listing.review_scores_rating), 0) / nonNullRatings.length;
     dcMedianRating = calculateMedian(nonNullRatings, (listing) => parseFloat(listing.review_scores_rating));
     
-    return [dcMeanPrice, dcMedianPrice, dcMeanRating, dcMedianRating];
+    // return [dcMeanPrice, dcMedianPrice, dcMeanRating, dcMedianRating];
   };
   
   // calculates the median of an array of numbers
@@ -118,7 +118,7 @@ function dcInfoBox(listingsData, neighborhoodsLayer) {
     values.sort((a, b) => a-b);
   
     // select midpoint - Math.floor to round down to an int, to get the index of the array
-    mid = Math.floor(values.length /2);
+    mid = Math.floor(values.length / 2);
     if (values.length % 2 === 0) {
       return (values[mid - 1] + values[mid]) / 2;
     } else {

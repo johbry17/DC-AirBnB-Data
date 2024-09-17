@@ -27,19 +27,11 @@ function createMap(airbnbs, neighborhoods, listingsData) {
   // call function to manage user interaction with neighborhoods
   neighborhoodsControl(map, neighborhoods, neighborhoodsLayer, listingsData);
 
-  // create info box
-  let infoBox = L.control({ position: "bottomleft" });
-
-  infoBox.onAdd = function (map) {
-    let div = L.DomUtil.create("div", "info legend neighborhood-info");
-    div.innerHTML =`<strong>Welcome to the map</strong><br>
-      Choose a neighborhood for a closer look<br>
-      Click on an AirBnB to investigate a listing<br>
-      Return here to see summary stats for all of DC`;
-    return div;
-  };
-
-  infoBox.addTo(map);
+  // call dcInfoBox to display stats for all of D.C. initially
+  calculateDCStats(listingsData); // Ensure DC stats are calculated first
+  dcInfoBox(listingsData, neighborhoodsLayer);
+  
+  updateInfoBox(listingsData, neighborhoodsLayer);
 
   // resize map to current container size
   map.invalidateSize();
@@ -123,22 +115,18 @@ function createPopupContent(listing) {
 
 // create dropdown for neighborhood interaction
 function neighborhoodsControl(map, neighborhoodsInfo, neighborhoodsLayer, listingsData) {
-  //  initialize and position neighborhoodControl
-  let neighborhoodControl = L.control({ position: "topright" });
+  // get dropdown element
+  const controlDiv = document.getElementById("neighborhoods-control");
 
   // create box and text for dropdown
-  neighborhoodControl.onAdd = function (map) {
-    let div = L.DomUtil.create("div", "info legend neighborhood-control");
-    div.innerHTML =
-      '<div class="control-header">' +
-      '<label for="neighborhoods-dropdown">Select a Neighborhood</label>' +
-      "<br>" +
-      '<select id="neighborhoods-dropdown"></select>';
-    return div;
-  };
+  controlDiv.innerHTML = `
+    <div class="control-header">
+      <label for="neighborhoods-dropdown">Select a Neighborhood</label>
+      <br>
+      <select id="neighborhoods-dropdown"></select>
+    </div>`;
 
-  neighborhoodControl.addTo(map);
-
+  // get and populate dropdown menu
   const dropdown = document.getElementById("neighborhoods-dropdown");
 
   // set first dropdown choice for initial map view
