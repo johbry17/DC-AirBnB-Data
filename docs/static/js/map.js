@@ -1,7 +1,7 @@
 // define globals
-let map; // main map
-let neighborhoodsLayer; // polygons of neighborhoods
-let listingsData; // to reload marker popups in neighborhood view
+// let map; // main map
+// let neighborhoodsLayer; // polygons of neighborhoods
+// let listingsData; // to reload marker popups in neighborhood view
 
 // check if running on GitHub Pages or Flask app
 const isGitPages = window.location.hostname.includes('github.io');
@@ -13,12 +13,12 @@ if (isGitPages || (isHostedLocally && !isFlaskApp)) {
   // for GitHub Pages or local testing of GitHub Pages version
   d3.csv("./static/resources/airbnb_data.csv")
     .then((data) => {
-      listingsData = data;
+      // listingsData = data;
       [dcMeanPrice, dcMedianPrice, dcMeanRating, dcMedianRating] = calculateDCStats(data);
       fetch("./static/resources/neighbourhoods.geojson")
         .then((response) => response.json())
         .then((neighborhoodData) => {
-          createMap(createMarkers(data), neighborhoodData);
+          createMap(createMarkers(data), neighborhoodData, data);
         });
     });
 } else {
@@ -26,20 +26,20 @@ if (isGitPages || (isHostedLocally && !isFlaskApp)) {
   fetch("/api/listings")
     .then((response) => response.json())
     .then((data) => {
-      listingsData = data;
+      // listingsData = data;
       [dcMeanPrice, dcMedianPrice, dcMeanRating, dcMedianRating] = calculateDCStats(data);
       fetch("/static/resources/neighbourhoods.geojson")
         .then((response) => response.json())
         .then((neighborhoodData) => {
-          createMap(createMarkers(data), neighborhoodData);
+          createMap(createMarkers(data), neighborhoodData, data);
         });
     });
 }
 
 // main map creation
-function createMap(airbnbs, neighborhoods) {
+function createMap(airbnbs, neighborhoods, listingsData) {
   // initialize map
-  map = L.map("map-id", {
+  const map = L.map("map-id", {
     center: [38.89511, -77.03637],
     zoom: 12,
   });
@@ -51,7 +51,7 @@ function createMap(airbnbs, neighborhoods) {
   }).addTo(map);
 
   // initialize neighborhoodLayer
-  neighborhoodsLayer = L.geoJSON(neighborhoods, {
+  const neighborhoodsLayer = L.geoJSON(neighborhoods, {
     style: {
       // opacity: 0,
       color: "blue",
@@ -63,7 +63,7 @@ function createMap(airbnbs, neighborhoods) {
   airbnbs.addTo(map);
 
   // call function to manage user interaction with neighborhoods
-  neighborhoodsControl(map, neighborhoods);
+  neighborhoodsControl(map, neighborhoods, neighborhoodsLayer, listingsData);
 
   // create info box
   let infoBox = L.control({ position: "bottomleft" });
@@ -160,7 +160,7 @@ function createPopupContent(listing) {
 }
 
 // create dropdown for neighborhood interaction
-function neighborhoodsControl(map, neighborhoodsInfo) {
+function neighborhoodsControl(map, neighborhoodsInfo, neighborhoodsLayer, listingsData) {
   //  initialize and position neighborhoodControl
   let neighborhoodControl = L.control({ position: "topright" });
 
@@ -177,7 +177,7 @@ function neighborhoodsControl(map, neighborhoodsInfo) {
 
   neighborhoodControl.addTo(map);
 
-  dropdown = document.getElementById("neighborhoods-dropdown");
+  const dropdown = document.getElementById("neighborhoods-dropdown");
 
   // set first dropdown choice for initial map view
   let allDC = document.createElement("option");
@@ -196,22 +196,22 @@ function neighborhoodsControl(map, neighborhoodsInfo) {
 
   // changes view to user's selection
   dropdown.addEventListener("change", function () {
-    selectedNeighborhood = this.value;
+    const selectedNeighborhood = this.value;
 
     if (selectedNeighborhood === "top") {
       map.setView([38.89511, -77.03637], 12);
       // neighborhoodsLayer is on when zoomed in
       map.removeLayer(neighborhoodsLayer);
       // update infoBox for all DC
-      dcInfoBox();
+      dcInfoBox(listingsData, neighborhoodsLayer);
     } else {
-      zoomIn(selectedNeighborhood);
+      zoomIn(map, neighborhoodsLayer, selectedNeighborhood, listingsData);
     }
   });
 }
 
 // handles neighborhood view
-function zoomIn(neighborhoodDesignation) {
+function zoomIn(map, neighborhoodsLayer, neighborhoodDesignation, listingsData) {
   // initialize boundaries first, or it won't zoom
   let boundaries;
 
@@ -243,11 +243,11 @@ function zoomIn(neighborhoodDesignation) {
   newMarkers = createMarkers(listingsData);
   newMarkers.addTo(map);
   
-  updateInfoBox(neighborhoodDesignation);
+  updateInfoBox(listingsData, neighborhoodDesignation);
 }
 
 // infoBox for all of DC
-function dcInfoBox() {
+function dcInfoBox(listingsData, neighborhoodsLayer) {
   let infoBoxElement = document.querySelector(".neighborhood-info");
 
   infoBoxElement.innerHTML = "";
@@ -264,7 +264,7 @@ function dcInfoBox() {
 }
 
 // changes infoBox summary for neighborhoods
-function updateInfoBox(neighborhoodDesignation) {
+function updateInfoBox(listingsData, neighborhoodDesignation) {
 
   // filter to selected neighborhood
   let neighborhoodListings = listingsData.filter(
@@ -346,7 +346,7 @@ function infoBoxChart(neighborhoodDesignation, chartType) {
 }
 
 
-function calculateDCStats(data) {
+function calculateDCStats(listingsData) {
   // prices
   dcMeanPrice = listingsData.reduce((sum, listing) => sum + parseFloat(listing.price), 0) / listingsData.length;
   dcMedianPrice = calculateMedian(listingsData, (listing) => parseFloat(listing.price));
