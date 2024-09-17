@@ -55,8 +55,8 @@
 
   <!-- DELETE EVENTUALLY -->
 <!-- biodiversity belly button detritus -->
-  <script src="https://d3js.org/d3.v7.min.js"></script>
-  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <!-- <script src="https://d3js.org/d3.v7.min.js"></script> -->
+  <!-- <script src="https://cdn.plot.ly/plotly-latest.min.js"></script> -->
   <!-- DELETE EVENTUALLY -->
 
 
@@ -67,22 +67,33 @@
   crossorigin=""></script>
   <!-- ESRI plugin for base layers -->
   <script src="https://cdn.jsdelivr.net/npm/esri-leaflet@2.3.3/dist/esri-leaflet.js"></script>
+  <!-- Plotly JS -->
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
   <!-- Chart JS -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
   
   <!-- Conditional JS Loading -->
   <script>
-    const script = document.createElement('script');
-    
-    if (isGitHubPages || (isLocalhost && !window.location.hostname.includes('localhost'))) {
+    // const isGitHubPages = window.location.hostname.includes('github.io');
+    // const isLocalhost = window.location.hostname.includes('127.0.0.1') || window.location.hostname.includes('localhost');
+  
+    function loadScript(src) {
+      const script = document.createElement('script');
+      script.src = src;
+      document.body.appendChild(script);
+    }
+  
+    if (isGitHubPages || (isLocalhost && !window.location.hostname.includes(':5000'))) {
       // GitHub Pages or localhost for GitHub Pages
-      script.src = './static/js/map.js';
+      loadScript('./static/js/map.js');
+      // loadScript('./static/js/plots.js');
+      loadScript('./static/js/app.js');
     } else {
       // Flask or localhost for Flask
-      script.src = '/static/js/map.js';
+      loadScript('/static/js/map.js');
+      // loadScript('/static/js/plots.js');
+      loadScript('/static/js/app.js'); 
     }
-    
-    document.body.appendChild(script);
   </script>
 
 
