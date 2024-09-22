@@ -59,10 +59,10 @@ function updatePriceAndRatingsPlot(plotType, selectedNeighborhood, mean, median,
 
   if (plotType === "price") {
     if (selectedNeighborhood === "Washington, D.C.") {
-      chosenData = [dcMean, dcMedian];
+      chosenData = [dcMean, dcMedian].map(value => value.toLocaleString('en-US', { style: 'currency', currency: 'USD' }));
       xLabels = ["Mean (All of DC)", "Median (All of DC)"];
     } else {
-      chosenData = [mean, median, dcMean, dcMedian];
+      chosenData = [mean, median, dcMean, dcMedian].map(value => value.toLocaleString('en-US', { style: 'currency', currency: 'USD' }));
       xLabels = [
         "Mean (Neighborhood)",
         "Median (Neighborhood)",
@@ -73,10 +73,10 @@ function updatePriceAndRatingsPlot(plotType, selectedNeighborhood, mean, median,
     yTitle = "Price";
   } else if (plotType === "ratings") {
     if (selectedNeighborhood === "Washington, D.C.") {
-      chosenData = [dcMean, dcMedian];
+      chosenData = [dcMean, dcMedian].map(value => value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
       xLabels = ["Mean (All of DC)", "Median (All of DC)"];
     } else {
-      chosenData = [mean, median, dcMean, dcMedian];
+      chosenData = [mean, median, dcMean, dcMedian].map(value => value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
       xLabels = [
         "Mean (Neighborhood)",
         "Median (Neighborhood)",
@@ -91,12 +91,16 @@ function updatePriceAndRatingsPlot(plotType, selectedNeighborhood, mean, median,
     x: xLabels,
     y: chosenData,
     type: "bar",
-    hovertemplate: plotType === "price" ? "%{y:$,.2f}" : "%{y:.2f}",
+    hovertemplate: plotType === "price" ? "%{y:$,.2f}<extra></extra>" : "%{y:.2f} \u2605<extra></extra>",
+    text: plotType === "ratings" ?
+      chosenData.map(value => value + " " + "\u2605") :
+      chosenData,
+    textposition: "auto",
     marker: {
       color:
         selectedNeighborhood === "Washington, D.C."
           ? ["blue", "blue"]
-          : ["orange", "orange", "blue", "blue"],
+          : ["green", "green", "blue", "blue"],
       line: {
         color: "black",
         width: 1,

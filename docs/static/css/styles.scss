@@ -19,8 +19,8 @@ $background-image: url('../images/background.jpg');
     border: $border;
     border-radius: $border-radius;
     padding: $padding;
-    color: white; // Assuming you want white text
-    text-align: center; // Center text
+    color: white;
+    text-align: center;
 }
 
 @mixin responsive-plot($padding, $border-radius) {
