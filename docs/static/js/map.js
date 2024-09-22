@@ -29,8 +29,14 @@ function createMap(airbnbs, neighborhoods, listingsData) {
   updateInfoBox(listingsData, "Washington, D.C.");
   allDCPlots(listingsData);
 
+  // event listeners for map resizing
+  window.addEventListener("resize", resizePlots);
+
   // resize map to current container size
   map.invalidateSize();
+
+  // resize plots
+  resizePlots();
 }
 
 // create dropdown for neighborhood interaction
@@ -45,7 +51,7 @@ function neighborhoodsControl(
   const dropdown = document.createElement("select");
   dropdown.id = "neighborhoods-dropdown";
   controlDiv.innerHTML = `<div class="control-header">
-    <label for="neighborhoods-dropdown" style="color: white;">Select a Neighborhood</label>
+    <label for="neighborhoods-dropdown">Select a Neighborhood</label>
     <br>
     </div>`;
   controlDiv.appendChild(dropdown);

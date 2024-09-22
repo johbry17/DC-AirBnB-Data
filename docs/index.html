@@ -29,7 +29,7 @@
     if (isGitHubPages || (isLocalhost && !window.location.hostname.includes(':5000'))) {
       // GitHub Pages or localhost, for GitHub Pages
       favicon.href = './static/images/favicon.ico';
-      cssLink.href = './static/css/style.css';
+      cssLink.href = './static/css/styles.css';
     } else {
       // Flask or localhost, for Flask
       favicon.href = '/static/images/favicon.ico';
@@ -49,13 +49,14 @@
       <div class="navbar-header">
         <!-- <h2 style="color: white;">Select a Neighborhood</h2> -->
       </div>
-      <div id="neighborhoods-control" class="navbar-right" style="margin-top: 10px; margin-right: 10px;"></div>
+      <div id="neighborhoods-control" class="navbar-center"></div>
     </div>
   </div>
-
-  <div class="col-md-12 jumbotron text-center" style="background-image: url('./static/images/background.jpg'); background-size: cover; background-repeat: no-repeat; background-position: center center">
-    <h1 style="color: white;">DC AirBnB Debate</h1>
-    <p style="color: white;">Under Daily Active Development</p>
+  <div class="container">
+    <div class="col-md-12 jumbotron text-center" style="background-image: url('./static/images/background.jpg'); background-size: cover; background-repeat: no-repeat; background-position: center center">
+      <h1 style="color: white;">DC AirBnB Debate</h1>
+      <p style="color: white;">Under Daily Active Development</p>
+    </div>
   </div>
   <!-- <div class="row"> -->
     <!-- <div class="col-md-12"> -->
@@ -74,7 +75,9 @@
     <!-- </div> -->
   <!-- </div> -->
   <div></div>
-
+  <br>
+  <hr class="custom-hr">
+  <br>
   <!-- Welcome box with background -->
   <div class="welcome-box text-center">
     <strong>Welcome to the map</strong><br>

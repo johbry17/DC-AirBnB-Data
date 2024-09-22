@@ -1,3 +1,27 @@
+//resizePlots();
+function resizePlots() {
+  const plotIds = [
+    "price-plot",
+    "ratings-plot",
+  ]
+
+  plotIds.forEach((id) => {
+    const container = document.getElementById(id);
+    if (container) {
+      const containerWidth = container.clientWidth;
+      const containerHeight = container.clientHeight;
+
+      // Ensure dimensions are valid
+      if (containerWidth > 0 && containerHeight > 0) {
+        Plotly.relayout(container, {
+          width: containerWidth,
+          height: containerHeight,
+        });
+      }
+    }
+  });
+}
+
 // master function to call plots for all of DC
 function allDCPlots(listingsData) {
   plotLocation(listingsData, "Washington, D.C.");

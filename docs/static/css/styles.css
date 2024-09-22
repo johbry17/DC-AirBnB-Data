@@ -1,0 +1,126 @@
+body {
+  padding-top: 60px;
+}
+
+.navbar {
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 10px;
+  text-align: center;
+  border-bottom: 2px solid white;
+}
+
+#neighborhoods-control {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#neighborhoods-dropdown {
+  width: auto;
+  min-width: 200px;
+  max-width: 100%;
+  border-radius: 10px;
+  padding: 5px;
+  box-sizing: border-box;
+  color: #333333;
+  font-size: 1.2em;
+}
+
+#neighborhoods-dropdown option {
+  white-space: nowrap;
+}
+
+.col-md-12.jumbotron {
+  margin-bottom: 10px;
+  margin-top: 60px;
+}
+
+.custom-hr {
+  border: none;
+  height: 20px;
+  background-color: white;
+  margin: 0;
+}
+
+.welcome-box {
+  background-image: url("../images/background.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-color: #f9f9f9;
+  border: #e0e0e0;
+  border-radius: 10px;
+  padding: 10px;
+  color: white;
+  text-align: center;
+  width: 50%;
+  margin: 0 auto;
+}
+
+.leaflet-container.leaflet-touch-drag {
+  -ms-touch-action: pinch-zoom;
+  touch-action: pinch-zoom;
+  width: 100%;
+  height: 100vh;
+}
+
+.map-container {
+  width: 95%;
+  height: 80vh;
+  margin: 0 auto;
+  border-color: #e0e0e0;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.marker-popup {
+  font-size: 16px;
+  border: 2px solid gray;
+  border-radius: 5px;
+}
+
+#info-box {
+  background-image: url("../images/background.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-color: #f9f9f9;
+  border: #e0e0e0;
+  border-radius: 10px;
+  padding: 10px;
+  color: white;
+  text-align: center;
+  width: 95%;
+  margin: 10px auto;
+}
+
+.plot {
+  background-color: #f9f9f9;
+  color: #333333;
+  border: 2px solid #e0e0e0;
+  padding: 0px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  height: 500px;
+  margin-bottom: 10px;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+@media (min-width: 1200px) {
+  .plot {
+    width: 90%;
+  }
+}
+@media (min-width: 768px) {
+  .plot {
+    padding: 0px;
+  }
+}
+
+/*# sourceMappingURL=styles.css.map */

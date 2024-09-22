@@ -33,11 +33,16 @@
   border-radius: 5px;
 }
 
+body {
+  padding-top: 60px;
+}
+
 .navbar {
   background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
   padding: 10px;
   border-radius: 0px; /* Removes border radius */
   text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); /* Adds shadow */
 }
 
 /* neighborhood drop down */
@@ -74,6 +79,7 @@
 
 .col-md-12.jumbotron {
   margin-bottom: 20px;
+  margin-top: 60px;
 }
 
 .welcome-box {
