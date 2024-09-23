@@ -65,12 +65,14 @@ function updatePriceAndRatingsPlot(plotType, selectedNeighborhood, mean, median,
 
   let chosenData, xLabels, yTitle;
 
-  // conditional to set data and labels by plot type for all of DC and maybe neighborhood
+  // conditional to assign data and labels, by plot type, for all of DC and maybe neighborhood
   if (plotType === "price") {
     if (selectedNeighborhood === "Washington, D.C.") {
+      // format data and labels
       chosenData = [dcMean, dcMedian].map(value => value.toLocaleString('en-US', { style: 'currency', currency: 'USD' }));
       xLabels = ["Mean (<b>$</b>)", "Median (<b>$</b>)"];
     } else {
+      // format data and labels
       chosenData = [mean, median, dcMean, dcMedian].map(value => value.toLocaleString('en-US', { style: 'currency', currency: 'USD' }));
       xLabels = [
         "Mean (<b>$</b>) (Neighborhood)",
@@ -82,9 +84,11 @@ function updatePriceAndRatingsPlot(plotType, selectedNeighborhood, mean, median,
     yTitle = "Price";
   } else if (plotType === "ratings") {
     if (selectedNeighborhood === "Washington, D.C.") {
+      // format data and labels
       chosenData = [dcMean, dcMedian].map(value => value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
       xLabels = ["Mean (\u2605)", "Median (\u2605)"];
     } else {
+      // format data and labels
       chosenData = [mean, median, dcMean, dcMedian].map(value => value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
       xLabels = [
         "Mean (\u2605) (Neighborhood)",
@@ -131,15 +135,17 @@ function updatePriceAndRatingsPlot(plotType, selectedNeighborhood, mean, median,
 
 // plot license status and percentage
 function plotLicenseBarChart(data, selectedNeighborhood) {
-  // get container and set data
+  // get container and percentage data, total count for all of DC
   const plotContainer = document.getElementById('license-plot');
   const categorizedDCData = setLicenseStatus(data);
   const licensePercentageDC = getLicensePercentage(categorizedDCData);
+  const totalDCCount = Object.values(licensePercentageDC).reduce((acc, obj) => acc + obj.count, 0);
 
-  let percents, counts, xLabels, title, markerColors;
+  let percents, counts, xLabels, title, markerColors, customdata;
 
   // conditional to set data and labels for all of DC, maybe neighborhood
   if (selectedNeighborhood === "Washington, D.C.") {
+    // assign variables
     percents = [
       licensePercentageDC['Licensed'].percent,
       licensePercentageDC['Exempt'].percent,
@@ -153,11 +159,15 @@ function plotLicenseBarChart(data, selectedNeighborhood) {
     xLabels = ['Licensed', 'Exempt', 'Unlicensed'];
     title = `<b>License Status</b> for Washington, D.C.<br><i style="font-size: .8em;">Unlicensed highlighted in color</i>`;
     markerColors = ['darkgray', 'lightgray', 'blue'];
+    customdata = counts.map(count => ({ count: count.toLocaleString(), total: totalDCCount.toLocaleString() }));
   } else {
+    // get perecentage data, total count for neighborhood
     const neighborhoodData = filterListingsByNeighborhood(data, selectedNeighborhood);
     const categorizedNeighborhoodData = setLicenseStatus(neighborhoodData);
     const licensePercentageNeighborhood = getLicensePercentage(categorizedNeighborhoodData);
+    totalNeighborhoodCount = Object.values(licensePercentageNeighborhood).reduce((acc, obj) => acc + obj.count, 0);
 
+    // assign variables
     percents = [
       licensePercentageNeighborhood['Licensed'].percent,
       licensePercentageNeighborhood['Exempt'].percent,
@@ -184,6 +194,10 @@ function plotLicenseBarChart(data, selectedNeighborhood) {
     ];
     title = `Neighborhood <b>vs.</b> Washington, D.C.<br><b>License Status</b> Comparison<br><i style="font-size: .8em;">Unlicensed highlighted in color</i>`;
     markerColors = ['darkgray', 'lightgray', 'green', 'darkgray', 'lightgray', 'blue'];
+    customdata = [
+      ...counts.slice(0, 3).map(count => ({ count: count.toLocaleString(), total: totalNeighborhoodCount.toLocaleString() })),
+      ...counts.slice(3).map(count => ({ count: count.toLocaleString(), total: totalDCCount.toLocaleString() })),
+    ];
   }
 
   const trace = {
@@ -192,9 +206,8 @@ function plotLicenseBarChart(data, selectedNeighborhood) {
     type: 'bar',
     text: percents.map(percent => percent + "%"),
     textposition: 'auto',
-    hovertemplate: counts.map((count, index) => 
-      `Percent: <b>${percents[index]}%</b><br>Count: <b>${count.toLocaleString()}</b><br><extra></extra>`
-    ),
+    hovertemplate: `Percent: <b>%{y}%</b><br>Count: <b>%{customdata.count}</b> of %{customdata.total}<br><extra></extra>`,
+    customdata: customdata,
     marker: {
       color: markerColors,
       line: { color: 'black', width: 1 },
@@ -247,30 +260,38 @@ function plotPropertyType(data, selectedNeighborhood) {
   const plotContainer = document.getElementById('property-type-plot');
   const neighborhoodData = filterListingsByNeighborhood(data, selectedNeighborhood);
 
-  // run calculations for property type percentage
+  // run calculations for property type percentage, total count for all of DC
   const dcPropertyTypes = getPropertyTypePercentage(data);
   const neighborhoodPropertyTypes = getPropertyTypePercentage(neighborhoodData);
+  const totalDCCount = Object.values(dcPropertyTypes).reduce((acc, obj) => acc + obj.count, 0);
 
   // declare variables
-  let percents, counts, xLabels, title, markerColors;
+  let percents, counts, xLabels, title, markerColors, customdata;
 
   // conditional to set data and labels for all of DC, maybe neighborhood
   if (selectedNeighborhood === "Washington, D.C.") {
+    // combine DC data
     let combinedData = Object.keys(dcPropertyTypes).map(key => ({
       label: key,
       percent: dcPropertyTypes[key].percent,
       count: dcPropertyTypes[key].count
     }));
 
-    // Sort by descending percentage
+    // sort by descending percentage
     combinedData.sort((a, b) => b.percent - a.percent);
 
+    // assign variables
     percents = combinedData.map(item => item.percent);
     counts = combinedData.map(item => item.count);
     xLabels = combinedData.map(item => item.label);
     title = `<b>Property Type</b> for Washington, D.C.<br><i style="font-size: .8em;">Percent of Available AirBnB's</i>`;
     markerColors = combinedData.map(item => 'blue');
+    customdata = counts.map(count => ({ count: count.toLocaleString(), total: totalDCCount.toLocaleString() }));
   } else {
+    // get total count for neighborhood
+    const totalNeighborhoodCount = Object.values(neighborhoodPropertyTypes).reduce((acc, obj) => acc + obj.count, 0);
+
+    // combine neighborhood and DC data
     let combinedData = [
       ...Object.keys(neighborhoodPropertyTypes).map(key => ({
         label: `${key} (Neighborhood)`,
@@ -284,14 +305,19 @@ function plotPropertyType(data, selectedNeighborhood) {
       }))
     ];
 
-    // Sort by descending percentage
+    // sort by descending percentage
     combinedData.sort((a, b) => b.percent - a.percent);
 
+    // assign variables
     percents = combinedData.map(item => item.percent);
     counts = combinedData.map(item => item.count);
     xLabels = combinedData.map(item => item.label);
     markerColors = combinedData.map(item => item.label.includes("Neighborhood") ? 'green' : 'blue');
     title = `Neighborhood <b>vs.</b> Washington, D.C.<br><b>Property Type</b> Comparison<br><i style="font-size: .8em;">Percent of Available AirBnB's in Area</i>`;
+    customdata = combinedData.map(item => ({
+      count: item.count.toLocaleString(),
+      total: item.label.includes("Neighborhood") ? totalNeighborhoodCount.toLocaleString() : totalDCCount.toLocaleString()
+    }));
   }
 
   const trace = {
@@ -300,8 +326,8 @@ function plotPropertyType(data, selectedNeighborhood) {
     type: 'bar',
     text: percents.map(percent => percent + "%"),
     textposition: 'auto',
-    hovertemplate: 'Percent: <b>%{y}%</b><br>Count: <b>%{customdata}</b><br><extra></extra>',
-    customdata: counts.map(count => count.toLocaleString()),
+    hovertemplate: 'Percent: <b>%{y}%</b><br>Count: <b>%{customdata.count}</b> of %{customdata.total}<br><extra></extra>',
+    customdata: customdata,
     marker: {
       color: markerColors,
       line: { color: 'black', width: 1 },
