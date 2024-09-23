@@ -159,8 +159,8 @@ function plotLicenseBarChart(data, selectedNeighborhood) {
       licensePercentageDC['Unlicensed'].count,
     ];
     xLabels = ['Licensed', 'Exempt', 'Unlicensed'];
-    title = `<b>License Status</b> for Washington, D.C.<br><i style="font-size: .8em;">Unlicensed highlighted in color</i>`;
-    markerColors = ['darkgray', 'lightgray', 'blue'];
+    title = `<b>License Status</b> for Washington, D.C.<br><i style="font-size: .8em;">Licensed highlighted in color</i>`;
+    markerColors = ['blue', 'lightblue', 'darkgray'];
     customdata = counts.map(count => ({ count: count.toLocaleString(), total: totalDCCount.toLocaleString() }));
   } else {
     // get perecentage data, total count for neighborhood
@@ -194,8 +194,8 @@ function plotLicenseBarChart(data, selectedNeighborhood) {
       'Exempt (All of DC)',
       'Unlicensed (All of DC)',
     ];
-    title = `Neighborhood <b>vs.</b> Washington, D.C.<br><b>License Status</b> Comparison<br><i style="font-size: .8em;">Unlicensed highlighted in color</i>`;
-    markerColors = ['darkgray', 'lightgray', 'green', 'darkgray', 'lightgray', 'blue'];
+    title = `Neighborhood <b>vs.</b> Washington, D.C.<br><b>License Status</b> Comparison<br><i style="font-size: .8em;">Licensed highlighted in color</i>`;
+    markerColors = ['green', 'lightgreen', 'darkgray', 'blue', 'lightblue', 'darkgray'];
     customdata = [
       ...counts.slice(0, 3).map(count => ({ count: count.toLocaleString(), total: totalNeighborhoodCount.toLocaleString() })),
       ...counts.slice(3).map(count => ({ count: count.toLocaleString(), total: totalDCCount.toLocaleString() })),
@@ -236,6 +236,14 @@ function plotLicenseBarChart(data, selectedNeighborhood) {
       type: 'bar',
       marker: { color: 'blue' },
       name: 'DC',
+      showlegend: showLegend,
+    },
+    {
+      x: [null],
+      y: [null],
+      type: 'bar',
+      marker: { color: 'darkgray' },
+      name: 'Unlicensed',
       showlegend: showLegend,
     }
   ];
@@ -379,3 +387,4 @@ function plotPropertyType(data, selectedNeighborhood) {
 
   Plotly.newPlot(plotContainer, [trace, ...legendTraces], layout);
 }
+
