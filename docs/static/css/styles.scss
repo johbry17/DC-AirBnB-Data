@@ -24,7 +24,6 @@ $background-image: url('../images/background.jpg');
 }
 
 @mixin responsive-plot($padding, $border-radius) {
-    background-color: $background-color;
     color: $text-color;
     border: 2px solid $border-color;
     padding: $padding;
@@ -142,8 +141,8 @@ body {
 
 // Plots
 .plot {
-    @include responsive-plot(0px, $border-radius);
     margin-bottom: 10px;
     overflow-x: hidden; // prevent horizontal overflow
     box-sizing: border-box; // Include padding in width/height calculations
+    @include responsive-plot(0px, $border-radius);
 }

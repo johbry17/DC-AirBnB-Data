@@ -203,6 +203,7 @@ SELECT
     lc.listing_url,
     l.price,
     lc.property_type,
+    lc.room_type,
     l.accommodates,
     lr.review_scores_rating,
     h.host_name,

@@ -34,28 +34,28 @@ function updateInfoBox(listingsData, selectedNeighborhood) {
   const isDC = selectedNeighborhood === "Washington, D.C.";
   const statsHTML = isDC
     ? `
-    <strong>Washington, D.C.</strong><br>
+    <u><strong>Washington, D.C.</strong></u><br>
     Number of AirBnB's: ${listingsData.length}<br>
     Mean Price: $${stats.meanPrice.toFixed(2)}<br>
     Median Price: $${stats.medianPrice.toFixed(2)}<br>
-    Mean Rating: ${stats.meanRating.toFixed(2)}<br>
-    Median Rating: ${stats.medianRating.toFixed(2)}<br>
+    Mean Rating: ${stats.meanRating.toFixed(2)} \u2605<br>
+    Median Rating: ${stats.medianRating.toFixed(2)} \u2605<br>
     `
     : `
     <strong>${selectedNeighborhood}</strong><br>
     Number of AirBnB's in Neighborhood: ${filteredListings.length}<br>
     <br>
-    <strong>Neighborhood Stats:</strong><br>
+    <u><strong>Neighborhood Stats:</strong></u><br>
     Mean Price: $${neighborhoodStats.meanPrice.toFixed(2)}<br>
     Median Price: $${neighborhoodStats.medianPrice.toFixed(2)}<br>
-    Mean Rating: ${neighborhoodStats.meanRating.toFixed(2)}<br>
-    Median Rating: ${neighborhoodStats.medianRating.toFixed(2)}<br>
+    Mean Rating: ${neighborhoodStats.meanRating.toFixed(2)} \u2605<br>
+    Median Rating: ${neighborhoodStats.medianRating.toFixed(2)} \u2605<br>
     <br>
-    <strong>Washington, D.C. (Comparison):</strong><br>
+    <u><strong>Washington, D.C. (Comparison):</strong></u><br>
     Mean Price: $${stats.meanPrice.toFixed(2)}<br>
     Median Price: $${stats.medianPrice.toFixed(2)}<br>
-    Mean Rating: ${stats.meanRating.toFixed(2)}<br>
-    Median Rating: ${stats.medianRating.toFixed(2)}
+    Mean Rating: ${stats.meanRating.toFixed(2)} \u2605<br>
+    Median Rating: ${stats.medianRating.toFixed(2)} \u2605
     `;
 
   // update infoBox
@@ -68,35 +68,3 @@ function filterListingsByNeighborhood(listingsData, selectedNeighborhood) {
     (listing) => listing.neighbourhood === selectedNeighborhood
   );
 }
-
-// // calculate stats for data, filter out NaN values
-// function calculateStats(data) {
-//   const prices = data
-//     .map((listing) => parseFloat(listing.price))
-//     .filter((price) => !isNaN(price));
-//   const ratings = data
-//     .filter((listing) => listing.review_scores_rating !== null)
-//     .map((listing) => parseFloat(listing.review_scores_rating))
-//     .filter((rating) => !isNaN(rating));
-
-//   return {
-//     meanPrice: calculateMean(prices),
-//     medianPrice: calculateMedian(prices),
-//     meanRating: calculateMean(ratings),
-//     medianRating: calculateMedian(ratings),
-//   };
-// }
-
-// // calculate mean
-// function calculateMean(data) {
-//   return data.reduce((sum, value) => sum + value, 0) / data.length;
-// }
-
-// // calculate median
-// function calculateMedian(data) {
-//   const sortedData = data.sort((a, b) => a - b);
-//   const mid = Math.floor(sortedData.length / 2);
-//   return sortedData.length % 2 === 0
-//     ? (sortedData[mid - 1] + sortedData[mid]) / 2
-//     : sortedData[mid];
-// }

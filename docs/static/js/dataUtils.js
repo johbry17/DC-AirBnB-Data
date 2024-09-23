@@ -30,7 +30,7 @@ function calculateMedian(data) {
         : sortedData[mid];
 }
 
-// set license status
+// label each license status
 function setLicenseStatus(data) {
     return data.map(item => {
         let license = item.license ? item.license.split(':')[0].trim() : 'No License';
@@ -46,6 +46,7 @@ function setLicenseStatus(data) {
     });
 }
 
+// aggregate by category, get percent of total for each license category
 function getLicensePercentage(data) {
     let total = data.length;
     let distribution = {
@@ -54,11 +55,35 @@ function getLicensePercentage(data) {
         Unlicensed: 0
     };
 
+    // aggregate each category
     data.forEach(item => {
         distribution[item.licenseCategory]++;
     });
 
-    // Add percentage to each category
+    // add percentage to each category
+    let percentageDistribution = {};
+    for (let key in distribution) {
+        percentageDistribution[key] = {
+            count: distribution[key],
+            percent: ((distribution[key] / total) * 100).toFixed(1)
+        };
+    }
+
+    return percentageDistribution;
+}
+
+// calculate total and percentage for each room_type
+function getPropertyTypePercentage(data) {
+    let total = data.length;
+    let distribution = {};
+
+    // count each room_type
+    data.forEach(item => {
+        let roomType = item.room_type;
+        distribution[roomType] = distribution[roomType] ? distribution[roomType] + 1 : 1;
+    });
+
+    // add percentage to each room_type
     let percentageDistribution = {};
     for (let key in distribution) {
         percentageDistribution[key] = {
