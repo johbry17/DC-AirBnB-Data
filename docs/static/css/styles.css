@@ -9,15 +9,19 @@ body {
   border-bottom: 2px solid white;
 }
 
+h2 i {
+  padding: 5px; /* Adjust as needed */
+}
+
 #neighborhoods-control {
   padding: 10px;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
+  flex-direction: column;
 }
 
 #neighborhoods-dropdown {
-  width: auto;
   min-width: 200px;
   max-width: 100%;
   border-radius: 10px;
@@ -32,30 +36,53 @@ body {
 }
 
 .col-md-12.jumbotron {
-  margin-bottom: 10px;
-  margin-top: 60px;
+  margin: 60px 0;
+  color: white;
 }
 
 .custom-hr {
   border: none;
-  height: 20px;
   background-color: white;
   margin: 0;
 }
 
+.stats-icons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 60px;
+  text-align: center;
+  margin: 0 auto;
+}
+
 .welcome-box {
-  background-image: url("../images/background.jpg");
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center center;
   background-color: #f9f9f9;
-  border: #e0e0e0;
+  border: 2px solid #e0e0e0;
   border-radius: 10px;
   padding: 10px;
   color: white;
   text-align: center;
   width: 50%;
   margin: 0 auto;
+  background-image: url("../images/background.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+#info-box {
+  background-color: #f9f9f9;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 10px;
+  color: white;
+  text-align: center;
+  width: 95%;
+  margin: 10px auto;
+  background-image: url("../images/background.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
 }
 
 .leaflet-container.leaflet-touch-drag {
@@ -80,21 +107,6 @@ body {
   font-size: 16px;
   border: 2px solid gray;
   border-radius: 5px;
-}
-
-#info-box {
-  background-image: url("../images/background.jpg");
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-color: #f9f9f9;
-  border: #e0e0e0;
-  border-radius: 10px;
-  padding: 10px;
-  color: white;
-  text-align: center;
-  width: 95%;
-  margin: 10px auto;
 }
 
 .plot {

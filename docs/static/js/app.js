@@ -34,8 +34,10 @@ function updateInfoBox(listingsData, selectedNeighborhood) {
   const isDC = selectedNeighborhood === "Washington, D.C.";
   const statsHTML = isDC
     ? `
+    Number of AirBnB's in all of DC: ${listingsData.length}<br>
+    <i class="fas fa-info-circle"></i>
+    <br>
     <u><strong>Washington, D.C.</strong></u><br>
-    Number of AirBnB's: ${listingsData.length}<br>
     Mean Price: $${stats.meanPrice.toFixed(2)}<br>
     Median Price: $${stats.medianPrice.toFixed(2)}<br>
     Mean Rating: ${stats.meanRating.toFixed(2)} \u2605<br>
@@ -44,14 +46,18 @@ function updateInfoBox(listingsData, selectedNeighborhood) {
     : `
     <strong>${selectedNeighborhood}</strong><br>
     Number of AirBnB's in Neighborhood: ${filteredListings.length}<br>
+    <i class="fas fa-info-circle"></i>
     <br>
     <u><strong>Neighborhood Stats:</strong></u><br>
     Mean Price: $${neighborhoodStats.meanPrice.toFixed(2)}<br>
     Median Price: $${neighborhoodStats.medianPrice.toFixed(2)}<br>
     Mean Rating: ${neighborhoodStats.meanRating.toFixed(2)} \u2605<br>
-    Median Rating: ${neighborhoodStats.medianRating.toFixed(2)} \u2605<br>
-    <br>
-    <u><strong>Washington, D.C. (Comparison):</strong></u><br>
+    Median Rating: ${neighborhoodStats.medianRating.toFixed(2)} \u2605<br>   
+    <div class="stats-icons">
+        <i class="fas fa-dollar-sign"></i>
+        <i class="fas fa-star"></i>
+    </div>
+    <u><strong>Washington, D.C. (for Comparison):</strong></u><br>
     Mean Price: $${stats.meanPrice.toFixed(2)}<br>
     Median Price: $${stats.medianPrice.toFixed(2)}<br>
     Mean Rating: ${stats.meanRating.toFixed(2)} \u2605<br>

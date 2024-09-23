@@ -7,20 +7,26 @@ $border-radius: 10px;
 $padding: 10px;
 $background-image: url('../images/background.jpg');
 
-// Mixins
+// mixins
 @mixin flex-center {
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-@mixin box-styling($bg-color, $border, $border-radius, $padding) {
-    background-color: $bg-color;
-    border: $border;
+@mixin box-styling ($width: 100%, $margin: 0 auto) {
+    background-color: $background-color;
+    border: 2px solid $border-color;
     border-radius: $border-radius;
     padding: $padding;
     color: white;
     text-align: center;
+    width: $width;
+    margin: $margin;
+    background-image: $background-image;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
 }
 
 @mixin responsive-plot($padding, $border-radius) {
@@ -30,13 +36,13 @@ $background-image: url('../images/background.jpg');
     border-radius: $border-radius;
     box-shadow: $box-shadow;
 
-    // Responsive sizing
+    // responsive sizing
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
-    height: 500px; // Fixed height
+    height: 500px; // fixed height, or it collapses upon itself
 
-    // Media queries
+    // media queries
     @media (min-width: 1200px) {
         width: 90%;
     }
@@ -46,6 +52,7 @@ $background-image: url('../images/background.jpg');
     }
 }
 
+// general styles
 body {
     padding-top: 60px;
 }
@@ -57,16 +64,18 @@ body {
     border-bottom: 2px solid white;
 }
 
-// Neighborhood drop down
+h2 i {
+    padding: 5px; /* Adjust as needed */
+}
+
+// neighborhood drop down
 #neighborhoods-control {
     padding: $padding;
-    display: flex;
+    @include flex-center;
     flex-direction: column;
-    align-items: center;
 }
 
 #neighborhoods-dropdown {
-    width: auto;
     min-width: 200px;
     max-width: 100%;
     border-radius: $border-radius;
@@ -80,26 +89,35 @@ body {
     white-space: nowrap;
 }
 
+// misc. styles
 .col-md-12.jumbotron {
-    margin-bottom: 10px;
-    margin-top: 60px;
+    margin: 60px 0;
+    color: white;
 }
 
 .custom-hr {
     border: none;
-    height: 20px;
+    // height: 20px;
     background-color: white;
     margin: 0;
 }
 
-.welcome-box {
-    background-image: $background-image;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center center;
-    @include box-styling($background-color, $border-color, $border-radius, $padding);
-    width: 50%;
+.stats-icons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 60px;
+    text-align: center;
     margin: 0 auto;
+}
+
+// box styles
+.welcome-box {
+    @include box-styling (50%, 0 auto);
+}
+
+#info-box {
+    @include box-styling (95%, 10px auto);
 }
 
 // Leaflet tile bug fix
@@ -110,7 +128,7 @@ body {
     height: 100vh;
 }
 
-// Map container
+// map container
 .map-container {
     width: 95%;
     height: 80vh;
@@ -122,24 +140,14 @@ body {
     overflow: hidden;
 }
 
-// Marker CSS
+// marker CSS
 .marker-popup {
     font-size: 16px;
     border: 2px solid gray;
     border-radius: 5px;
 }
 
-#info-box {
-    background-image: $background-image;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center center;
-    @include box-styling($background-color, $border-color, $border-radius, $padding);
-    width: 95%; // Adjust as needed
-    margin: 10px auto; // Center with some margin
-}
-
-// Plots
+// plots
 .plot {
     margin-bottom: 10px;
     overflow-x: hidden; // prevent horizontal overflow
