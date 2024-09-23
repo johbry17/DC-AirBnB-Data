@@ -63,17 +63,19 @@ function updatePriceAndRatingsPlot(plotType, selectedNeighborhood, mean, median,
   // get container
   let plotContainer = document.querySelector(`#${plotType}-plot`);
 
-  let chosenData, xLabels, yTitle;
+  let chosenData, xLabels, yTitle, hoverText;
 
   // conditional to assign data and labels, by plot type, for all of DC and maybe neighborhood
   if (plotType === "price") {
     if (selectedNeighborhood === "Washington, D.C.") {
       // format data and labels
-      chosenData = [dcMean, dcMedian].map(value => value.toLocaleString('en-US', { style: 'currency', currency: 'USD' }));
+      chosenData = [dcMean, dcMedian];
+      hoverText = chosenData.map(value => value.toLocaleString('en-US', { style: 'currency', currency: 'USD' }));
       xLabels = ["Mean (<b>$</b>)", "Median (<b>$</b>)"];
     } else {
       // format data and labels
-      chosenData = [mean, median, dcMean, dcMedian].map(value => value.toLocaleString('en-US', { style: 'currency', currency: 'USD' }));
+      chosenData = [mean, median, dcMean, dcMedian];
+      hoverText = chosenData.map(value => value.toLocaleString('en-US', { style: 'currency', currency: 'USD' }));
       xLabels = [
         "Mean (<b>$</b>) (Neighborhood)",
         "Median (<b>$</b>) (Neighborhood)",
@@ -85,11 +87,13 @@ function updatePriceAndRatingsPlot(plotType, selectedNeighborhood, mean, median,
   } else if (plotType === "ratings") {
     if (selectedNeighborhood === "Washington, D.C.") {
       // format data and labels
-      chosenData = [dcMean, dcMedian].map(value => value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+      chosenData = [dcMean, dcMedian];
+      hoverText = chosenData.map(value => value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " \u2605");
       xLabels = ["Mean (\u2605)", "Median (\u2605)"];
     } else {
       // format data and labels
-      chosenData = [mean, median, dcMean, dcMedian].map(value => value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+      chosenData = [mean, median, dcMean, dcMedian];
+      hoverText = chosenData.map(value => value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " \u2605");
       xLabels = [
         "Mean (\u2605) (Neighborhood)",
         "Median (\u2605) (Neighborhood)",
@@ -104,10 +108,8 @@ function updatePriceAndRatingsPlot(plotType, selectedNeighborhood, mean, median,
     x: xLabels,
     y: chosenData,
     type: "bar",
-    hovertemplate: plotType === "price" ? "%{y:$,.2f}<extra></extra>" : "%{y:.2f} \u2605<extra></extra>",
-    text: plotType === "ratings" ?
-      chosenData.map(value => value + " " + "\u2605") :
-      chosenData,
+    hovertemplate: plotType === "price" ? "%{text}<extra></extra>" : "%{text}<extra></extra>",
+    text: hoverText,
     textposition: "auto",
     marker: {
       color:
