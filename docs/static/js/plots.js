@@ -3,6 +3,8 @@ function resizePlots() {
   const plotIds = [
     "price-plot",
     "ratings-plot",
+    "license-plot",
+    "property-type-plot",
   ]
 
   plotIds.forEach((id) => {
