@@ -19,6 +19,13 @@ function createMap(airbnbs, neighborhoods, listingsData) {
       color: "black",
       weight: 3,
     },
+    // event listener, zooms into neighborhood on click
+    onEachFeature: (feature, layer) => {
+      layer.on("click", function () {
+        const selectedNeighborhood = feature.properties.neighbourhood;
+        zoomIn(map, neighborhoodsLayer, selectedNeighborhood, listingsData);
+      });
+    },
   });
 
   // add markers
