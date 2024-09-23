@@ -106,6 +106,9 @@
         <div class="col-sm-12 col-md-6">
           <div id="ratings-plot" class="plot" style="text-align: center;"></div>
         </div>
+        <div class="col-sm-12 col-md-6">
+          <div id="license-plot" class="plot" style="text-align: center;"></div>
+        </div>
     </div>
   </div>
 
@@ -134,6 +137,7 @@
       // GitHub Pages or localhost for GitHub Pages
       loadScript('./static/js/map.js');
       loadScript('./static/js/plots.js');
+      loadScript('./static/js/dataUtils.js');
       loadScript('./static/js/app.js');
     } else {
       // Flask or localhost for Flask
