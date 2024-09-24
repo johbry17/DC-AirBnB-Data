@@ -10,6 +10,8 @@ Sorted list of Max/Median price per neighbourhood, highlight chosen neighbourhoo
 
 List top 10 hosts with most listings
 
+check hosted vs unhosted license numbers - N.B.: some have both licenses, check for cases of both
+
 <hr>
 <hr>
 <hr>

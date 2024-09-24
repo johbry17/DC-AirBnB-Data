@@ -151,6 +151,6 @@ h2 i {
 .plot {
     margin-bottom: 10px;
     overflow-x: hidden; // prevent horizontal overflow
-    box-sizing: border-box; // Include padding in width/height calculations
+    box-sizing: border-box; // include padding in width/height calculations
     @include responsive-plot(0px, $border-radius);
 }
