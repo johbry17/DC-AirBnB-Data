@@ -208,6 +208,7 @@ SELECT
     lr.review_scores_rating,
     h.host_name,
     h.host_identity_verified,
+    h.host_listings_count,
     h.host_total_listings_count,
     lc.license,
     n.neighbourhood

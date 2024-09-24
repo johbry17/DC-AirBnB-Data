@@ -135,24 +135,27 @@ function createMarkers(data) {
 
 // populates popup
 function createPopupContent(listing) {
-  const price = parseFloat(listing.price);
+  const price = parseFloat(listing.price).toLocaleString("en-US", { style: "currency", currency: "USD" });
   const hostVerified =
-    listing.host_identity_verified === true ? "Verified" : "Unverified";
+    listing.host_identity_verified === "True" ? "Verified" : "Unverified";
   const hoverDescription = listing.hover_description
-    ? `<h4>${listing.hover_description}</h4>`
-    : "<h4>Description not available</h4>";
+    ? `<h4><b>${listing.hover_description}</b></h4>`
+    : "<h4><b>Description not available</b></h4>";
+  const rating = listing.review_scores_rating
+    ? `${listing.review_scores_rating} \u2605`
+    : "No rating yet";
 
   return `
     ${hoverDescription}
     <a href="${listing.listing_url}" target="_blank">Link to listing</a><br>
-    Price: $${price.toFixed(2)}<br>
-    Property Type: ${listing.property_type}<br>
-    Accommodates: ${listing.accommodates}<br>
-    Rating: ${listing.review_scores_rating}<br>
-    Host: ${listing.host_name}<br>
-    Host Verified: ${hostVerified}<br>
-    Host Total Listings: ${listing.host_total_listings_count}<br>
-    License: ${listing.license}<br>
+    <b>Price:</b> ${price}<br>
+    <b>Property Type:</b> ${listing.property_type}<br>
+    <b>Accommodates:</b> ${listing.accommodates}<br>
+    <b>Rating:</b> ${rating}<br>
+    <b>Host:</b> ${listing.host_name}<br>
+    <b>Host Verified:</b> ${hostVerified}<br>
+    <b>Host Total Listings:</b> ${listing.host_listings_count}<br>
+    <b>License:</b> ${listing.license}<br>
   `;
 }
 
