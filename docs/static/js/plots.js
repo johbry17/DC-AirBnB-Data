@@ -27,14 +27,14 @@ function resizePlots() {
 // master function to call plots for all of DC
 function allDCPlots(listingsData) {
   plotLocation(listingsData, "Washington, D.C.");
-  plotLicenseBarChart(listingsData, "Washington, D.C.");
+  plotLicenseDonut(listingsData, "Washington, D.C.");
   plotPropertyType(listingsData, "Washington, D.C.");
 }
 
 // master function to call plots for neighborhoods
 function neighborhoodPlots(listingsData, selectedNeighborhood) {
   plotLocation(listingsData, selectedNeighborhood);
-  plotLicenseBarChart(listingsData, selectedNeighborhood);
+  plotLicenseDonut(listingsData, selectedNeighborhood);
   plotPropertyType(listingsData, selectedNeighborhood);
 }
 
@@ -136,132 +136,155 @@ function updatePriceAndRatingsPlot(plotType, selectedNeighborhood, mean, median,
 }
 
 // plot license status and percentage
-function plotLicenseBarChart(data, selectedNeighborhood) {
-  // get container and percentage data, total count for all of DC
+function plotLicenseDonut(data, selectedNeighborhood) {
+  // get container and calculate DC data
   const plotContainer = document.getElementById('license-plot');
   const categorizedDCData = setLicenseStatus(data);
   const licensePercentageDC = getLicensePercentage(categorizedDCData);
-  const totalDCCount = Object.values(licensePercentageDC).reduce((acc, obj) => acc + obj.count, 0);
 
-  let percents, counts, xLabels, title, markerColors, customdata;
+  // declare variables
+  let neighborhoodValues, neighborhoodLabels, neighborhoodColors;
+  let dcValues, dcLabels, dcTitle, dcColors;
 
-  // conditional to set data and labels for all of DC, maybe neighborhood
+  // assign DC data to variables
+  dcLabels = ['Licensed', 'Exempt', 'Unlicensed'];
+  dcValues = [
+    licensePercentageDC['Licensed'].percent,
+    licensePercentageDC['Exempt'].percent,
+    licensePercentageDC['Unlicensed'].percent,
+  ];
+  dcTitle = `Washington, D.C. <b>License Status</b><br><i style="font-size: .8em;">Short term rentals (STR's) are 30 nights or less<br>'Licensed' is hosted or unhosted STR's<br>Long term stays, hotels, motels can claim 'Exempt'</i>`;
+  dcColors = ['blue', 'lightblue', 'darkgray'];
+
+  // conditional for DC only or neighborhood and DC
   if (selectedNeighborhood === "Washington, D.C.") {
-    // assign variables
-    percents = [
-      licensePercentageDC['Licensed'].percent,
-      licensePercentageDC['Exempt'].percent,
-      licensePercentageDC['Unlicensed'].percent,
-    ];
-    counts = [
-      licensePercentageDC['Licensed'].count,
-      licensePercentageDC['Exempt'].count,
-      licensePercentageDC['Unlicensed'].count,
-    ];
-    xLabels = ['Licensed', 'Exempt', 'Unlicensed'];
-    title = `<b>License Status</b> for Washington, D.C.<br><i style="font-size: .8em;">Licensed highlighted in color</i>`;
-    markerColors = ['blue', 'lightblue', 'darkgray'];
-    customdata = counts.map(count => ({ count: count.toLocaleString(), total: totalDCCount.toLocaleString() }));
+    // single donut for DC only
+    const dcTrace = {
+      labels: dcLabels,
+      values: dcValues,
+      type: 'pie',
+      hole: 0.4,
+      marker: { colors: dcColors },
+      hoverinfo: 'label+percent',
+      textinfo: 'label+percent',
+    };
+
+    const layout = {
+      title: dcTitle,
+      showlegend: true,
+      // mostly to space from top (title)
+      margin: {
+        l: 50,
+        r: 50,
+        t: 200,
+        pad: 4
+      }
+    };
+
+    // plot DC only
+    Plotly.newPlot(plotContainer, [dcTrace], layout);
+
   } else {
-    // get perecentage data, total count for neighborhood
+    // else Neighborhood and DC license status donuts
+    // get neighborhood data
     const neighborhoodData = filterListingsByNeighborhood(data, selectedNeighborhood);
     const categorizedNeighborhoodData = setLicenseStatus(neighborhoodData);
     const licensePercentageNeighborhood = getLicensePercentage(categorizedNeighborhoodData);
-    totalNeighborhoodCount = Object.values(licensePercentageNeighborhood).reduce((acc, obj) => acc + obj.count, 0);
 
-    // assign variables
-    percents = [
+    // assign neighborhood data to variables
+    neighborhoodLabels = ['Licensed', 'Exempt', 'Unlicensed'];
+    neighborhoodValues = [
       licensePercentageNeighborhood['Licensed'].percent,
       licensePercentageNeighborhood['Exempt'].percent,
       licensePercentageNeighborhood['Unlicensed'].percent,
-      licensePercentageDC['Licensed'].percent,
-      licensePercentageDC['Exempt'].percent,
-      licensePercentageDC['Unlicensed'].percent,
     ];
-    counts = [
-      licensePercentageNeighborhood['Licensed'].count,
-      licensePercentageNeighborhood['Exempt'].count,
-      licensePercentageNeighborhood['Unlicensed'].count,
-      licensePercentageDC['Licensed'].count,
-      licensePercentageDC['Exempt'].count,
-      licensePercentageDC['Unlicensed'].count,
+    neighborhoodColors = ['green', 'lightgreen', 'darkgray'];
+
+    // two donut charts: one for Neighborhood, one for DC
+    const neighborhoodTrace = {
+      labels: neighborhoodLabels,
+      values: neighborhoodValues,
+      type: 'pie',
+      hole: 0.4,
+      marker: { colors: neighborhoodColors },
+      hoverinfo: 'label+percent',
+      textinfo: 'label+percent',
+      domain: { row: 0, column: 0 },
+      showlegend: false,
+    };
+
+    const dcTrace = {
+      labels: dcLabels,
+      values: dcValues,
+      type: 'pie',
+      hole: 0.4,
+      marker: { colors: dcColors },
+      hoverinfo: 'label+percent',
+      textinfo: 'label+percent',
+      domain: { row: 0, column: 1 },
+      showlegend: false,
+    };
+
+    // dummy traces for the legend
+    const legendTraces = [
+      {
+        x: [null],
+        y: [null],
+        type: 'bar',
+        marker: { color: 'green' },
+        name: 'Neighborhood',
+        showlegend: true,
+      },
+      {
+        x: [null],
+        y: [null],
+        type: 'bar',
+        marker: { color: 'blue' },
+        name: 'DC',
+        showlegend: true,
+      },
+      {
+        x: [null],
+        y: [null],
+        type: 'bar',
+        marker: { color: 'darkgray' },
+        name: 'Unlicensed',
+        showlegend: true,
+      }
     ];
-    xLabels = [
-      'Licensed (Neighborhood)',
-      'Exempt (Neighborhood)',
-      'Unlicensed (Neighborhood)',
-      'Licensed (All of DC)',
-      'Exempt (All of DC)',
-      'Unlicensed (All of DC)',
-    ];
-    title = `Neighborhood <b>vs.</b> Washington, D.C.<br><b>License Status</b> Comparison<br><i style="font-size: .8em;">Licensed highlighted in color</i>`;
-    markerColors = ['green', 'lightgreen', 'darkgray', 'blue', 'lightblue', 'darkgray'];
-    customdata = [
-      ...counts.slice(0, 3).map(count => ({ count: count.toLocaleString(), total: totalNeighborhoodCount.toLocaleString() })),
-      ...counts.slice(3).map(count => ({ count: count.toLocaleString(), total: totalDCCount.toLocaleString() })),
-    ];
+
+    const layout = {
+      title: `<b>License Status</b> Comparison:<br>Neighborhood <b>vs.</b> Washington, D.C.<br><i style="font-size: .8em;">Short term rentals (STR's) are 30 nights or less<br>'Licensed' is hosted or unhosted STR's<br>Long term stays, hotels, motels can claim 'Exempt'</i>`,
+      grid: { rows: 1, columns: 2 },
+      legend: {
+        orientation: 'h',
+        y: -0.3,
+        x: 0.5,
+        xanchor: 'center',
+        yanchor: 'top'
+      },
+      // mostly to space from top (title)
+      margin: {
+        l: 50,
+        r: 50,
+        t: 200,
+        pad: 4
+      },
+      // it was showing gridlines for some reason
+      xaxis: {
+        showgrid: false,
+        zeroline: false,
+        showticklabels: false
+      },
+      yaxis: {
+        showgrid: false,
+        zeroline: false,
+        showticklabels: false
+      }
+    };
+
+    Plotly.newPlot(plotContainer, [neighborhoodTrace, dcTrace, ...legendTraces], layout);
   }
-
-  const trace = {
-    x: xLabels,
-    y: percents,
-    type: 'bar',
-    text: percents.map(percent => percent + "%"),
-    textposition: 'auto',
-    hovertemplate: `Percent: <b>%{y}%</b><br>Count: <b>%{customdata.count}</b> of %{customdata.total}<br><extra></extra>`,
-    customdata: customdata,
-    marker: {
-      color: markerColors,
-      line: { color: 'black', width: 1 },
-    },
-    showlegend: false, // hide legend for the main trace
-  };
-
-  // show legend only if a neighborhood is selected
-  const showLegend = selectedNeighborhood !== "Washington, D.C."; 
-
-  // add dummy traces for the legend
-  const legendTraces = [
-    {
-      x: [null],
-      y: [null],
-      type: 'bar',
-      marker: { color: 'green' },
-      name: 'Neighborhood',
-      showlegend: showLegend,
-    },
-    {
-      x: [null],
-      y: [null],
-      type: 'bar',
-      marker: { color: 'blue' },
-      name: 'DC',
-      showlegend: showLegend,
-    },
-    {
-      x: [null],
-      y: [null],
-      type: 'bar',
-      marker: { color: 'darkgray' },
-      name: 'Unlicensed',
-      showlegend: showLegend,
-    }
-  ];
-
-  const layout = {
-    yaxis: { title: "Percent (%) of Total" },
-    // xaxis: { title: "License Status" },
-    title: title,
-    legend: {
-      orientation: 'h',
-      y: -0.3,
-      x: 0.5,
-      xanchor: 'center',
-      yanchor: 'top'
-    }
-  };
-
-  Plotly.newPlot(plotContainer, [trace, ...legendTraces], layout);
 }
 
 // plot of property type percentage
