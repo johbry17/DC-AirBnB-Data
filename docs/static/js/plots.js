@@ -63,6 +63,7 @@ function updatePriceAndRatingsPlot(plotType, selectedNeighborhood, mean, median,
   // get container
   let plotContainer = document.querySelector(`#${plotType}-plot`);
 
+  // declare variables
   let chosenData, xLabels, yTitle, hoverText;
 
   // conditional to assign data and labels, by plot type, for all of DC and maybe neighborhood
@@ -121,18 +122,55 @@ function updatePriceAndRatingsPlot(plotType, selectedNeighborhood, mean, median,
         width: 1,
       },
     },
+    showlegend: false, // hide legend for the main trace
   };
+
+  // show legend only if a neighborhood is selected
+  const showLegend = selectedNeighborhood !== "Washington, D.C."; 
+
+  // add dummy traces for the legend
+  const legendTraces = [
+    {
+      x: [null],
+      y: [null],
+      type: 'bar',
+      marker: { color: 'green' },
+      name: 'Neighborhood',
+      showlegend: showLegend,
+    },
+    {
+      x: [null],
+      y: [null],
+      type: 'bar',
+      marker: { color: 'blue' },
+      name: 'DC',
+      showlegend: showLegend,
+    }
+  ];
+
+  // conditional for title of plot
+  const additionalNote = plotType === "ratings" ? "N.B., y-axis <b>deceptively</b> starts at 4" : "Mean and Median";
 
   layout = {
     // xaxis: { tickangle: 35 },
-    yaxis: { title: yTitle === "Price" ? "Price ($)" : "Rating (\u2605)" },
+    yaxis: { 
+      title: yTitle === "Price" ? "Price ($)" : "Rating (\u2605)",
+      range: plotType === "ratings" ? [4, Math.max(...chosenData) + 1] : undefined
+    },
     title:
       selectedNeighborhood === "Washington, D.C."
         ? `<b>${yTitle}</b> for Washington, D.C.<br><i style="font-size: .8em;">Mean and Median</i>`
-        : `Neighborhood <b>vs.</b> all of DC<br><b>${yTitle}</b> Comparison<br><i style="font-size: .8em;">Mean and Median</i>`,
+        : `Neighborhood <b>vs.</b> all of DC<br><b>${yTitle}</b> Comparison<br><i style="font-size: .8em;">${additionalNote}</i>`,
+    legend: {
+      orientation: 'h',
+      y: -0.3,
+      x: 0.5,
+      xanchor: 'center',
+      yanchor: 'top'
+    }
   };
 
-  Plotly.newPlot(plotContainer, [trace], layout);
+  Plotly.newPlot(plotContainer, [trace, ...legendTraces], layout);
 }
 
 // plot license status and percentage
