@@ -69,8 +69,8 @@ function createMap(neighborhoods, listingsData, priceAvailabilityData) {
         console.log("active Legend:", activeLegend);
         // activeLegend.addTo(map);
       } else if (eventLayer.name === "Property Type") {
-        activeLegend = addLegend("Property Type");
-        activeLegend.addTo(map);
+        activeLegend = addLegend("Property Type").addTo(map);
+        // activeLegend.addTo(map);
       }
 
       activeOverlay = selectedOverlay;
@@ -78,12 +78,18 @@ function createMap(neighborhoods, listingsData, priceAvailabilityData) {
   });
 
   map.on("overlayremove", function (eventLayer) {
-    if (eventLayer.name === "License Status" || eventLayer.name === "Property Type") {
+    if (    
+      (eventLayer.name === "License Status" && activeOverlay === markerGroups.license) ||
+      (eventLayer.name === "Property Type" && activeOverlay === markerGroups.propertyType)
+    ) {
       if (activeLegend) {
         map.removeControl(activeLegend);
         activeLegend = null;
+        activeOverlay = null;
       }
     }
+
+    // activeOverlay = null;
   });
   
   // initialize neighborhoodLayer
