@@ -45,13 +45,47 @@ function createMap(neighborhoods, listingsData, priceAvailabilityData) {
   });
 
   // create toggle for map layers
-  L.control.layers(baseMap, overlays,
+  L.control.layers(baseMap, overlays).addTo(map);
+  // L.control.layers(baseMap, overlays,
       // { collapsed: false }
-    )
-    .addTo(map);
+    // )
+    // .addTo(map);
   
-  
+  let activeOverlay = markerGroups.default;
+  let activeLegend = null;
 
+  // event listeners for overlay add/remove
+  map.on("overlayadd", function (eventLayer) {
+    const selectedOverlay = overlays[eventLayer.name];
+    if (activeOverlay !== selectedOverlay) {
+      // Remove the current legend if it exists
+      if (activeLegend) {
+        map.removeControl(activeLegend);
+      }
+
+      // Add the new legend
+      if (eventLayer.name === "License Status") {
+        activeLegend = addLegend("License Status").addTo(map);
+        console.log("active Legend:", activeLegend);
+        // activeLegend.addTo(map);
+      } else if (eventLayer.name === "Property Type") {
+        activeLegend = addLegend("Property Type");
+        activeLegend.addTo(map);
+      }
+
+      activeOverlay = selectedOverlay;
+    }
+  });
+
+  map.on("overlayremove", function (eventLayer) {
+    if (eventLayer.name === "License Status" || eventLayer.name === "Property Type") {
+      if (activeLegend) {
+        map.removeControl(activeLegend);
+        activeLegend = null;
+      }
+    }
+  });
+  
   // initialize neighborhoodLayer
   const neighborhoodsLayer = L.geoJSON(neighborhoods, {
     style: {
@@ -130,46 +164,6 @@ function createOption(text, value) {
   option.value = value;
   return option;
 }
-
-// // initialize markers with settings
-// function createMarkers(data) {
-//   // empty marker layer
-//   const markers = L.layerGroup();
-
-//   // marker design
-//   const markerOptions = {
-//     radius: 2,
-//     fillColor: "blue",
-//     color: "black",
-//     weight: 1,
-//     fillOpacity: 1,
-//   };
-
-//   // loop to populate markers
-//   data.forEach((listing) => {
-//     const marker = L.circleMarker(
-//       [listing.latitude, listing.longitude],
-//       markerOptions
-//     );
-//     marker.bindPopup(createPopupContent(listing), {
-//       className: "marker-popup",
-//     });
-
-//     // open || close popup
-//     let popupOpen = false; // boolean to track if a popup is open
-//     marker.on("mouseover", () => marker.openPopup());
-//     marker.on("mouseout", () => {
-//       if (!popupOpen) marker.closePopup();
-//     });
-//     marker.on("click", () => {
-//       popupOpen = !popupOpen;
-//     });
-
-//     markers.addLayer(marker);
-//   });
-
-//   return markers;
-// }
 
 // initialize markers with custom color options based on a property
 function createMarkers(data, colorBy = null) {
@@ -253,7 +247,42 @@ function getPropertyTypeColor(propertyType) {
   }
 }
 
-// populates popup
+// create legend
+function addLegend(type) {
+  let legend = L.control({
+    position: "topright",
+  });
+  
+  // format legend based on type
+  legend.onAdd = function () {
+    let div = L.DomUtil.create("div", "custom-legend");
+    div.style.zIndex = "1000"; // ensure legend is on top
+    
+    // conditional to set labels and colors
+    let labels, colors;
+    if (type === "License Status") {
+      labels = ["Licensed", "Exempt", "Unlicensed"];
+      colors = ["green", "yellow", "red"];
+      div.innerHTML = '<div class="legend-title">License Status</div>';
+      console.log(colors);
+    } else if (type === "Property Type") {
+      labels = ["Entire home/apt", "Private room", "Shared room", "Hotel room"];
+      colors = ["orange", "blue", "green", "red"];
+      div.innerHTML = '<div class="legend-title">Property Type</div>';
+    }
+
+    // populate the legend
+    labels.forEach(function (label, index) {
+      div.innerHTML += `<div><i class="legend-color" style="background:${colors[index]}"></i>${label}</div>`;
+    });
+
+    return div;
+  };
+
+  return legend;
+}
+
+// populate popups
 function createPopupContent(listing) {
   const price = parseFloat(listing.price).toLocaleString("en-US", {
     style: "currency",

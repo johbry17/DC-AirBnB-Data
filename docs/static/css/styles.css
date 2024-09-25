@@ -156,4 +156,27 @@ h2 i {
   }
 }
 
+.custom-legend {
+  background: white;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  font-size: 14px;
+  line-height: 18px;
+  color: #555;
+}
+
+.custom-legend .legend-title {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.custom-legend .legend-color {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 5px;
+  border-radius: 2px;
+}
+
 /*# sourceMappingURL=styles.css.map */
