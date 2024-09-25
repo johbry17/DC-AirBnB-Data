@@ -22,7 +22,7 @@ const getPriceAvailabilityData =
 // fetch data and geojson, then create map
 Promise.all([getData, fetch(geojson).then((response) => response.json()), getPriceAvailabilityData]).then(
   ([data, neighborhoodData, priceAvailabilityData]) => {
-    createMap(createMarkers(data), neighborhoodData, data, priceAvailabilityData);
+    createMap(neighborhoodData, data, priceAvailabilityData);
   }
 );
 

@@ -1,5 +1,5 @@
 // map creation
-function createMap(airbnbs, neighborhoods, listingsData, priceAvailabilityData) {
+function createMap(neighborhoods, listingsData, priceAvailabilityData) {
   // create base layer
   let baseLayer = L.tileLayer(
     "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
@@ -11,33 +11,52 @@ function createMap(airbnbs, neighborhoods, listingsData, priceAvailabilityData) 
 
   // create objects to hold the base maps...
   let baseMap = {
-    "Base Layer": baseLayer,
+    "Street Map": baseLayer,
     Satellite: L.esri.basemapLayer("Imagery"),
     "National Geographic": L.esri.basemapLayer("NationalGeographic"),
     Topographic: L.esri.basemapLayer("Topographic"),
     Grayscale: L.esri.basemapLayer("Gray"),
   };
 
+  // different marker layers
+  const defaultMarkers = createMarkers(listingsData);
+  const licenseMarkers = createMarkers(listingsData, "license");
+  const propertyTypeMarkers = createMarkers(listingsData, "propertyType");
+
+  // initialize marker groups
+  const markerGroups = {
+    default: defaultMarkers,
+    license: licenseMarkers,
+    propertyType: propertyTypeMarkers,
+  };
+
+  // add marker overlays for toggling
+  const overlays = {
+    "AirBnB's": markerGroups.default,
+    "License Status": markerGroups.license,
+    "Property Type": markerGroups.propertyType,
+  };
+
   // initialize map
   const map = L.map("map-id", {
     center: [38.89511, -77.03637],
     zoom: 12,
-    layers: [baseLayer, airbnbs],
+    layers: [baseLayer, markerGroups.default],
   });
 
   // create toggle for map layers
-  L.control
-    .layers(baseMap, 
-      { "AirBnB's": airbnbs }, 
+  L.control.layers(baseMap, overlays,
       // { collapsed: false }
     )
     .addTo(map);
+  
+  
 
   // initialize neighborhoodLayer
   const neighborhoodsLayer = L.geoJSON(neighborhoods, {
     style: {
       // opacity: 0,
-      color: "black",
+      color: "green",
       weight: 3,
     },
     // event listener, zooms into neighborhood on click
@@ -48,9 +67,6 @@ function createMap(airbnbs, neighborhoods, listingsData, priceAvailabilityData) 
       });
     },
   });
-
-  // add markers
-  airbnbs.addTo(map);
 
   // initial call for controls, infoBox, and plots
   neighborhoodsControl(map, neighborhoods, neighborhoodsLayer, listingsData, priceAvailabilityData);
@@ -115,22 +131,74 @@ function createOption(text, value) {
   return option;
 }
 
-// initialize markers with settings
-function createMarkers(data) {
+// // initialize markers with settings
+// function createMarkers(data) {
+//   // empty marker layer
+//   const markers = L.layerGroup();
+
+//   // marker design
+//   const markerOptions = {
+//     radius: 2,
+//     fillColor: "blue",
+//     color: "black",
+//     weight: 1,
+//     fillOpacity: 1,
+//   };
+
+//   // loop to populate markers
+//   data.forEach((listing) => {
+//     const marker = L.circleMarker(
+//       [listing.latitude, listing.longitude],
+//       markerOptions
+//     );
+//     marker.bindPopup(createPopupContent(listing), {
+//       className: "marker-popup",
+//     });
+
+//     // open || close popup
+//     let popupOpen = false; // boolean to track if a popup is open
+//     marker.on("mouseover", () => marker.openPopup());
+//     marker.on("mouseout", () => {
+//       if (!popupOpen) marker.closePopup();
+//     });
+//     marker.on("click", () => {
+//       popupOpen = !popupOpen;
+//     });
+
+//     markers.addLayer(marker);
+//   });
+
+//   return markers;
+// }
+
+// initialize markers with custom color options based on a property
+function createMarkers(data, colorBy = null) {
+  // process data for license status
+  data = setLicenseStatus(data);
+
   // empty marker layer
   const markers = L.layerGroup();
 
-  // marker design
-  const markerOptions = {
-    radius: 2,
-    fillColor: "blue",
-    color: "black",
-    weight: 1,
-    fillOpacity: 1,
-  };
-
   // loop to populate markers
   data.forEach((listing) => {
+    let markerColor = "red"; // default color
+
+    // determine marker color based on colorBy parameter
+    if (colorBy === "license") {
+      markerColor = getLicenseColor(listing.licenseCategory); 
+    } else if (colorBy === "propertyType") {
+      markerColor = getPropertyTypeColor(listing.room_type); 
+    }
+
+    // marker design
+    const markerOptions = {
+      radius: 3,
+      fillColor: markerColor,
+      color: "black",
+      weight: 1,
+      fillOpacity: 1,
+    };
+
     const marker = L.circleMarker(
       [listing.latitude, listing.longitude],
       markerOptions
@@ -155,6 +223,36 @@ function createMarkers(data) {
   return markers;
 }
 
+// helper function to determine marker color based on license status
+function getLicenseColor(licenseCategory) {
+  switch (licenseCategory) {
+    case "Licensed":
+      return "green";
+    case "Exempt":
+      return "yellow";
+    case "Unlicensed":
+      return "red";
+    default:
+      return "gray";
+  }
+}
+
+// helper function to determine marker color based on property type
+function getPropertyTypeColor(propertyType) {
+  switch (propertyType) {
+    case "Entire home/apt":
+      return "orange";
+    case "Private room":
+      return "blue";
+    case "Shared room":
+      return "green";
+    case "Hotel room":
+      return "red";
+    default:
+      return "purple";
+  }
+}
+
 // populates popup
 function createPopupContent(listing) {
   const price = parseFloat(listing.price).toLocaleString("en-US", {
@@ -177,7 +275,8 @@ function createPopupContent(listing) {
     ${hoverDescription}
     <a href="${listing.listing_url}" target="_blank">Link to listing</a><br>
     <b>Price:</b> ${price}<br>
-    <b>Property Type:</b> ${listing.property_type}<br>
+    <b>Property Type:</b> ${listing.room_type}<br>
+    <b>Property Subtype:</b> ${listing.property_type}<br>
     <b>Accommodates:</b> ${listing.accommodates}<br>
     <b>Rating:</b> ${rating}<br>
     <b>Host:</b> ${listing.host_name}<br>
@@ -214,8 +313,8 @@ function zoomIn(map, neighborhoodsLayer, selectedNeighborhood, listingsData, pri
     map.fitBounds(boundaries.getBounds());
     neighborhoodsLayer.addTo(map);
     // update markers, infoBox, and plots
-    const newMarkers = createMarkers(listingsData);
-    newMarkers.addTo(map);
+    // const newMarkers = createMarkers(listingsData);
+    // newMarkers.addTo(map);
     updateInfoBox(listingsData, selectedNeighborhood);
     neighborhoodPlots(listingsData, selectedNeighborhood, priceAvailabilityData);
   }
