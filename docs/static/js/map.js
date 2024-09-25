@@ -1,5 +1,5 @@
 // map creation
-function createMap(airbnbs, neighborhoods, listingsData) {
+function createMap(airbnbs, neighborhoods, listingsData, priceAvailabilityData) {
   // create base layer
   let baseLayer = L.tileLayer(
     "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
@@ -44,7 +44,7 @@ function createMap(airbnbs, neighborhoods, listingsData) {
     onEachFeature: (feature, layer) => {
       layer.on("click", function () {
         const selectedNeighborhood = feature.properties.neighbourhood;
-        zoomIn(map, neighborhoodsLayer, selectedNeighborhood, listingsData);
+        zoomIn(map, neighborhoodsLayer, selectedNeighborhood, listingsData, priceAvailabilityData);
       });
     },
   });
@@ -55,7 +55,7 @@ function createMap(airbnbs, neighborhoods, listingsData) {
   // initial call for controls, infoBox, and plots
   neighborhoodsControl(map, neighborhoods, neighborhoodsLayer, listingsData);
   updateInfoBox(listingsData, "Washington, D.C.");
-  allDCPlots(listingsData);
+  allDCPlots(listingsData, priceAvailabilityData);
 
   // event listeners for map resizing
   window.addEventListener("resize", resizePlots);
@@ -72,7 +72,8 @@ function neighborhoodsControl(
   map,
   neighborhoodsInfo,
   neighborhoodsLayer,
-  listingsData
+  listingsData,
+  priceAvailabilityData
 ) {
   // create neighorhoods dropdown menu
   const controlDiv = document.getElementById("neighborhoods-control");
@@ -99,9 +100,9 @@ function neighborhoodsControl(
   dropdown.addEventListener("change", function () {
     const selectedNeighborhood = this.value;
     if (selectedNeighborhood === "top") {
-      resetMapView(map, neighborhoodsLayer, listingsData);
+      resetMapView(map, neighborhoodsLayer, listingsData, priceAvailabilityData);
     } else {
-      zoomIn(map, neighborhoodsLayer, selectedNeighborhood, listingsData);
+      zoomIn(map, neighborhoodsLayer, selectedNeighborhood, listingsData, priceAvailabilityData);
     }
   });
 }
@@ -187,16 +188,16 @@ function createPopupContent(listing) {
 }
 
 // resets map view to all of D.C., updates infoBox and plots
-function resetMapView(map, neighborhoodsLayer, listingsData) {
+function resetMapView(map, neighborhoodsLayer, listingsData, priceAvailabilityData) {
   map.setView([38.89511, -77.03637], 12);
   map.removeLayer(neighborhoodsLayer); // remove neighborhood boundaries from zoomIn()
   // call to update infoBox and plots
   updateInfoBox(listingsData, "Washington, D.C.");
-  allDCPlots(listingsData);
+  allDCPlots(listingsData, priceAvailabilityData);
 }
 
 // zooms map for neighborhood view, updates infoBox and plots
-function zoomIn(map, neighborhoodsLayer, selectedNeighborhood, listingsData) {
+function zoomIn(map, neighborhoodsLayer, selectedNeighborhood, listingsData, priceAvailabilityData) {
   // remove previous neighborhood boundaries
   neighborhoodsLayer.resetStyle();
 
@@ -216,6 +217,6 @@ function zoomIn(map, neighborhoodsLayer, selectedNeighborhood, listingsData) {
     const newMarkers = createMarkers(listingsData);
     newMarkers.addTo(map);
     updateInfoBox(listingsData, selectedNeighborhood);
-    neighborhoodPlots(listingsData, selectedNeighborhood);
+    neighborhoodPlots(listingsData, selectedNeighborhood, priceAvailabilityData);
   }
 }

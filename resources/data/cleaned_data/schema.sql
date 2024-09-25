@@ -4,7 +4,8 @@
 
 DROP INDEX IF EXISTS idx_lat_long;
 DROP INDEX IF EXISTS idx_neighbourhood_id;
-DRoP INDEX IF EXISTS idx_host_id;
+DROP INDEX IF EXISTS idx_host_id;
+DROP VIEW IF EXISTS price_availability;
 DROP VIEW IF EXISTS map_listings;
 DROP TABLE IF EXISTS calendar;
 DROP TABLE IF EXISTS reviews;
@@ -222,6 +223,18 @@ JOIN
     hosts h ON l.host_id = h.host_id
 JOIN
     neighbourhoods n ON l.neighbourhood_id = n.neighbourhood_id;
+
+CREATE VIEW price_availability AS
+SELECT
+    c.date,
+    AVG(c.price) FILTER (WHERE c.available = TRUE AND c.price <= 500) AS avg_price,
+    COUNT(*) FILTER (WHERE c.available = TRUE AND c.price <= 500) AS available_listings
+FROM
+    calendar c
+GROUP BY
+    c.date
+ORDER BY
+    c.date;
 
 CREATE INDEX idx_host_id ON listings(host_id);
 

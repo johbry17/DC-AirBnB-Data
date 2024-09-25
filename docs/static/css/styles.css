@@ -36,7 +36,7 @@ h2 i {
 }
 
 .col-md-12.jumbotron {
-  margin: 60px 0;
+  margin: 60px 0 0 0;
   color: white;
 }
 
@@ -110,6 +110,7 @@ h2 i {
   font-size: 12px;
   font-family: Arial;
   font-weight: normal;
+  color: #333333;
 }
 
 .map-container {
@@ -125,8 +126,9 @@ h2 i {
 
 .marker-popup {
   font-size: 16px;
-  border: 2px solid gray;
-  border-radius: 5px;
+  border-color: #e0e0e0;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .plot {
@@ -145,7 +147,7 @@ h2 i {
 }
 @media (min-width: 1200px) {
   .plot {
-    width: 90%;
+    width: 100%;
   }
 }
 @media (min-width: 768px) {

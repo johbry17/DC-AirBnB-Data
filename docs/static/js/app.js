@@ -14,11 +14,15 @@ const getData =
   isGitPages || (isHostedLocally && !isFlaskApp)
     ? d3.csv("./static/resources/airbnb_data.csv")
     : fetch("/api/listings").then((response) => response.json());
+const getPriceAvailabilityData =
+  isGitPages || (isHostedLocally && !isFlaskApp)
+    ? d3.csv("./static/resources/price_availability_data.csv")
+    : fetch("/api/price_availability").then((response) => response.json());
 
 // fetch data and geojson, then create map
-Promise.all([getData, fetch(geojson).then((response) => response.json())]).then(
-  ([data, neighborhoodData]) => {
-    createMap(createMarkers(data), neighborhoodData, data);
+Promise.all([getData, fetch(geojson).then((response) => response.json()), getPriceAvailabilityData]).then(
+  ([data, neighborhoodData, priceAvailabilityData]) => {
+    createMap(createMarkers(data), neighborhoodData, data, priceAvailabilityData);
   }
 );
 

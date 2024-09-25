@@ -5,6 +5,7 @@ function resizePlots() {
     "ratings-plot",
     "license-plot",
     "property-type-plot",
+    "price-availability-plot",
   ];
 
   plotIds.forEach((id) => {
@@ -25,17 +26,19 @@ function resizePlots() {
 }
 
 // master function to call plots for all of DC
-function allDCPlots(listingsData) {
+function allDCPlots(listingsData, priceAvailabilityData) {
   plotLocation(listingsData, "Washington, D.C.");
   plotLicenseDonut(listingsData, "Washington, D.C.");
   plotPropertyType(listingsData, "Washington, D.C.");
+  plotPriceAvailability(priceAvailabilityData, "Washington, D.C.");
 }
 
 // master function to call plots for neighborhoods
-function neighborhoodPlots(listingsData, selectedNeighborhood) {
+function neighborhoodPlots(listingsData, selectedNeighborhood, priceAvailabilityData) {
   plotLocation(listingsData, selectedNeighborhood);
   plotLicenseDonut(listingsData, selectedNeighborhood);
   plotPropertyType(listingsData, selectedNeighborhood);
+  plotPriceAvailability(priceAvailabilityData, selectedNeighborhood);
 }
 
 // conditional for data for all of DC or neighborhood
@@ -516,4 +519,127 @@ function plotPropertyType(data, selectedNeighborhood) {
   };
 
   Plotly.newPlot(plotContainer, [trace, ...legendTraces], layout);
+}
+
+// // plot price and availability for all of DC or a neighborhood
+// function plotPriceAvailability(data) {
+//   // Process data
+//   const dates = data.map(d => d.date);
+//   const avgPrices = data.map(d => +d.avg_price);
+//   const availableListings = data.map(d => +d.available_listings);
+
+//   // Create the plot (similar to what you have)
+//   const trace1 = {
+//       x: dates,
+//       y: avgPrices,
+//       mode: 'lines',
+//       name: 'Avg Price (≤ $500)',
+//       line: { color: 'orange' },
+//       hovertemplate: "<b>Date:</b> %{x}<br><b>Price:</b> $%{y:.2f}<extra></extra>"
+//   };
+
+//   const trace2 = {
+//       x: dates,
+//       y: availableListings,
+//       mode: 'lines',
+//       name: 'Availability',
+//       line: { color: 'blue' },
+//       yaxis: 'y2',
+//       hovertemplate: "<b>Date:</b> %{x}<br><b>Availability:</b> %{y}<extra></extra>"
+//   };
+
+//   const layout = {
+//       title: "Price and Availability Over Time<br>(Filtered Price ≤ $500)<br><i style='font-size: .8em;'>Hover for details</i>",
+//       xaxis: { title: "Date" },
+//       yaxis: {
+//           title: "Avg Price (≤ $500)",
+//           titlefont: { color: 'orange' },
+//           tickfont: { color: 'orange' }
+//       },
+//       yaxis2: {
+//           title: "Availability",
+//           titlefont: { color: 'blue' },
+//           tickfont: { color: 'blue' },
+//           overlaying: 'y',
+//           side: 'right'
+//       },
+//       hovermode: 'x unified',
+//       legend: {
+//         orientation: "h",
+//         y: -0.3,
+//         x: 0.5,
+//         xanchor: "center",
+//         yanchor: "top",
+//       },
+//   };
+
+//   Plotly.newPlot('price-availability-plot', [trace1, trace2], layout);
+// }
+
+
+function plotPriceAvailability(data, selectedNeighborhood) { 
+  // Filter data based on the selected neighborhood
+  const neighborhoodData = filterListingsByNeighborhood(data, selectedNeighborhood);
+
+  // Process data for all of DC
+  const allDates = data.map(d => d.date);
+  const allAvgPrices = data.map(d => +d.avg_price);
+  const allAvailableListings = data.map(d => +d.available_listings);
+
+  // Process data for the selected neighborhood
+  const neighborhoodDates = neighborhoodData.map(d => d.date);
+  const neighborhoodAvgPrices = neighborhoodData.map(d => +d.avg_price);
+  const neighborhoodAvailableListings = neighborhoodData.map(d => +d.available_listings);
+
+  // Determine which data to use based on selectedNeighborhood
+  const dates = selectedNeighborhood === "Washington, D.C." ? allDates : neighborhoodDates;
+  const avgPrices = selectedNeighborhood === "Washington, D.C." ? allAvgPrices : neighborhoodAvgPrices;
+  const availableListings = selectedNeighborhood === "Washington, D.C." ? allAvailableListings : neighborhoodAvailableListings;
+
+  // Create the plot (similar to what you have)
+  const trace1 = {
+      x: dates,
+      y: avgPrices,
+      mode: 'lines',
+      name: 'Avg Price (≤ $500)',
+      line: { color: 'orange' },
+      hovertemplate: "<b>Date:</b> %{x}<br><b>Price:</b> $%{y:.2f}<extra></extra>"
+  };
+
+  const trace2 = {
+      x: dates,
+      y: availableListings,
+      mode: 'lines',
+      name: 'Availability',
+      line: { color: 'blue' },
+      yaxis: 'y2',
+      hovertemplate: "<b>Date:</b> %{x}<br><b>Availability:</b> %{y}<extra></extra>"
+  };
+
+  const layout = {
+      title: "Price and Availability Over Time<br>(Filtered Price ≤ $500)<br><i style='font-size: .8em;'>Hover for details</i>",
+      xaxis: { title: "Date" },
+      yaxis: {
+          title: "Avg Price (≤ $500)",
+          titlefont: { color: 'orange' },
+          tickfont: { color: 'orange' }
+      },
+      yaxis2: {
+          title: "Availability",
+          titlefont: { color: 'blue' },
+          tickfont: { color: 'blue' },
+          overlaying: 'y',
+          side: 'right'
+      },
+      hovermode: 'x unified',
+      legend: {
+        orientation: "h",
+        y: -0.3,
+        x: 0.5,
+        xanchor: "center",
+        yanchor: "top",
+      },
+  };
+
+  Plotly.newPlot('price-availability-plot', [trace1, trace2], layout);
 }
