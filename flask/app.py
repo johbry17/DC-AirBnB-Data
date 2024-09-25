@@ -37,6 +37,11 @@ def get_listings():
     query = text(f"SELECT * FROM map_listings")
     return jsonify(fetch(query))
 
+@app.route("/api/price_availability")
+def get_price_availability():
+    query = text(f"SELECT * FROM price_availability")
+    return jsonify(fetch(query))
+
 
 if __name__ == "__main__":
     app.run()
