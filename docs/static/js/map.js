@@ -168,6 +168,9 @@ function createPopupContent(listing) {
   const rating = listing.review_scores_rating
     ? `${listing.review_scores_rating} \u2605`
     : "No rating yet";
+  const license = listing.license
+    ? listing.license.split(":")[0].trim()
+    : "No License";
 
   return `
     ${hoverDescription}
@@ -179,7 +182,7 @@ function createPopupContent(listing) {
     <b>Host:</b> ${listing.host_name}<br>
     <b>Host Verified:</b> ${hostVerified}<br>
     <b>Host Total Listings:</b> ${listing.host_listings_count}<br>
-    <b>License:</b> ${listing.license}<br>
+    <b>License:</b> ${license}<br>
   `;
 }
 
