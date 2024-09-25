@@ -29,7 +29,7 @@ function createMap(airbnbs, neighborhoods, listingsData) {
   L.control
     .layers(baseMap, 
       { "AirBnB's": airbnbs }, 
-      { collapsed: false }
+      // { collapsed: false }
     )
     .addTo(map);
 

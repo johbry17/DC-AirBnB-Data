@@ -205,7 +205,7 @@ function updatePriceAndRatingsPlot(
     },
     title:
       selectedNeighborhood === "Washington, D.C."
-        ? `<b>${yTitle}</b> for Washington, D.C.<br><i style="font-size: .8em;">Mean and Median</i>`
+        ? `<b>${yTitle}</b> for Washington, D.C.<br><i style="font-size: .8em;">${additionalNote}</i>`
         : `Neighborhood <b>vs.</b> all of DC<br><b>${yTitle}</b> Comparison<br><i style="font-size: .8em;">${additionalNote}</i>`,
     legend: {
       orientation: "h",
