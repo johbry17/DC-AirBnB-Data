@@ -44,7 +44,7 @@ function updateInfoBox(listingsData, selectedNeighborhood) {
   const isDC = selectedNeighborhood === "Washington, D.C.";
   const statsHTML = isDC
     ? `
-    Number of AirBnB's in all of DC: ${listingsData.length}<br>
+    Number of AirBnB's in all of DC: ${listingsData.length.toLocaleString()}<br>
     <i class="fas fa-info-circle"></i>
     <br>
     <u><strong>Washington, D.C.</strong></u><br>
@@ -55,7 +55,7 @@ function updateInfoBox(listingsData, selectedNeighborhood) {
     `
     : `
     <strong>${selectedNeighborhood}</strong><br>
-    Number of AirBnB's in Neighborhood: ${filteredListings.length}<br>
+    Number of AirBnB's in Neighborhood: ${filteredListings.length.toLocaleString()}<br>
     <i class="fas fa-info-circle"></i>
     <br>
     <u><strong>Neighborhood Stats:</strong></u><br>

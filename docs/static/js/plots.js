@@ -30,7 +30,7 @@ function allDCPlots(listingsData, priceAvailabilityData) {
   plotLocation(listingsData, "Washington, D.C.");
   plotLicenseDonut(listingsData, "Washington, D.C.");
   plotPropertyType(listingsData, "Washington, D.C.");
-  plotPriceAvailability(priceAvailabilityData);
+  plotPriceAvailability(priceAvailabilityData, "Washington, D.C.");
 }
 
 // master function to call plots for neighborhoods
@@ -38,7 +38,7 @@ function neighborhoodPlots(listingsData, selectedNeighborhood, priceAvailability
   plotLocation(listingsData, selectedNeighborhood);
   plotLicenseDonut(listingsData, selectedNeighborhood);
   plotPropertyType(listingsData, selectedNeighborhood);
-  plotPriceAvailability(priceAvailabilityData);
+  plotPriceAvailability(priceAvailabilityData, selectedNeighborhood);
 }
 
 // conditional for data for all of DC or neighborhood
@@ -522,22 +522,34 @@ function plotPropertyType(data, selectedNeighborhood) {
 }
 
 // plot price and availability for all of DC or a neighborhood
-function plotPriceAvailability(data) {
-  // process data
-  const dates = data.map(d => d.date);
-  const avgPrices = data.map(d => +d.avg_price);
-  const availableListings = data.map(d => +d.available_listings);
+function plotPriceAvailability(data, selectedNeighborhood) { 
+  // data for all of DC
+  const allDCData = data.filter(d => d.neighbourhood === "");  // Filter for overall Washington, D.C.
+  const allDates = allDCData.map(d => d.date);
+  const allAvgPrices = allDCData.map(d => +d.avg_price);
+  const allAvailableListings = allDCData.map(d => +d.available_listings);
 
-  // create traces
+  // data for neighborhood
+  const neighborhoodData = data.filter(d => d.neighbourhood === selectedNeighborhood);
+  const neighborhoodDates = neighborhoodData.map(d => d.date);
+  const neighborhoodAvgPrices = neighborhoodData.map(d => +d.avg_price);
+  const neighborhoodAvailableListings = neighborhoodData.map(d => +d.available_listings);
+
+  // select data based on selectedNeighborhood
+  const dates = selectedNeighborhood === "Washington, D.C." ? allDates : neighborhoodDates;
+  const avgPrices = selectedNeighborhood === "Washington, D.C." ? allAvgPrices : neighborhoodAvgPrices;
+  const availableListings = selectedNeighborhood === "Washington, D.C." ? allAvailableListings : neighborhoodAvailableListings;
+
+  // create traces (one line for each metric)
   const trace1 = {
       x: dates,
       y: avgPrices,
       mode: 'lines',
       name: 'Avg Price (≤ $500)',
       line: { color: 'orange' },
-      hovertemplate: "<b>Date:</b> %{x}<br><b>Price:</b> $%{y:.2f}<extra></extra>"
+      hovertemplate: "<b>Price:</b> %{text}<extra></extra>",
+      text: avgPrices.map(price => `$${price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`)
   };
-
   const trace2 = {
       x: dates,
       y: availableListings,
@@ -545,11 +557,12 @@ function plotPriceAvailability(data) {
       name: 'Availability',
       line: { color: 'blue' },
       yaxis: 'y2',
-      hovertemplate: "<b>Date:</b> %{x}<br><b>Availability:</b> %{y}<extra></extra>"
+      hovertemplate: "<b>Availability:</b> %{text}<extra></extra>",
+      text: availableListings.map(listing => `${listing.toLocaleString()}`)
   };
 
   const layout = {
-      title: "Price and Availability Over Time<br>(Filtered Price ≤ $500)<br><i style='font-size: .8em;'>Hover for details</i>",
+      title: `Price and Availability Over Time<br>(${selectedNeighborhood})<br><i style='font-size: .8em;'>Hover for details, excludes AirBnB's ≥ $500/night</i>`,
       xaxis: { title: "Date" },
       yaxis: {
           title: "Avg Price (≤ $500)",
@@ -573,5 +586,6 @@ function plotPriceAvailability(data) {
       },
   };
 
+  // plot single neighborhood or DC-wide traces
   Plotly.newPlot('price-availability-plot', [trace1, trace2], layout);
 }

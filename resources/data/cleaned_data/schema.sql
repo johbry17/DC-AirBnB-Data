@@ -226,15 +226,23 @@ JOIN
 
 CREATE VIEW price_availability AS
 SELECT
+    n.neighbourhood,
     c.date,
     AVG(c.price) FILTER (WHERE c.available = TRUE AND c.price <= 500) AS avg_price,
     COUNT(*) FILTER (WHERE c.available = TRUE AND c.price <= 500) AS available_listings
 FROM
     calendar c
-GROUP BY
-    c.date
+JOIN
+    listings l ON c.listing_id = l.listing_id
+JOIN
+    neighbourhoods n ON l.neighbourhood_id = n.neighbourhood_id
+GROUP BY GROUPING SETS (
+    (n.neighbourhood, c.date),  
+    (c.date)                  
+)
 ORDER BY
-    c.date;
+    n.neighbourhood, c.date;
+
 
 CREATE INDEX idx_host_id ON listings(host_id);
 
