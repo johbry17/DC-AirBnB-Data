@@ -1,16 +1,37 @@
 // map creation
 function createMap(airbnbs, neighborhoods, listingsData) {
+  // create base layer
+  let baseLayer = L.tileLayer(
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    {
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    }
+  );
+
+  // create objects to hold the base maps...
+  let baseMap = {
+    "Base Layer": baseLayer,
+    Satellite: L.esri.basemapLayer("Imagery"),
+    "National Geographic": L.esri.basemapLayer("NationalGeographic"),
+    Topographic: L.esri.basemapLayer("Topographic"),
+    Grayscale: L.esri.basemapLayer("Gray"),
+  };
+
   // initialize map
   const map = L.map("map-id", {
     center: [38.89511, -77.03637],
     zoom: 12,
+    layers: [baseLayer, airbnbs],
   });
 
-  // add baseLayer
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    attribution:
-      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-  }).addTo(map);
+  // create toggle for map layers
+  L.control
+    .layers(baseMap, 
+      { "AirBnB's": airbnbs }, 
+      { collapsed: false }
+    )
+    .addTo(map);
 
   // initialize neighborhoodLayer
   const neighborhoodsLayer = L.geoJSON(neighborhoods, {
@@ -135,7 +156,10 @@ function createMarkers(data) {
 
 // populates popup
 function createPopupContent(listing) {
-  const price = parseFloat(listing.price).toLocaleString("en-US", { style: "currency", currency: "USD" });
+  const price = parseFloat(listing.price).toLocaleString("en-US", {
+    style: "currency",
+    currency: "USD",
+  });
   const hostVerified =
     listing.host_identity_verified === "True" ? "Verified" : "Unverified";
   const hoverDescription = listing.hover_description
@@ -162,7 +186,7 @@ function createPopupContent(listing) {
 // resets map view to all of D.C., updates infoBox and plots
 function resetMapView(map, neighborhoodsLayer, listingsData) {
   map.setView([38.89511, -77.03637], 12);
-  map.removeLayer(neighborhoodsLayer);  // remove neighborhood boundaries from zoomIn()
+  map.removeLayer(neighborhoodsLayer); // remove neighborhood boundaries from zoomIn()
   // call to update infoBox and plots
   updateInfoBox(listingsData, "Washington, D.C.");
   allDCPlots(listingsData);

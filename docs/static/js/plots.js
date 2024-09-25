@@ -5,7 +5,7 @@ function resizePlots() {
     "ratings-plot",
     "license-plot",
     "property-type-plot",
-  ]
+  ];
 
   plotIds.forEach((id) => {
     const container = document.getElementById(id);
@@ -40,26 +40,49 @@ function neighborhoodPlots(listingsData, selectedNeighborhood) {
 
 // conditional for data for all of DC or neighborhood
 function plotLocation(listingsData, selectedNeighborhood) {
-    const isDC = selectedNeighborhood === "Washington, D.C.";
-    const dcStats = calculateStats(listingsData);
+  const isDC = selectedNeighborhood === "Washington, D.C.";
+  const dcStats = calculateStats(listingsData);
 
-    let meanPrice, medianPrice, meanRating, medianRating;
+  let meanPrice, medianPrice, meanRating, medianRating;
 
-    // get stats for DC, maybe for neighborhood
-    if (!isDC) {
-        const neighborhoodStats = calculateStats(filterListingsByNeighborhood(listingsData, selectedNeighborhood));
-        ({ meanPrice, medianPrice, meanRating, medianRating } = neighborhoodStats);
-    } else {
-        ({ meanPrice, medianPrice, meanRating, medianRating } = dcStats);
-    }
+  // get stats for DC, maybe for neighborhood
+  if (!isDC) {
+    const neighborhoodStats = calculateStats(
+      filterListingsByNeighborhood(listingsData, selectedNeighborhood)
+    );
+    ({ meanPrice, medianPrice, meanRating, medianRating } = neighborhoodStats);
+  } else {
+    ({ meanPrice, medianPrice, meanRating, medianRating } = dcStats);
+  }
 
-    // call update price and ratings plot
-    updatePriceAndRatingsPlot("price", selectedNeighborhood, meanPrice, medianPrice, dcStats.meanPrice, dcStats.medianPrice);
-    updatePriceAndRatingsPlot("ratings", selectedNeighborhood, meanRating, medianRating, dcStats.meanRating, dcStats.medianRating);
+  // call update price and ratings plot
+  updatePriceAndRatingsPlot(
+    "price",
+    selectedNeighborhood,
+    meanPrice,
+    medianPrice,
+    dcStats.meanPrice,
+    dcStats.medianPrice
+  );
+  updatePriceAndRatingsPlot(
+    "ratings",
+    selectedNeighborhood,
+    meanRating,
+    medianRating,
+    dcStats.meanRating,
+    dcStats.medianRating
+  );
 }
 
 // plot of price and ratings for all of DC or a neighborhood
-function updatePriceAndRatingsPlot(plotType, selectedNeighborhood, mean, median, dcMean, dcMedian) {
+function updatePriceAndRatingsPlot(
+  plotType,
+  selectedNeighborhood,
+  mean,
+  median,
+  dcMean,
+  dcMedian
+) {
   // get container
   let plotContainer = document.querySelector(`#${plotType}-plot`);
 
@@ -71,12 +94,16 @@ function updatePriceAndRatingsPlot(plotType, selectedNeighborhood, mean, median,
     if (selectedNeighborhood === "Washington, D.C.") {
       // format data and labels
       chosenData = [dcMean, dcMedian];
-      hoverText = chosenData.map(value => value.toLocaleString('en-US', { style: 'currency', currency: 'USD' }));
+      hoverText = chosenData.map((value) =>
+        value.toLocaleString("en-US", { style: "currency", currency: "USD" })
+      );
       xLabels = ["Mean (<b>$</b>)", "Median (<b>$</b>)"];
     } else {
       // format data and labels
       chosenData = [mean, median, dcMean, dcMedian];
-      hoverText = chosenData.map(value => value.toLocaleString('en-US', { style: 'currency', currency: 'USD' }));
+      hoverText = chosenData.map((value) =>
+        value.toLocaleString("en-US", { style: "currency", currency: "USD" })
+      );
       xLabels = [
         "Mean (<b>$</b>) (Neighborhood)",
         "Median (<b>$</b>) (Neighborhood)",
@@ -89,12 +116,24 @@ function updatePriceAndRatingsPlot(plotType, selectedNeighborhood, mean, median,
     if (selectedNeighborhood === "Washington, D.C.") {
       // format data and labels
       chosenData = [dcMean, dcMedian];
-      hoverText = chosenData.map(value => value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " \u2605");
+      hoverText = chosenData.map(
+        (value) =>
+          value.toLocaleString("en-US", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          }) + " \u2605"
+      );
       xLabels = ["Mean (\u2605)", "Median (\u2605)"];
     } else {
       // format data and labels
       chosenData = [mean, median, dcMean, dcMedian];
-      hoverText = chosenData.map(value => value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " \u2605");
+      hoverText = chosenData.map(
+        (value) =>
+          value.toLocaleString("en-US", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          }) + " \u2605"
+      );
       xLabels = [
         "Mean (\u2605) (Neighborhood)",
         "Median (\u2605) (Neighborhood)",
@@ -109,7 +148,10 @@ function updatePriceAndRatingsPlot(plotType, selectedNeighborhood, mean, median,
     x: xLabels,
     y: chosenData,
     type: "bar",
-    hovertemplate: plotType === "price" ? "%{text}<extra></extra>" : "%{text}<extra></extra>",
+    hovertemplate:
+      plotType === "price"
+        ? "%{text}<extra></extra>"
+        : "%{text}<extra></extra>",
     text: hoverText,
     textposition: "auto",
     marker: {
@@ -126,48 +168,52 @@ function updatePriceAndRatingsPlot(plotType, selectedNeighborhood, mean, median,
   };
 
   // show legend only if a neighborhood is selected
-  const showLegend = selectedNeighborhood !== "Washington, D.C."; 
+  const showLegend = selectedNeighborhood !== "Washington, D.C.";
 
   // add dummy traces for the legend
   const legendTraces = [
     {
       x: [null],
       y: [null],
-      type: 'bar',
-      marker: { color: 'green' },
-      name: 'Neighborhood',
+      type: "bar",
+      marker: { color: "green" },
+      name: "Neighborhood",
       showlegend: showLegend,
     },
     {
       x: [null],
       y: [null],
-      type: 'bar',
-      marker: { color: 'blue' },
-      name: 'DC',
+      type: "bar",
+      marker: { color: "blue" },
+      name: "DC",
       showlegend: showLegend,
-    }
+    },
   ];
 
   // conditional for title of plot
-  const additionalNote = plotType === "ratings" ? "N.B., y-axis <b>deceptively</b> starts at 4" : "Mean and Median";
+  const additionalNote =
+    plotType === "ratings"
+      ? "N.B., y-axis <b>deceptively</b> starts at 4"
+      : "Mean and Median";
 
   layout = {
     // xaxis: { tickangle: 35 },
-    yaxis: { 
+    yaxis: {
       title: yTitle === "Price" ? "Price ($)" : "Rating (\u2605)",
-      range: plotType === "ratings" ? [4, Math.max(...chosenData) + 1] : undefined
+      range:
+        plotType === "ratings" ? [4, Math.max(...chosenData) + 1] : undefined,
     },
     title:
       selectedNeighborhood === "Washington, D.C."
         ? `<b>${yTitle}</b> for Washington, D.C.<br><i style="font-size: .8em;">Mean and Median</i>`
         : `Neighborhood <b>vs.</b> all of DC<br><b>${yTitle}</b> Comparison<br><i style="font-size: .8em;">${additionalNote}</i>`,
     legend: {
-      orientation: 'h',
+      orientation: "h",
       y: -0.3,
       x: 0.5,
-      xanchor: 'center',
-      yanchor: 'top'
-    }
+      xanchor: "center",
+      yanchor: "top",
+    },
   };
 
   Plotly.newPlot(plotContainer, [trace, ...legendTraces], layout);
@@ -176,7 +222,7 @@ function updatePriceAndRatingsPlot(plotType, selectedNeighborhood, mean, median,
 // plot license status and percentage
 function plotLicenseDonut(data, selectedNeighborhood) {
   // get container and calculate DC data
-  const plotContainer = document.getElementById('license-plot');
+  const plotContainer = document.getElementById("license-plot");
   const categorizedDCData = setLicenseStatus(data);
   const licensePercentageDC = getLicensePercentage(categorizedDCData);
 
@@ -185,14 +231,14 @@ function plotLicenseDonut(data, selectedNeighborhood) {
   let dcValues, dcLabels, dcTitle, dcColors;
 
   // assign DC data to variables
-  dcLabels = ['Licensed', 'Exempt', 'Unlicensed'];
+  dcLabels = ["Licensed", "Exempt", "Unlicensed"];
   dcValues = [
-    licensePercentageDC['Licensed'].percent,
-    licensePercentageDC['Exempt'].percent,
-    licensePercentageDC['Unlicensed'].percent,
+    licensePercentageDC["Licensed"].percent,
+    licensePercentageDC["Exempt"].percent,
+    licensePercentageDC["Unlicensed"].percent,
   ];
   dcTitle = `Washington, D.C. <b>License Status</b><br><i style="font-size: .8em;">Short term rentals (STR's) are 30 nights or less<br>'Licensed' is hosted or unhosted STR's<br>Long term stays, hotels, motels can claim 'Exempt'</i>`;
-  dcColors = ['blue', 'lightblue', 'darkgray'];
+  dcColors = ["blue", "lightblue", "darkgray"];
 
   // conditional for DC only or neighborhood and DC
   if (selectedNeighborhood === "Washington, D.C.") {
@@ -200,11 +246,11 @@ function plotLicenseDonut(data, selectedNeighborhood) {
     const dcTrace = {
       labels: dcLabels,
       values: dcValues,
-      type: 'pie',
+      type: "pie",
       hole: 0.4,
       marker: { colors: dcColors },
-      hoverinfo: 'label+percent',
-      textinfo: 'label+percent',
+      hoverinfo: "label+percent",
+      textinfo: "label+percent",
     };
 
     const layout = {
@@ -215,38 +261,42 @@ function plotLicenseDonut(data, selectedNeighborhood) {
         l: 50,
         r: 50,
         t: 200,
-        pad: 4
-      }
+        pad: 4,
+      },
     };
 
     // plot DC only
     Plotly.newPlot(plotContainer, [dcTrace], layout);
-
   } else {
     // else Neighborhood and DC license status donuts
     // get neighborhood data
-    const neighborhoodData = filterListingsByNeighborhood(data, selectedNeighborhood);
+    const neighborhoodData = filterListingsByNeighborhood(
+      data,
+      selectedNeighborhood
+    );
     const categorizedNeighborhoodData = setLicenseStatus(neighborhoodData);
-    const licensePercentageNeighborhood = getLicensePercentage(categorizedNeighborhoodData);
+    const licensePercentageNeighborhood = getLicensePercentage(
+      categorizedNeighborhoodData
+    );
 
     // assign neighborhood data to variables
-    neighborhoodLabels = ['Licensed', 'Exempt', 'Unlicensed'];
+    neighborhoodLabels = ["Licensed", "Exempt", "Unlicensed"];
     neighborhoodValues = [
-      licensePercentageNeighborhood['Licensed'].percent,
-      licensePercentageNeighborhood['Exempt'].percent,
-      licensePercentageNeighborhood['Unlicensed'].percent,
+      licensePercentageNeighborhood["Licensed"].percent,
+      licensePercentageNeighborhood["Exempt"].percent,
+      licensePercentageNeighborhood["Unlicensed"].percent,
     ];
-    neighborhoodColors = ['green', 'lightgreen', 'darkgray'];
+    neighborhoodColors = ["green", "lightgreen", "darkgray"];
 
     // two donut charts: one for Neighborhood, one for DC
     const neighborhoodTrace = {
       labels: neighborhoodLabels,
       values: neighborhoodValues,
-      type: 'pie',
+      type: "pie",
       hole: 0.4,
       marker: { colors: neighborhoodColors },
-      hoverinfo: 'label+percent',
-      textinfo: 'label+percent',
+      hoverinfo: "label+percent",
+      textinfo: "label+percent",
       domain: { row: 0, column: 0 },
       showlegend: false,
     };
@@ -254,11 +304,11 @@ function plotLicenseDonut(data, selectedNeighborhood) {
     const dcTrace = {
       labels: dcLabels,
       values: dcValues,
-      type: 'pie',
+      type: "pie",
       hole: 0.4,
       marker: { colors: dcColors },
-      hoverinfo: 'label+percent',
-      textinfo: 'label+percent',
+      hoverinfo: "label+percent",
+      textinfo: "label+percent",
       domain: { row: 0, column: 1 },
       showlegend: false,
     };
@@ -268,73 +318,83 @@ function plotLicenseDonut(data, selectedNeighborhood) {
       {
         x: [null],
         y: [null],
-        type: 'bar',
-        marker: { color: 'green' },
-        name: 'Neighborhood',
+        type: "bar",
+        marker: { color: "green" },
+        name: "Neighborhood",
         showlegend: true,
       },
       {
         x: [null],
         y: [null],
-        type: 'bar',
-        marker: { color: 'blue' },
-        name: 'DC',
+        type: "bar",
+        marker: { color: "blue" },
+        name: "DC",
         showlegend: true,
       },
       {
         x: [null],
         y: [null],
-        type: 'bar',
-        marker: { color: 'darkgray' },
-        name: 'Unlicensed',
+        type: "bar",
+        marker: { color: "darkgray" },
+        name: "Unlicensed",
         showlegend: true,
-      }
+      },
     ];
 
     const layout = {
       title: `<b>License Status</b> Comparison:<br>Neighborhood <b>vs.</b> Washington, D.C.<br><i style="font-size: .8em;">Short term rentals (STR's) are 30 nights or less<br>'Licensed' is hosted or unhosted STR's<br>Long term stays, hotels, motels can claim 'Exempt'</i>`,
       grid: { rows: 1, columns: 2 },
       legend: {
-        orientation: 'h',
+        orientation: "h",
         y: -0.3,
         x: 0.5,
-        xanchor: 'center',
-        yanchor: 'top'
+        xanchor: "center",
+        yanchor: "top",
       },
       // mostly to space from top (title)
       margin: {
         l: 50,
         r: 50,
         t: 200,
-        pad: 4
+        pad: 4,
       },
       // it was showing gridlines for some reason
       xaxis: {
         showgrid: false,
         zeroline: false,
-        showticklabels: false
+        showticklabels: false,
       },
       yaxis: {
         showgrid: false,
         zeroline: false,
-        showticklabels: false
-      }
+        showticklabels: false,
+      },
     };
 
-    Plotly.newPlot(plotContainer, [neighborhoodTrace, dcTrace, ...legendTraces], layout);
+    Plotly.newPlot(
+      plotContainer,
+      [neighborhoodTrace, dcTrace, ...legendTraces],
+      layout
+    );
   }
 }
 
 // plot of property type percentage
 function plotPropertyType(data, selectedNeighborhood) {
   // get container and set data
-  const plotContainer = document.getElementById('property-type-plot');
-  const neighborhoodData = filterListingsByNeighborhood(data, selectedNeighborhood);
+  const plotContainer = document.getElementById("property-type-plot");
+  const neighborhoodData = filterListingsByNeighborhood(
+    data,
+    selectedNeighborhood
+  );
 
   // run calculations for property type percentage, total count for all of DC
   const dcPropertyTypes = getPropertyTypePercentage(data);
   const neighborhoodPropertyTypes = getPropertyTypePercentage(neighborhoodData);
-  const totalDCCount = Object.values(dcPropertyTypes).reduce((acc, obj) => acc + obj.count, 0);
+  const totalDCCount = Object.values(dcPropertyTypes).reduce(
+    (acc, obj) => acc + obj.count,
+    0
+  );
 
   // declare variables
   let percents, counts, xLabels, title, markerColors, customdata;
@@ -342,110 +402,118 @@ function plotPropertyType(data, selectedNeighborhood) {
   // conditional to set data and labels for all of DC, maybe neighborhood
   if (selectedNeighborhood === "Washington, D.C.") {
     // combine DC data
-    let combinedData = Object.keys(dcPropertyTypes).map(key => ({
+    let combinedData = Object.keys(dcPropertyTypes).map((key) => ({
       label: key,
       percent: dcPropertyTypes[key].percent,
-      count: dcPropertyTypes[key].count
+      count: dcPropertyTypes[key].count,
     }));
 
     // sort by descending percentage
     combinedData.sort((a, b) => b.percent - a.percent);
 
     // assign variables
-    percents = combinedData.map(item => item.percent);
-    counts = combinedData.map(item => item.count);
-    xLabels = combinedData.map(item => item.label);
+    percents = combinedData.map((item) => item.percent);
+    counts = combinedData.map((item) => item.count);
+    xLabels = combinedData.map((item) => item.label);
     title = `<b>Property Type</b> for Washington, D.C.<br><i style="font-size: .8em;">Percent of Available AirBnB's</i>`;
-    markerColors = combinedData.map(item => 'blue');
-    customdata = counts.map(count => ({ count: count.toLocaleString(), total: totalDCCount.toLocaleString() }));
+    markerColors = combinedData.map((item) => "blue");
+    customdata = counts.map((count) => ({
+      count: count.toLocaleString(),
+      total: totalDCCount.toLocaleString(),
+    }));
   } else {
     // get total count for neighborhood
-    const totalNeighborhoodCount = Object.values(neighborhoodPropertyTypes).reduce((acc, obj) => acc + obj.count, 0);
+    const totalNeighborhoodCount = Object.values(
+      neighborhoodPropertyTypes
+    ).reduce((acc, obj) => acc + obj.count, 0);
 
     // combine neighborhood and DC data
     let combinedData = [
-      ...Object.keys(neighborhoodPropertyTypes).map(key => ({
+      ...Object.keys(neighborhoodPropertyTypes).map((key) => ({
         label: `${key} (Neighborhood)`,
         percent: neighborhoodPropertyTypes[key].percent,
-        count: neighborhoodPropertyTypes[key].count
+        count: neighborhoodPropertyTypes[key].count,
       })),
-      ...Object.keys(dcPropertyTypes).map(key => ({
+      ...Object.keys(dcPropertyTypes).map((key) => ({
         label: `${key} (All of DC)`,
         percent: dcPropertyTypes[key].percent,
-        count: dcPropertyTypes[key].count
-      }))
+        count: dcPropertyTypes[key].count,
+      })),
     ];
 
     // sort by descending percentage
     combinedData.sort((a, b) => b.percent - a.percent);
 
     // assign variables
-    percents = combinedData.map(item => item.percent);
-    counts = combinedData.map(item => item.count);
-    xLabels = combinedData.map(item => item.label);
-    markerColors = combinedData.map(item => item.label.includes("Neighborhood") ? 'green' : 'blue');
+    percents = combinedData.map((item) => item.percent);
+    counts = combinedData.map((item) => item.count);
+    xLabels = combinedData.map((item) => item.label);
+    markerColors = combinedData.map((item) =>
+      item.label.includes("Neighborhood") ? "green" : "blue"
+    );
     title = `Neighborhood <b>vs.</b> Washington, D.C.<br><b>Property Type</b> Comparison<br><i style="font-size: .8em;">Percent of Available AirBnB's in Area</i>`;
-    customdata = combinedData.map(item => ({
+    customdata = combinedData.map((item) => ({
       count: item.count.toLocaleString(),
-      total: item.label.includes("Neighborhood") ? totalNeighborhoodCount.toLocaleString() : totalDCCount.toLocaleString()
+      total: item.label.includes("Neighborhood")
+        ? totalNeighborhoodCount.toLocaleString()
+        : totalDCCount.toLocaleString(),
     }));
   }
 
   const trace = {
     x: xLabels,
     y: percents,
-    type: 'bar',
-    text: percents.map(percent => percent + "%"),
-    textposition: 'auto',
-    hovertemplate: 'Percent: <b>%{y}%</b><br>Count: <b>%{customdata.count}</b> of %{customdata.total}<br><extra></extra>',
+    type: "bar",
+    text: percents.map((percent) => percent + "%"),
+    textposition: "auto",
+    hovertemplate:
+      "Percent: <b>%{y}%</b><br>Count: <b>%{customdata.count}</b> of %{customdata.total}<br><extra></extra>",
     customdata: customdata,
     marker: {
       color: markerColors,
-      line: { color: 'black', width: 1 },
+      line: { color: "black", width: 1 },
     },
     showlegend: false, // hide legend for the main trace
   };
 
   // show legend only if a neighborhood is selected
-  const showLegend = selectedNeighborhood !== "Washington, D.C."; 
+  const showLegend = selectedNeighborhood !== "Washington, D.C.";
 
   // add dummy traces for the legend
   const legendTraces = [
     {
       x: [null],
       y: [null],
-      type: 'bar',
-      marker: { color: 'green' },
-      name: 'Neighborhood',
+      type: "bar",
+      marker: { color: "green" },
+      name: "Neighborhood",
       showlegend: showLegend,
     },
     {
       x: [null],
       y: [null],
-      type: 'bar',
-      marker: { color: 'blue' },
-      name: 'DC',
+      type: "bar",
+      marker: { color: "blue" },
+      name: "DC",
       showlegend: showLegend,
-    }
+    },
   ];
 
   const layout = {
     yaxis: { title: "Percent (%) of Total" },
-    xaxis: { 
+    xaxis: {
       // title: "Property Type" ,
       tickangle: 35,
     },
     title: title,
     legend: {
-      orientation: 'h',
+      orientation: "h",
       y: -0.3,
       x: 0.5,
-      xanchor: 'center',
-      yanchor: 'top'
-    }
+      xanchor: "center",
+      yanchor: "top",
+    },
   };
-
 
   Plotly.newPlot(plotContainer, [trace, ...legendTraces], layout);
 }
-

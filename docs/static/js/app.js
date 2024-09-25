@@ -28,8 +28,14 @@ function updateInfoBox(listingsData, selectedNeighborhood) {
 
   // get stats for DC, maybe for neighborhood
   const stats = calculateStats(listingsData);
-  const filteredListings = filterListingsByNeighborhood(listingsData, selectedNeighborhood);
-  const neighborhoodStats = selectedNeighborhood === "Washington, D.C." ? null : calculateStats(filteredListings);
+  const filteredListings = filterListingsByNeighborhood(
+    listingsData,
+    selectedNeighborhood
+  );
+  const neighborhoodStats =
+    selectedNeighborhood === "Washington, D.C."
+      ? null
+      : calculateStats(filteredListings);
   // create HTML for infoBox
   const isDC = selectedNeighborhood === "Washington, D.C.";
   const statsHTML = isDC
