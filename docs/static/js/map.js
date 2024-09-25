@@ -53,7 +53,7 @@ function createMap(airbnbs, neighborhoods, listingsData, priceAvailabilityData) 
   airbnbs.addTo(map);
 
   // initial call for controls, infoBox, and plots
-  neighborhoodsControl(map, neighborhoods, neighborhoodsLayer, listingsData);
+  neighborhoodsControl(map, neighborhoods, neighborhoodsLayer, listingsData, priceAvailabilityData);
   updateInfoBox(listingsData, "Washington, D.C.");
   allDCPlots(listingsData, priceAvailabilityData);
 
