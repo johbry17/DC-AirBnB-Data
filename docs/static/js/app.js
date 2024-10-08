@@ -44,35 +44,33 @@ function updateInfoBox(listingsData, selectedNeighborhood) {
   const isDC = selectedNeighborhood === "Washington, D.C.";
   const statsHTML = isDC
     ? `
-    Number of AirBnB's in all of DC: ${listingsData.length.toLocaleString()}<br>
     <i class="fas fa-info-circle"></i>
     <br>
-    <u><strong>Washington, D.C.</strong></u><br>
+    Number of Airbnb's in all of <b style="font-size: 1.2em;">Washington, D.C.</b>: ${listingsData.length.toLocaleString()}<br>
     Mean Price: $${stats.meanPrice.toFixed(2)}<br>
     Median Price: $${stats.medianPrice.toFixed(2)}<br>
-    Mean Rating: ${stats.meanRating.toFixed(2)} \u2605<br>
-    Median Rating: ${stats.medianRating.toFixed(2)} \u2605<br>
     `
     : `
     <strong>${selectedNeighborhood}</strong><br>
-    Number of AirBnB's in Neighborhood: ${filteredListings.length.toLocaleString()}<br>
     <i class="fas fa-info-circle"></i>
     <br>
-    <u><strong>Neighborhood Stats:</strong></u><br>
+    Number of Airbnb's in Neighborhood: ${filteredListings.length.toLocaleString()}<br>
+    <u><b style="font-size: 1.2em;">Neighborhood Stats:</b></u><br>
     Mean Price: $${neighborhoodStats.meanPrice.toFixed(2)}<br>
     Median Price: $${neighborhoodStats.medianPrice.toFixed(2)}<br>
-    Mean Rating: ${neighborhoodStats.meanRating.toFixed(2)} \u2605<br>
-    Median Rating: ${neighborhoodStats.medianRating.toFixed(2)} \u2605<br>   
     <div class="stats-icons">
         <i class="fas fa-dollar-sign"></i>
         <i class="fas fa-star"></i>
     </div>
-    <u><strong>Washington, D.C. (for Comparison):</strong></u><br>
+    <u><b style="font-size: 1.2em;">Washington, D.C.</b> (for Comparison):</u><br>
     Mean Price: $${stats.meanPrice.toFixed(2)}<br>
     Median Price: $${stats.medianPrice.toFixed(2)}<br>
-    Mean Rating: ${stats.meanRating.toFixed(2)} \u2605<br>
-    Median Rating: ${stats.medianRating.toFixed(2)} \u2605
     `;
+
+    // Mean Rating: ${neighborhoodStats.meanRating.toFixed(2)} \u2605<br>
+    // Median Rating: ${neighborhoodStats.medianRating.toFixed(2)} \u2605<br>   
+    // Mean Rating: ${stats.meanRating.toFixed(2)} \u2605<br>
+    // Median Rating: ${stats.medianRating.toFixed(2)} \u2605
 
   // update infoBox
   infoBoxElement.innerHTML = statsHTML;

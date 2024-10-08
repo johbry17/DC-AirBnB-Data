@@ -120,7 +120,7 @@ function plotPriceAvailability(data, selectedNeighborhood) {
   };
 
   const layout = {
-      title: `Price and Availability Over Time<br>(${selectedNeighborhood})<br><i style='font-size: .8em;'>Hover for details, excludes AirBnB's ≥ $500/night</i>`,
+      title: `Price and Availability Over Time<br>(${selectedNeighborhood})<br><i style='font-size: .8em;'>Hover for details, excludes Airbnb's ≥ $500/night</i>`,
       xaxis: { title: "Date" },
       yaxis: {
           title: "Avg Price (≤ $500)",
@@ -490,7 +490,7 @@ function plotPropertyType(data, selectedNeighborhood, colors) {
     percents = combinedData.map((item) => item.percent);
     counts = combinedData.map((item) => item.count);
     xLabels = combinedData.map((item) => item.label);
-    title = `<b>Property Type</b> for Washington, D.C.<br><i style="font-size: .8em;">Percent of Available AirBnB's</i>`;
+    title = `<b>Property Type</b> for Washington, D.C.<br><i style="font-size: .8em;">Percent of available Airbnb's</i>`;
     markerColors = combinedData.map((item) => colors.cityColor);
     customdata = counts.map((count) => ({
       count: count.toLocaleString(),
@@ -526,7 +526,7 @@ function plotPropertyType(data, selectedNeighborhood, colors) {
     markerColors = combinedData.map((item) =>
       item.label.includes("Neighborhood") ? colors.neighborhoodColor : colors.cityColor
     );
-    title = `Neighborhood <b>vs.</b> Washington, D.C.<br><b>Property Type</b> Comparison<br><i style="font-size: .8em;">Percent of Available AirBnB's in Area</i>`;
+    title = `Neighborhood <b>vs.</b> Washington, D.C.<br><b>Property Type</b> Comparison<br><i style="font-size: .8em;">Percent of available Airbnb's in Area</i>`;
     customdata = combinedData.map((item) => ({
       count: item.count.toLocaleString(),
       total: item.label.includes("Neighborhood")
