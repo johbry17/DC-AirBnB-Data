@@ -1,3 +1,6 @@
+// set default color scheme
+let defaultColors = {neighborhoodColor: "#198754", cityColor: "green"}
+
 //resizePlots();
 function resizePlots() {
   const plotIds = [

@@ -205,20 +205,20 @@ h2 i {
     font-size: 14px;
     line-height: 18px;
     color: #555;
-  }
   
-  .custom-legend .legend-title {
-    font-weight: bold;
-    margin-bottom: 5px;
-  }
-  
-  .custom-legend .legend-color {
-    display: inline-block;
-    width: 12px;
-    height: 12px;
-    margin-right: 5px;
-    border-radius: 2px;
-  }
+    .custom-legend .legend-title {
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    
+    .custom-legend .legend-color {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        margin-right: 5px;
+        border-radius: 2px;
+    }
+}
   
 // plots
 .plot {

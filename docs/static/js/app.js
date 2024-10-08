@@ -8,8 +8,8 @@ const isFlaskApp = isHostedLocally && window.location.port === "5000"; // assumi
 // set data source based on environment
 const geojson =
   isGitPages || (isHostedLocally && !isFlaskApp)
-    ? "./static/resources/neighbourhoods.geojson"
-    : "/static/resources/neighbourhoods.geojson";
+    ? "./static/resources/neighbourhoods_cleaned.geojson"
+    : "/static/resources/neighbourhoods_cleaned.geojson";
 const getData =
   isGitPages || (isHostedLocally && !isFlaskApp)
     ? d3.csv("./static/resources/airbnb_data.csv")

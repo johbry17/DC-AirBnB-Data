@@ -66,7 +66,7 @@ function createMap(neighborhoods, listingsData, priceAvailabilityData) {
       // Add the new legend
       if (eventLayer.name === "License Status") {
         activeLegend = addLegend("License Status").addTo(map);
-        console.log("active Legend:", activeLegend);
+        // console.log("active Legend:", activeLegend);
         // activeLegend.addTo(map);
       } else if (eventLayer.name === "Property Type") {
         activeLegend = addLegend("Property Type").addTo(map);
@@ -113,7 +113,7 @@ function createMap(neighborhoods, listingsData, priceAvailabilityData) {
   updateInfoBox(listingsData, "Washington, D.C.");
   allDCPlots(listingsData, priceAvailabilityData);
 
-  // event listeners for map resizing
+  // event listeners for plot and map resizing
   window.addEventListener("resize", resizePlots);
 
   // resize map to current container size
@@ -140,6 +140,11 @@ function neighborhoodsControl(
     <br>
     </div>`;
   controlDiv.appendChild(dropdown);
+
+  // sort neighborhoods alphabetically
+  neighborhoodsInfo.features.sort((a, b) =>
+    a.properties.neighbourhood.localeCompare(b.properties.neighbourhood)
+  );
 
   // populate dropdown menu
   const allDC = createOption("Washington, D.C.", "top");

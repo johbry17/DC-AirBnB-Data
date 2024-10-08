@@ -2,7 +2,13 @@
 
 ## Ideas / Notes to self:
 
+ADA aria-labels, toLocaleString
+
 Chloropleth map of price (ratings, number of listings, etc)?
+
+Avg price by room type
+
+Avg availability 365 by neighborhood, same with avg min nights
 
 Sorted list of Max/Median price per neighbourhood, highlight chosen neighbourhood
 
@@ -47,11 +53,13 @@ It all began with an exploratory data analysis, located at `/exploratory_data_an
 
 `airbnb.backup` is a backup of the database, that a user can load into a PostgreSQL database. Command line restore syntax: `pg_restore -U username -d dbname -1 /path/to/backup/file`.
 
-To update the data source, make any necessary alterations to the `schema.sql` and any paths at the top of `data_cleaning.ipynb`, both located in `/resources/data/cleaned_data/`. Pay particular attention to the `map_listings` and `price_availability` views, as they are exported to csv's for GitHub Pages and Tableau. Run `data_cleaning.ipynb` to update.
+### - Note to self: If updating data...
 
-The ETL process depicted in `data_cleaning.ipynb` served as the final project for [cs50's Introduction to Databases with SQL](https://cs50.harvard.edu/sql/2024/), which can be found in my [DC-AirBnB-SQL-Database](https://github.com/johbry17/DC-AirBnB-SQL-Database) repo. The Jupyter Notebook not only cleans the data, it automatically loads a PostgreSQL database and extracts relevant data into csv's for the GitHub Pages version of the site, neatly preparing the data for the full-stack Flask version and the static, front-end-only version. The Tableau exploratory data analysis uses the same csv's.
+Run `data_cleaning.ipynb` to update the data source for both the Flask and GitHub Pages versions of this project. Make any alterations necessary to `schema.sql` and `data_cleaning.ipynb` (the `paths` or `neighbourhoods_dict` at the top), both located in `/resources/data/cleaned_data/`. Pay particular attention to the `map_listings` and `price_availability` views, as they are exported to csv's for GitHub Pages and Tableau.
 
 Don't forget to .gitignore any files over 100MB.
+
+The ETL process depicted in `data_cleaning.ipynb` served as the final project for [cs50's Introduction to Databases with SQL](https://cs50.harvard.edu/sql/2024/), which can be found in my [DC-AirBnB-SQL-Database](https://github.com/johbry17/DC-AirBnB-SQL-Database) repo. The Jupyter Notebook not only cleans the data, it automatically loads a PostgreSQL database and extracts relevant data into csv's for the GitHub Pages version of the site, neatly preparing the data for the full-stack Flask version and the static, front-end-only version. The Tableau exploratory data analysis uses the same csv's.
 
 ## Gallery
 
@@ -101,4 +109,4 @@ Thanks to Geronimo Perez for feedback and assistance.
 
 ## Author
 
-Bryan Johns, September, 2024
+Bryan Johns, October, 2024
