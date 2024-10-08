@@ -116,7 +116,7 @@ function createMap(neighborhoods, listingsData, priceAvailabilityData) {
   // initial call for controls, infoBox, and plots
   neighborhoodsControl(map, neighborhoods, neighborhoodsLayer, listingsData, priceAvailabilityData);
   updateInfoBox(listingsData, "Washington, D.C.");
-  allDCPlots(listingsData, priceAvailabilityData);
+  allDCPlots(listingsData, priceAvailabilityData, defaultColors);
 
   // event listeners for plot and map resizing
   window.addEventListener("resize", resizePlots);
@@ -337,7 +337,7 @@ function resetMapView(map, neighborhoodsLayer, listingsData, priceAvailabilityDa
   map.removeLayer(neighborhoodsLayer); // remove neighborhood boundaries from zoomIn()
   // call to update infoBox and plots
   updateInfoBox(listingsData, "Washington, D.C.");
-  allDCPlots(listingsData, priceAvailabilityData);
+  allDCPlots(listingsData, priceAvailabilityData, defaultColors);
 }
 
 // zooms map for neighborhood view, updates infoBox and plots
@@ -361,6 +361,6 @@ function zoomIn(map, neighborhoodsLayer, selectedNeighborhood, listingsData, pri
     // const newMarkers = createMarkers(listingsData);
     // newMarkers.addTo(map);
     updateInfoBox(listingsData, selectedNeighborhood);
-    neighborhoodPlots(listingsData, selectedNeighborhood, priceAvailabilityData);
+    neighborhoodPlots(listingsData, selectedNeighborhood, priceAvailabilityData, defaultColors);
   }
 }

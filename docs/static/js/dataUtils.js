@@ -1,3 +1,12 @@
+// set default color scheme
+let defaultColors = {
+  defaultGray: "#6c757d",
+  neighborhoodColor: "#198754",
+  neighborhoodColorLight: "lightgreen",
+  cityColor: "blue",
+  cityColorLight: "lightblue",
+};
+
 // calculate stats for data, filter out NaN values
 function calculateStats(data) {
   const prices = data
