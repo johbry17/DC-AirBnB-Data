@@ -103,6 +103,11 @@ function createMap(neighborhoods, listingsData, priceAvailabilityData) {
     onEachFeature: (feature, layer) => {
       layer.on("click", function () {
         const selectedNeighborhood = feature.properties.neighbourhood;
+
+        // update dropdown to selected neighborhood
+        const dropdown = document.getElementById("neighborhoods-dropdown");
+        dropdown.value = selectedNeighborhood;
+
         zoomIn(map, neighborhoodsLayer, selectedNeighborhood, listingsData, priceAvailabilityData);
       });
     },
