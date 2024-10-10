@@ -32,7 +32,7 @@ function createMap(neighborhoods, listingsData, priceAvailabilityData) {
 
   // add marker overlays for toggling
   const overlays = {
-    "AirBnB's": markerGroups.default,
+    "Airbnb's": markerGroups.default,
     "License Status": markerGroups.license,
     "Property Type": markerGroups.propertyType,
   };
@@ -66,12 +66,16 @@ function createMap(neighborhoods, listingsData, priceAvailabilityData) {
       // Add the new legend
       if (eventLayer.name === "License Status") {
         activeLegend = addLegend("License Status").addTo(map);
-        // console.log("active Legend:", activeLegend);
-        // activeLegend.addTo(map);
       } else if (eventLayer.name === "Property Type") {
         activeLegend = addLegend("Property Type").addTo(map);
-        // activeLegend.addTo(map);
       }
+
+      // bring markers to front
+      selectedOverlay.eachLayer((layer) => {
+        if (layer.bringToFront) {
+          layer.bringToFront();
+        }
+      });
 
       activeOverlay = selectedOverlay;
     }
@@ -207,6 +211,7 @@ function createMarkers(data, colorBy = null) {
       color: "black",
       weight: 1,
       fillOpacity: 1,
+      interactive: true,
     };
 
     const marker = L.circleMarker(
@@ -226,6 +231,9 @@ function createMarkers(data, colorBy = null) {
     marker.on("click", () => {
       popupOpen = !popupOpen;
     });
+
+    // bring marker to front on hover
+    marker.bringToFront();
 
     markers.addLayer(marker);
   });
@@ -356,8 +364,29 @@ function zoomIn(map, neighborhoodsLayer, selectedNeighborhood, listingsData, pri
   if (boundaries) {
     boundaries.setStyle({ weight: 3, color: "transparent" });
     map.fitBounds(boundaries.getBounds());
+    // neighborhoodsLayer.addTo(map);
+
+    // filter listings by neighbourhood
+    const filteredListings = filterListingsByNeighborhood(
+      listingsData,
+      selectedNeighborhood
+    );
+
+    // clear markers
+    map.eachLayer((layer) => {
+      if (layer instanceof L.LayerGroup) {
+        map.removeLayer(layer);
+      }
+    });
+
+    // add layers
     neighborhoodsLayer.addTo(map);
-    // update markers, infoBox, and plots
+
+    // add new markers
+    createMarkers(filteredListings).addTo(map);
+    // newMarkers.addTo(map);
+
+    // update infoBox, and plots
     // const newMarkers = createMarkers(listingsData);
     // newMarkers.addTo(map);
     updateInfoBox(listingsData, selectedNeighborhood);

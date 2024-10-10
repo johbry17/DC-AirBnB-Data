@@ -28,7 +28,9 @@ function resizePlots() {
 // master function to call plots for all of DC
 function allDCPlots(listingsData, priceAvailabilityData, colors) {
   plotPriceAvailability(priceAvailabilityData, "Washington, D.C.");
-  plotLocation(listingsData, "Washington, D.C.", colors);
+  // plotLocation(listingsData, "Washington, D.C.", colors);
+  updatePricePlot(listingsData, "Washington, D.C.", colors);
+  updateRatingsPlot(listingsData, "Washington, D.C.", colors);
   plotLicenseDonut(listingsData, "Washington, D.C.", colors);
   plotPropertyType(listingsData, "Washington, D.C.", colors);
 }
@@ -36,47 +38,35 @@ function allDCPlots(listingsData, priceAvailabilityData, colors) {
 // master function to call plots for neighborhoods
 function neighborhoodPlots(listingsData, selectedNeighborhood, priceAvailabilityData, colors) {
   plotPriceAvailability(priceAvailabilityData, selectedNeighborhood);
-  plotLocation(listingsData, selectedNeighborhood, colors);
+  // plotLocation(listingsData, selectedNeighborhood, colors);
+  updatePricePlot(listingsData, selectedNeighborhood, colors);
+  updateRatingsPlot(listingsData, selectedNeighborhood, colors);
   plotLicenseDonut(listingsData, selectedNeighborhood, colors);
   plotPropertyType(listingsData, selectedNeighborhood, colors);
 }
 
-// conditional for data for all of DC or neighborhood
-function plotLocation(listingsData, selectedNeighborhood, colors) {
-  const isDC = selectedNeighborhood === "Washington, D.C.";
-  const dcStats = calculateStats(listingsData);
-
-  let meanPrice, medianPrice, meanRating, medianRating;
-
-  // get stats for DC, maybe for neighborhood
-  if (!isDC) {
-    const neighborhoodStats = calculateStats(
-      filterListingsByNeighborhood(listingsData, selectedNeighborhood)
-    );
-    ({ meanPrice, medianPrice, meanRating, medianRating } = neighborhoodStats);
-  } else {
-    ({ meanPrice, medianPrice, meanRating, medianRating } = dcStats);
-  }
-
-  // call update price and ratings plot
-  updatePriceAndRatingsPlot(
-    "price",
-    selectedNeighborhood,
-    meanPrice,
-    medianPrice,
-    dcStats.meanPrice,
-    dcStats.medianPrice,
-    colors
-  );
-  updatePriceAndRatingsPlot(
-    "ratings",
-    selectedNeighborhood,
-    meanRating,
-    medianRating,
-    dcStats.meanRating,
-    dcStats.medianRating,
-    colors
-  );
+// traces for each plot
+function getLegendTraces(colors, selectedNeighborhood) {
+  const showLegend = selectedNeighborhood !== "Washington, D.C.";
+  return [
+    {
+      x: [null],
+      y: [null],
+      type: "bar",
+      orientation: "h",
+      marker: { color: colors.neighborhoodColor },
+      name: "Neighborhood",
+      showlegend: showLegend,
+    },
+    {
+      x: [null],
+      y: [null],
+      type: "bar",
+      marker: { color: colors.cityColor },
+      name: "DC",
+      showlegend: showLegend,
+    }
+  ];
 }
 
 // plot price and availability for all of DC or a neighborhood
@@ -148,147 +138,109 @@ function plotPriceAvailability(data, selectedNeighborhood) {
   Plotly.newPlot('price-availability-plot', [trace1, trace2], layout);
 }
 
-// plot of price and ratings for all of DC or a neighborhood
-function updatePriceAndRatingsPlot(
-  plotType,
-  selectedNeighborhood,
-  mean,
-  median,
-  dcMean,
-  dcMedian,
-  colors
-) {
+function updatePricePlot(listingsData, selectedNeighborhood, colors) {
+  // calculate price stats for DC and neighborhood
+  const dcStats = calculateStats(listingsData);
+  const isDC = selectedNeighborhood === "Washington, D.C.";
+  const filteredListings = isDC ? listingsData : filterListingsByNeighborhood(listingsData, selectedNeighborhood);
+  const neighborhoodStats = calculateStats(filteredListings);
+
   // get container
-  let plotContainer = document.querySelector(`#${plotType}-plot`);
+  let plotContainer = document.querySelector("#price-plot");
 
-  // declare variables
-  let chosenData, xLabels, yTitle, hoverText;
-
-  // conditional to assign data and labels, by plot type, for all of DC and maybe neighborhood
-  if (plotType === "price") {
-    if (selectedNeighborhood === "Washington, D.C.") {
-      // format data and labels
-      chosenData = [dcMean, dcMedian];
-      hoverText = chosenData.map((value) =>
-        value.toLocaleString("en-US", { style: "currency", currency: "USD" })
-      );
-      xLabels = ["Mean (<b>$</b>)", "Median (<b>$</b>)"];
-    } else {
-      // format data and labels
-      chosenData = [mean, median, dcMean, dcMedian];
-      hoverText = chosenData.map((value) =>
-        value.toLocaleString("en-US", { style: "currency", currency: "USD" })
-      );
-      xLabels = [
-        "Mean (<b>$</b>)<br>(Neighborhood)",
-        "Median (<b>$</b>)<br>(Neighborhood)",
-        "Mean (<b>$</b>)<br>(All of DC)",
-        "Median (<b>$</b>)<br>(All of DC)",
+  // format data and labels
+  let chosenData = isDC
+    ? [dcStats.meanPrice, dcStats.medianPrice] 
+    : [neighborhoodStats.meanPrice, neighborhoodStats.medianPrice, dcStats.meanPrice, dcStats.medianPrice];
+  let hoverText = chosenData.map(value => value.toLocaleString("en-US", { style: "currency", currency: "USD" }));
+  let xLabels = selectedNeighborhood === isDC
+    ? ["Mean (<b>$</b>)", "Median (<b>$</b>)"]
+    : [
+        "Mean (<b>$</b>)<br>(Neighborhood)", "Median (<b>$</b>)<br>(Neighborhood)",
+        "Mean (<b>$</b>)<br>(All of DC)", "Median (<b>$</b>)<br>(All of DC)"
       ];
-    }
-    yTitle = "Price";
-  } else if (plotType === "ratings") {
-    if (selectedNeighborhood === "Washington, D.C.") {
-      // format data and labels
-      chosenData = [dcMean, dcMedian];
-      hoverText = chosenData.map(
-        (value) =>
-          value.toLocaleString("en-US", {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          }) + " \u2605"
-      );
-      xLabels = ["Mean (\u2605)", "Median (\u2605)"];
-    } else {
-      // format data and labels
-      chosenData = [mean, median, dcMean, dcMedian];
-      hoverText = chosenData.map(
-        (value) =>
-          value.toLocaleString("en-US", {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          }) + " \u2605"
-      );
-      xLabels = [
-        "Mean (\u2605)<br>(Neighborhood)",
-        "Median (\u2605)<br>(Neighborhood)",
-        "Mean (\u2605)<br>(All of DC)",
-        "Median (\u2605)<br>(All of DC)",
-      ];
-    }
-    yTitle = "Rating";
-  }
 
-  trace = {
+  // create trace
+  let trace = {
     x: xLabels,
     y: chosenData,
     type: "bar",
-    hovertemplate:
-      plotType === "price"
-        ? "%{text}<extra></extra>"
-        : "%{text}<extra></extra>",
+    hovertemplate: "%{text}<extra></extra>",
     text: hoverText,
     textposition: "auto",
     marker: {
-      color:
-        selectedNeighborhood === "Washington, D.C."
-          ? [colors.cityColor, colors.cityColor]
-          : [colors.neighborhoodColor, colors.neighborhoodColor, colors.cityColor, colors.cityColor],
-      line: {
-        color: "black",
-        width: 1,
-      },
+      color: selectedNeighborhood === "Washington, D.C."
+        ? [colors.cityColor, colors.cityColor]
+        : [colors.neighborhoodColor, colors.neighborhoodColor, colors.cityColor, colors.cityColor],
+      line: { color: "black", width: 1 },
     },
-    showlegend: false, // hide legend for the main trace
+    showlegend: false,
   };
 
-  // show legend only if a neighborhood is selected
-  const showLegend = selectedNeighborhood !== "Washington, D.C.";
+  // get legend traces
+  const legendTraces = getLegendTraces(colors, selectedNeighborhood);
 
-  // add dummy traces for the legend
-  const legendTraces = [
-    {
-      x: [null],
-      y: [null],
-      type: "bar",
-      marker: { color: colors.neighborhoodColor },
-      name: "Neighborhood",
-      showlegend: showLegend,
-    },
-    {
-      x: [null],
-      y: [null],
-      type: "bar",
-      marker: { color: colors.cityColor },
-      name: "DC",
-      showlegend: showLegend,
-    },
-  ];
+  // create layout
+  let layout = {
+    yaxis: { title: "Price ($)" },
+    title: selectedNeighborhood === "Washington, D.C."
+      ? `<b>Price</b> for Washington, D.C.<br><i style="font-size: .8em;">Mean and Median</i>`
+      : `Neighborhood <b>vs.</b> all of DC<br><b>Price</b> Comparison<br><i style="font-size: .8em;">Mean and Median</i>`,
+    legend: { orientation: "h", y: -0.3, x: 0.5, xanchor: "center", yanchor: "top" }
+  };
 
-  // conditional for title of plot
-  const additionalNote =
-    plotType === "ratings"
-      ? "N.B., y-axis <b>deceptively</b> starts at 4"
-      : "Mean and Median";
+  Plotly.newPlot(plotContainer, [trace, ...legendTraces], layout);
+}
 
-  layout = {
-    // xaxis: { tickangle: 35 },
-    yaxis: {
-      title: yTitle === "Price" ? "Price ($)" : "Rating (\u2605)",
-      range:
-        plotType === "ratings" ? [4, Math.max(...chosenData) + 1] : undefined,
+function updateRatingsPlot(listingsData, selectedNeighborhood, colors) {
+  // calculate rating stats for DC and neighborhood
+  const dcStats = calculateStats(listingsData);
+  const isDC = selectedNeighborhood === "Washington, D.C.";
+  const filteredListings = isDC ? listingsData : filterListingsByNeighborhood(listingsData, selectedNeighborhood);
+  const neighborhoodStats = calculateStats(filteredListings);
+
+  // get container
+  let plotContainer = document.querySelector("#ratings-plot");
+
+  // format data and labels
+  let chosenData = isDC 
+    ? [dcStats.meanRating, dcStats.medianRating] 
+    : [neighborhoodStats.meanRating, neighborhoodStats.medianRating, dcStats.meanRating, dcStats.medianRating];
+  let hoverText = chosenData.map(value => value.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " \u2605");
+  let xLabels = isDC
+    ? ["Mean (\u2605)", "Median (\u2605)"]
+    : [
+        "Mean (\u2605)<br>(Neighborhood)", "Median (\u2605)<br>(Neighborhood)",
+        "Mean (\u2605)<br>(All of DC)", "Median (\u2605)<br>(All of DC)"
+      ];
+
+  // create trace
+  let trace = {
+    x: xLabels,
+    y: chosenData,
+    type: "bar",
+    hovertemplate: "%{text}<extra></extra>",
+    text: hoverText,
+    textposition: "auto",
+    marker: {
+      color: selectedNeighborhood === "Washington, D.C."
+        ? [colors.cityColor, colors.cityColor]
+        : [colors.neighborhoodColor, colors.neighborhoodColor, colors.cityColor, colors.cityColor],
+      line: { color: "black", width: 1 },
     },
-    title:
-      selectedNeighborhood === "Washington, D.C."
-        ? `<b>${yTitle}</b> for Washington, D.C.<br><i style="font-size: .8em;">${additionalNote}</i>`
-        : `Neighborhood <b>vs.</b> all of DC<br><b>${yTitle}</b> Comparison<br><i style="font-size: .8em;">${additionalNote}</i>`,
-    legend: {
-      orientation: "h",
-      y: -0.3,
-      x: 0.5,
-      xanchor: "center",
-      yanchor: "top",
-    },
+    showlegend: false,
+  };
+
+  // get legend traces
+  const legendTraces = getLegendTraces(colors, selectedNeighborhood);
+
+  // create layout
+  let layout = {
+    yaxis: { title: "Rating (\u2605)", range: [4, Math.max(...chosenData) + 1] },
+    title: selectedNeighborhood === "Washington, D.C."
+      ? `<b>Ratings</b> for Washington, D.C.<br><i style="font-size: .8em;">N.B., y-axis <b>deceptively</b> starts at 4</i>`
+      : `Neighborhood <b>vs.</b> all of DC<br><b>Ratings</b> Comparison<br><i style="font-size: .8em;">N.B., y-axis <b>deceptively</b> starts at 4</i>`,
+    legend: { orientation: "h", y: -0.3, x: 0.5, xanchor: "center", yanchor: "top" }
   };
 
   Plotly.newPlot(plotContainer, [trace, ...legendTraces], layout);
@@ -559,29 +511,8 @@ function plotPropertyType(data, selectedNeighborhood, colors) {
     showlegend: false, // hide legend for the main trace
   };
 
-  // show legend only if a neighborhood is selected
-  const showLegend = selectedNeighborhood !== "Washington, D.C.";
-
-  // add dummy traces for the legend
-  const legendTraces = [
-    {
-      x: [null],
-      y: [null],
-      type: "bar",
-      orientation: "h",
-      marker: { color: colors.neighborhoodColor },
-      name: "Neighborhood",
-      showlegend: showLegend,
-    },
-    {
-      x: [null],
-      y: [null],
-      type: "bar",
-      marker: { color: colors.cityColor },
-      name: "DC",
-      showlegend: showLegend,
-    },
-  ];
+  // get legend traces
+  const legendTraces = getLegendTraces(colors, selectedNeighborhood);
 
   const layout = {
     xaxis: { title: "Percent (%) of Total" },
