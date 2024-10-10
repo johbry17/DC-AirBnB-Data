@@ -1,9 +1,9 @@
 // set default color scheme
 let defaultColors = {
-  defaultGray: "#6c757d",
+  defaultGray: "#343a40", // #6c757d
   neighborhoodColor: "#198754",
   neighborhoodColorLight: "lightgreen",
-  cityColor: "blue",
+  cityColor: "#0085A1",
   cityColorLight: "lightblue",
 };
 

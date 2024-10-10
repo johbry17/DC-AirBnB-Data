@@ -4,17 +4,27 @@
 
 ADA aria-labels, toLocaleString
 
+split ratings and avg price, hide ratings
+
+add % difference neighborhood vs dc price (mean and median)
+
 Chloropleth map of price (ratings, number of listings, etc)?
 
-Avg price by room type
+bubble plot on map, number of listings per neighborhood
 
-Avg availability 365 by neighborhood, same with avg min nights
+Avg price by room type, avg price by license type
+
+listings per minimum nights (with STR bar at 30 days)
 
 Sorted list of Max/Median price per neighbourhood, highlight chosen neighbourhood
 
+host number of listings (bar chart)
+
 List top 10 hosts with most listings
 
-check hosted vs unhosted license numbers - N.B.: some have both licenses, check for cases of both
+Annotate price and availability over time
+
+--
 
 Use R to get data from local and federal government (Open DC and the census), do an exploratory data analysis, and add the results to the website / Tableau.
 
