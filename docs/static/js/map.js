@@ -240,7 +240,7 @@ function getLicenseColor(licenseCategory) {
       return "green";
     case "Exempt":
       return "yellow";
-    case "Unlicensed":
+    case "No License":
       return "red";
     default:
       return "gray";
@@ -277,7 +277,7 @@ function addLegend(type) {
     // conditional to set labels and colors
     let labels, colors;
     if (type === "License Status") {
-      labels = ["Licensed", "Exempt", "Unlicensed"];
+      labels = ["Licensed", "Exempt", "No License"];
       colors = ["green", "yellow", "red"];
       div.innerHTML = '<div class="legend-title">License Status</div>';
       console.log(colors);

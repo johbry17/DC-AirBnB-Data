@@ -52,7 +52,7 @@ function setLicenseStatus(data) {
       case "exempt":
         return { ...item, licenseCategory: "Exempt" };
       default:
-        return { ...item, licenseCategory: "Unlicensed" };
+        return { ...item, licenseCategory: "No License" };
     }
   });
 }
@@ -63,7 +63,7 @@ function getLicensePercentage(data) {
   let distribution = {
     Licensed: 0,
     Exempt: 0,
-    Unlicensed: 0,
+    "No License": 0,
   };
 
   // aggregate each category

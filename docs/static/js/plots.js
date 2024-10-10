@@ -306,11 +306,11 @@ function plotLicenseDonut(data, selectedNeighborhood, colors) {
   let dcValues, dcLabels, dcTitle, dcColors;
 
   // assign DC data to variables
-  dcLabels = ["Licensed", "Exempt", "Unlicensed"];
+  dcLabels = ["Licensed", "Exempt", "No License"];
   dcValues = [
     licensePercentageDC["Licensed"].percent,
     licensePercentageDC["Exempt"].percent,
-    licensePercentageDC["Unlicensed"].percent,
+    licensePercentageDC["No License"].percent,
   ];
   dcTitle = `Washington, D.C. <b>License Status</b><br><i style="font-size: .8em;">Short term rentals (STR's) are 30 nights or less<br>'Licensed' is hosted or unhosted STR's<br>Long term stays, hotels, motels can claim 'Exempt'</i>`;
   dcColors = [colors.cityColor, colors.cityColorLight, colors.defaultGray];
@@ -362,11 +362,11 @@ function plotLicenseDonut(data, selectedNeighborhood, colors) {
     );
 
     // assign neighborhood data to variables
-    neighborhoodLabels = ["Licensed", "Exempt", "Unlicensed"];
+    neighborhoodLabels = ["Licensed", "Exempt", "No License"];
     neighborhoodValues = [
       licensePercentageNeighborhood["Licensed"].percent,
       licensePercentageNeighborhood["Exempt"].percent,
-      licensePercentageNeighborhood["Unlicensed"].percent,
+      licensePercentageNeighborhood["No License"].percent,
     ];
     neighborhoodColors = [colors.neighborhoodColor, colors.neighborhoodColorLight, colors.defaultGray];
 
@@ -418,7 +418,7 @@ function plotLicenseDonut(data, selectedNeighborhood, colors) {
         y: [null],
         type: "bar",
         marker: { color: colors.defaultGray },
-        name: "Unlicensed",
+        name: "No License",
         showlegend: true,
       },
     ];
