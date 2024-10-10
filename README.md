@@ -4,25 +4,36 @@
 
 ADA aria-labels, toLocaleString
 
-split ratings and avg price, hide ratings
+Remove Airbnb outliers (above $2000) for most plots
 
-add % difference neighborhood vs dc price (mean and median)
+Split ratings and avg price, hide ratings
 
-Chloropleth map of price (ratings, number of listings, etc)?
+Add % difference neighborhood vs dc price (mean and median)
 
-bubble plot on map, number of listings per neighborhood
+Rearrange info boxes, increase size of numbers (esp. # of listings)
 
-Avg price by room type, avg price by license type
+Toolbar of radio buttons to change map
+    ~~Airbnbs~~
+    ~~Property Type~~
+    ~~License Status~~
+    Bubble map of number of listings
+    Choropleth price/neighbourhood (maybe listings/neighborhood)
+    Most expensive listings
+    ? Avg available days per neighbourhood ?
+    ? choropleth avg # of reviews ?
+    ? choropleth avg listing duration ?
 
-listings per minimum nights (with STR bar at 30 days)
+Plots
+    Avg price by room type
+    Avg price by license type
+    Listings per minimum nights (with STR bar at 30 days)
+    Sorted list of Max/Median price per neighbourhood, highlight chosen neighbourhood
+    Host number of listings (bar chart)
+    List top 10 hosts with most listings
+    ? Availability by neighborhood, like price per nghbrhd ?
+    ? Avg # of reviews by nghbrhd ?
 
-Sorted list of Max/Median price per neighbourhood, highlight chosen neighbourhood
-
-host number of listings (bar chart)
-
-List top 10 hosts with most listings
-
-Annotate price and availability over time
+Annotate price and availability over time plot
 
 --
 
