@@ -40,40 +40,29 @@ function updateInfoBox(listingsData, selectedNeighborhood) {
     selectedNeighborhood === "Washington, D.C."
       ? null
       : calculateStats(filteredListings);
-  // create HTML for infoBox
-  const isDC = selectedNeighborhood === "Washington, D.C.";
-  const statsHTML = isDC
-    ? `
-    <i class="fas fa-info-circle"></i>
-    <br>
-    Number of Airbnb's in all of <b style="font-size: 1.2em;">Washington, D.C.</b>: <span style="font-size: 24px;">${listingsData.length.toLocaleString()}</span><br>
-    Mean Price: $${stats.meanPrice.toFixed(2)}<br>
-    Median Price: $${stats.medianPrice.toFixed(2)}<br>
-    `
-    : `
-    <strong>${selectedNeighborhood}</strong><br>
-    <i class="fas fa-info-circle"></i>
-    <br>
-    Number of Airbnb's in Neighborhood: <span style="font-size: 24px;">${filteredListings.length.toLocaleString()}</span> of ${listingsData.length.toLocaleString()}<br>
-    <u><b style="font-size: 1.2em;">Neighborhood Stats:</b></u><br>
-    Mean Price: $${neighborhoodStats.meanPrice.toFixed(2)}<br>
-    Median Price: $${neighborhoodStats.medianPrice.toFixed(2)}<br>
-    <div class="stats-icons">
-        <i class="fas fa-dollar-sign"></i>
-        <i class="fas fa-star"></i>
-    </div>
-    <u><b style="font-size: 1.2em;">Washington, D.C.</b> (for Comparison):</u><br>
-    Mean Price: $${stats.meanPrice.toFixed(2)}<br>
-    Median Price: $${stats.medianPrice.toFixed(2)}<br>
-    `;
+      
+  
+  // update neighborhood info
+  document.getElementById("neighborhood-name").innerText = selectedNeighborhood;
+  document.getElementById("neighborhood-count").innerText = filteredListings.length.toLocaleString();
+  document.getElementById("total-count").innerText = listingsData.length.toLocaleString();
+  document.getElementById("total-count-all-dc").innerText = listingsData.length.toLocaleString();
+  document.getElementById("dc-mean-price").innerText = `$${stats.meanPrice.toFixed(2)}`;
+  document.getElementById("dc-median-price").innerText = `$${stats.medianPrice.toFixed(2)}`;
+  
+  if (neighborhoodStats) {
+    document.getElementById("neighborhood-mean-price").innerText = `$${neighborhoodStats.meanPrice.toFixed(2)}`;
+    document.getElementById("neighborhood-median-price").innerText = `$${neighborhoodStats.medianPrice.toFixed(2)}`;
+  }
 
-    // Mean Rating: ${neighborhoodStats.meanRating.toFixed(2)} \u2605<br>
-    // Median Rating: ${neighborhoodStats.medianRating.toFixed(2)} \u2605<br>   
-    // Mean Rating: ${stats.meanRating.toFixed(2)} \u2605<br>
-    // Median Rating: ${stats.medianRating.toFixed(2)} \u2605
-
+  // toggle display of neighborhood comparison stats
+  const neighborhoodToggles = document.querySelectorAll('.neighborhood-toggle');
+  const displayStyle = selectedNeighborhood === "Washington, D.C." ? "none" : "block";
+  neighborhoodToggles.forEach(div => div.style.display = displayStyle);
+  document.getElementById("all-dc-comparison").style.display = selectedNeighborhood === "Washington, D.C." ? "block" : "none";
+ 
   // update infoBox
-  infoBoxElement.innerHTML = statsHTML;
+  infoBoxElement.innerHTML = infoBoxElement.innerHTML; // trigger an update
 }
 
 // filter listings by neighborhood
