@@ -180,10 +180,10 @@ function updatePriceAndRatingsPlot(
         value.toLocaleString("en-US", { style: "currency", currency: "USD" })
       );
       xLabels = [
-        "Mean (<b>$</b>) (Neighborhood)",
-        "Median (<b>$</b>) (Neighborhood)",
-        "Mean (<b>$</b>) (All of DC)",
-        "Median (<b>$</b>) (All of DC)",
+        "Mean (<b>$</b>)<br>(Neighborhood)",
+        "Median (<b>$</b>)<br>(Neighborhood)",
+        "Mean (<b>$</b>)<br>(All of DC)",
+        "Median (<b>$</b>)<br>(All of DC)",
       ];
     }
     yTitle = "Price";
@@ -210,10 +210,10 @@ function updatePriceAndRatingsPlot(
           }) + " \u2605"
       );
       xLabels = [
-        "Mean (\u2605) (Neighborhood)",
-        "Median (\u2605) (Neighborhood)",
-        "Mean (\u2605) (All of DC)",
-        "Median (\u2605) (All of DC)",
+        "Mean (\u2605)<br>(Neighborhood)",
+        "Median (\u2605)<br>(Neighborhood)",
+        "Mean (\u2605)<br>(All of DC)",
+        "Median (\u2605)<br>(All of DC)",
       ];
     }
     yTitle = "Rating";
@@ -337,6 +337,13 @@ function plotLicenseDonut(data, selectedNeighborhood, colors) {
         r: 50,
         t: 200,
         pad: 4,
+      },
+      legend: {
+        orientation: "h",
+        y: -0.3,
+        x: 0.5,
+        xanchor: "center",
+        yanchor: "top",
       },
     };
 
@@ -483,8 +490,8 @@ function plotPropertyType(data, selectedNeighborhood, colors) {
       count: dcPropertyTypes[key].count,
     }));
 
-    // sort by descending percentage
-    combinedData.sort((a, b) => b.percent - a.percent);
+    // sort
+    combinedData.sort((a, b) => a.percent - b.percent);
 
     // assign variables
     percents = combinedData.map((item) => item.percent);
@@ -505,19 +512,19 @@ function plotPropertyType(data, selectedNeighborhood, colors) {
     // combine neighborhood and DC data
     let combinedData = [
       ...Object.keys(neighborhoodPropertyTypes).map((key) => ({
-        label: `${key} (Neighborhood)`,
+        label: `${key}<br>(Neighborhood)`,
         percent: neighborhoodPropertyTypes[key].percent,
         count: neighborhoodPropertyTypes[key].count,
       })),
       ...Object.keys(dcPropertyTypes).map((key) => ({
-        label: `${key} (All of DC)`,
+        label: `${key}<br>(All of DC)`,
         percent: dcPropertyTypes[key].percent,
         count: dcPropertyTypes[key].count,
       })),
     ];
 
-    // sort by descending percentage
-    combinedData.sort((a, b) => b.percent - a.percent);
+    // sort
+    combinedData.sort((a, b) => a.percent - b.percent);
 
     // assign variables
     percents = combinedData.map((item) => item.percent);
@@ -536,9 +543,10 @@ function plotPropertyType(data, selectedNeighborhood, colors) {
   }
 
   const trace = {
-    x: xLabels,
-    y: percents,
+    y: xLabels,
+    x: percents,
     type: "bar",
+    orientation: "h",
     text: percents.map((percent) => percent + "%"),
     textposition: "auto",
     hovertemplate:
@@ -560,6 +568,7 @@ function plotPropertyType(data, selectedNeighborhood, colors) {
       x: [null],
       y: [null],
       type: "bar",
+      orientation: "h",
       marker: { color: colors.neighborhoodColor },
       name: "Neighborhood",
       showlegend: showLegend,
@@ -575,8 +584,8 @@ function plotPropertyType(data, selectedNeighborhood, colors) {
   ];
 
   const layout = {
-    yaxis: { title: "Percent (%) of Total" },
-    xaxis: {
+    xaxis: { title: "Percent (%) of Total" },
+    yaxis: {
       // title: "Property Type" ,
       tickangle: 35,
     },

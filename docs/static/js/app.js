@@ -46,7 +46,7 @@ function updateInfoBox(listingsData, selectedNeighborhood) {
     ? `
     <i class="fas fa-info-circle"></i>
     <br>
-    Number of Airbnb's in all of <b style="font-size: 1.2em;">Washington, D.C.</b>: ${listingsData.length.toLocaleString()}<br>
+    Number of Airbnb's in all of <b style="font-size: 1.2em;">Washington, D.C.</b>: <span style="font-size: 24px;">${listingsData.length.toLocaleString()}</span><br>
     Mean Price: $${stats.meanPrice.toFixed(2)}<br>
     Median Price: $${stats.medianPrice.toFixed(2)}<br>
     `
@@ -54,7 +54,7 @@ function updateInfoBox(listingsData, selectedNeighborhood) {
     <strong>${selectedNeighborhood}</strong><br>
     <i class="fas fa-info-circle"></i>
     <br>
-    Number of Airbnb's in Neighborhood: ${filteredListings.length.toLocaleString()}<br>
+    Number of Airbnb's in Neighborhood: <span style="font-size: 24px;">${filteredListings.length.toLocaleString()}</span> of ${listingsData.length.toLocaleString()}<br>
     <u><b style="font-size: 1.2em;">Neighborhood Stats:</b></u><br>
     Mean Price: $${neighborhoodStats.meanPrice.toFixed(2)}<br>
     Median Price: $${neighborhoodStats.medianPrice.toFixed(2)}<br>
