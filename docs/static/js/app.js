@@ -20,11 +20,13 @@ const getPriceAvailabilityData =
     : fetch("/api/price_availability").then((response) => response.json());
 
 // fetch data and geojson, then create map
-Promise.all([getData, fetch(geojson).then((response) => response.json()), getPriceAvailabilityData]).then(
-  ([data, neighborhoodData, priceAvailabilityData]) => {
-    createMap(neighborhoodData, data, priceAvailabilityData);
-  }
-);
+Promise.all([
+  getData,
+  fetch(geojson).then((response) => response.json()),
+  getPriceAvailabilityData,
+]).then(([data, neighborhoodData, priceAvailabilityData]) => {
+  createMap(neighborhoodData, data, priceAvailabilityData);
+});
 
 // infoBox
 function updateInfoBox(listingsData, selectedNeighborhood) {
@@ -40,27 +42,39 @@ function updateInfoBox(listingsData, selectedNeighborhood) {
     selectedNeighborhood === "Washington, D.C."
       ? null
       : calculateStats(filteredListings);
-      
-  
+
   // update neighborhood info
   document.getElementById("neighborhood-name").innerText = selectedNeighborhood;
-  document.getElementById("neighborhood-count").innerText = filteredListings.length.toLocaleString();
-  document.getElementById("total-count").innerText = listingsData.length.toLocaleString();
-  document.getElementById("total-count-all-dc").innerText = listingsData.length.toLocaleString();
-  document.getElementById("dc-mean-price").innerText = `$${stats.meanPrice.toFixed(2)}`;
-  document.getElementById("dc-median-price").innerText = `$${stats.medianPrice.toFixed(2)}`;
-  
+  document.getElementById("neighborhood-count").innerText =
+    filteredListings.length.toLocaleString();
+  document.getElementById("total-count").innerText =
+    listingsData.length.toLocaleString();
+  document.getElementById("total-count-all-dc").innerText =
+    listingsData.length.toLocaleString();
+  document.getElementById(
+    "dc-mean-price"
+  ).innerText = `$${stats.meanPrice.toFixed(2)}`;
+  document.getElementById(
+    "dc-median-price"
+  ).innerText = `$${stats.medianPrice.toFixed(2)}`;
+
   if (neighborhoodStats) {
-    document.getElementById("neighborhood-mean-price").innerText = `$${neighborhoodStats.meanPrice.toFixed(2)}`;
-    document.getElementById("neighborhood-median-price").innerText = `$${neighborhoodStats.medianPrice.toFixed(2)}`;
+    document.getElementById(
+      "neighborhood-mean-price"
+    ).innerText = `$${neighborhoodStats.meanPrice.toFixed(2)}`;
+    document.getElementById(
+      "neighborhood-median-price"
+    ).innerText = `$${neighborhoodStats.medianPrice.toFixed(2)}`;
   }
 
   // toggle display of neighborhood comparison stats
-  const neighborhoodToggles = document.querySelectorAll('.neighborhood-toggle');
-  const displayStyle = selectedNeighborhood === "Washington, D.C." ? "none" : "block";
-  neighborhoodToggles.forEach(div => div.style.display = displayStyle);
-  document.getElementById("all-dc-comparison").style.display = selectedNeighborhood === "Washington, D.C." ? "block" : "none";
- 
+  const neighborhoodToggles = document.querySelectorAll(".neighborhood-toggle");
+  const displayStyle =
+    selectedNeighborhood === "Washington, D.C." ? "none" : "block";
+  neighborhoodToggles.forEach((div) => (div.style.display = displayStyle));
+  document.getElementById("all-dc-comparison").style.display =
+    selectedNeighborhood === "Washington, D.C." ? "block" : "none";
+
   // update infoBox
   infoBoxElement.innerHTML = infoBoxElement.innerHTML; // trigger an update
 }

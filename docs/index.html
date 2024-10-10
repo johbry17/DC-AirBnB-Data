@@ -221,12 +221,14 @@
   
     if (isGitHubPages || (isLocalhost && !window.location.hostname.includes(':5000'))) {
       // GitHub Pages or localhost for GitHub Pages
+      loadScript('./static/js/colors.js');
       loadScript('./static/js/map.js');
       loadScript('./static/js/plots.js');
       loadScript('./static/js/dataUtils.js');
       loadScript('./static/js/app.js');
     } else {
       // Flask or localhost for Flask
+      loadScript('/static/js/colors.js');
       loadScript('/static/js/map.js');
       loadScript('/static/js/plots.js');
       loadScript('/static/js/dataUtils.js');

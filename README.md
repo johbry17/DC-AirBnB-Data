@@ -6,11 +6,7 @@ ADA aria-labels, toLocaleString
 
 Remove Airbnb outliers (above $2000) for most plots
 
-Split ratings and avg price, hide ratings
-
 Add % difference neighborhood vs dc price (mean and median)
-
-Rearrange info boxes, increase size of numbers (esp. # of listings)
 
 Toolbar of radio buttons to change map
     ~~Airbnbs~~

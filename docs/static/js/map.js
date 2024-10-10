@@ -47,10 +47,10 @@ function createMap(neighborhoods, listingsData, priceAvailabilityData) {
   // create toggle for map layers
   L.control.layers(baseMap, overlays).addTo(map);
   // L.control.layers(baseMap, overlays,
-      // { collapsed: false }
-    // )
-    // .addTo(map);
-  
+  // { collapsed: false }
+  // )
+  // .addTo(map);
+
   let activeOverlay = markerGroups.default;
   let activeLegend = null;
 
@@ -82,9 +82,11 @@ function createMap(neighborhoods, listingsData, priceAvailabilityData) {
   });
 
   map.on("overlayremove", function (eventLayer) {
-    if (    
-      (eventLayer.name === "License Status" && activeOverlay === markerGroups.license) ||
-      (eventLayer.name === "Property Type" && activeOverlay === markerGroups.propertyType)
+    if (
+      (eventLayer.name === "License Status" &&
+        activeOverlay === markerGroups.license) ||
+      (eventLayer.name === "Property Type" &&
+        activeOverlay === markerGroups.propertyType)
     ) {
       if (activeLegend) {
         map.removeControl(activeLegend);
@@ -95,12 +97,12 @@ function createMap(neighborhoods, listingsData, priceAvailabilityData) {
 
     // activeOverlay = null;
   });
-  
+
   // initialize neighborhoodLayer
   const neighborhoodsLayer = L.geoJSON(neighborhoods, {
     style: {
       // opacity: 0,
-      color: "green",
+      color: defaultColors.neighborhoodLayer,
       weight: 3,
     },
     // event listener, zooms into neighborhood on click
@@ -112,13 +114,25 @@ function createMap(neighborhoods, listingsData, priceAvailabilityData) {
         const dropdown = document.getElementById("neighborhoods-dropdown");
         dropdown.value = selectedNeighborhood;
 
-        zoomIn(map, neighborhoodsLayer, selectedNeighborhood, listingsData, priceAvailabilityData);
+        zoomIn(
+          map,
+          neighborhoodsLayer,
+          selectedNeighborhood,
+          listingsData,
+          priceAvailabilityData
+        );
       });
     },
   });
 
   // initial call for controls, infoBox, and plots
-  neighborhoodsControl(map, neighborhoods, neighborhoodsLayer, listingsData, priceAvailabilityData);
+  neighborhoodsControl(
+    map,
+    neighborhoods,
+    neighborhoodsLayer,
+    listingsData,
+    priceAvailabilityData
+  );
   updateInfoBox(listingsData, "Washington, D.C.");
   allDCPlots(listingsData, priceAvailabilityData, defaultColors);
 
@@ -170,9 +184,20 @@ function neighborhoodsControl(
   dropdown.addEventListener("change", function () {
     const selectedNeighborhood = this.value;
     if (selectedNeighborhood === "top") {
-      resetMapView(map, neighborhoodsLayer, listingsData, priceAvailabilityData);
+      resetMapView(
+        map,
+        neighborhoodsLayer,
+        listingsData,
+        priceAvailabilityData
+      );
     } else {
-      zoomIn(map, neighborhoodsLayer, selectedNeighborhood, listingsData, priceAvailabilityData);
+      zoomIn(
+        map,
+        neighborhoodsLayer,
+        selectedNeighborhood,
+        listingsData,
+        priceAvailabilityData
+      );
     }
   });
 }
@@ -195,13 +220,13 @@ function createMarkers(data, colorBy = null) {
 
   // loop to populate markers
   data.forEach((listing) => {
-    let markerColor = "red"; // default color
+    let markerColor = defaultColors.airbnbs; // default color
 
     // determine marker color based on colorBy parameter
     if (colorBy === "license") {
-      markerColor = getLicenseColor(listing.licenseCategory); 
+      markerColor = licenseColors[listing.licenseCategory] || licenseColors.default;
     } else if (colorBy === "propertyType") {
-      markerColor = getPropertyTypeColor(listing.room_type); 
+      markerColor = propertyTypeColors[listing.room_type] || propertyTypeColors.default;
     }
 
     // marker design
@@ -241,47 +266,17 @@ function createMarkers(data, colorBy = null) {
   return markers;
 }
 
-// helper function to determine marker color based on license status
-function getLicenseColor(licenseCategory) {
-  switch (licenseCategory) {
-    case "Licensed":
-      return "green";
-    case "Exempt":
-      return "yellow";
-    case "No License":
-      return "red";
-    default:
-      return "gray";
-  }
-}
-
-// helper function to determine marker color based on property type
-function getPropertyTypeColor(propertyType) {
-  switch (propertyType) {
-    case "Entire home/apt":
-      return "orange";
-    case "Private room":
-      return "blue";
-    case "Shared room":
-      return "green";
-    case "Hotel room":
-      return "red";
-    default:
-      return "purple";
-  }
-}
-
 // create legend
 function addLegend(type) {
   let legend = L.control({
     position: "topright",
   });
-  
+
   // format legend based on type
   legend.onAdd = function () {
     let div = L.DomUtil.create("div", "custom-legend");
     div.style.zIndex = "1000"; // ensure legend is on top
-    
+
     // conditional to set labels and colors
     let labels, colors;
     if (type === "License Status") {
@@ -340,7 +335,12 @@ function createPopupContent(listing) {
 }
 
 // resets map view to all of D.C., updates infoBox and plots
-function resetMapView(map, neighborhoodsLayer, listingsData, priceAvailabilityData) {
+function resetMapView(
+  map,
+  neighborhoodsLayer,
+  listingsData,
+  priceAvailabilityData
+) {
   map.setView([38.89511, -77.03637], 12);
   map.removeLayer(neighborhoodsLayer); // remove neighborhood boundaries from zoomIn()
   // call to update infoBox and plots
@@ -349,7 +349,13 @@ function resetMapView(map, neighborhoodsLayer, listingsData, priceAvailabilityDa
 }
 
 // zooms map for neighborhood view, updates infoBox and plots
-function zoomIn(map, neighborhoodsLayer, selectedNeighborhood, listingsData, priceAvailabilityData) {
+function zoomIn(
+  map,
+  neighborhoodsLayer,
+  selectedNeighborhood,
+  listingsData,
+  priceAvailabilityData
+) {
   // remove previous neighborhood boundaries
   neighborhoodsLayer.resetStyle();
 
@@ -390,6 +396,11 @@ function zoomIn(map, neighborhoodsLayer, selectedNeighborhood, listingsData, pri
     // const newMarkers = createMarkers(listingsData);
     // newMarkers.addTo(map);
     updateInfoBox(listingsData, selectedNeighborhood);
-    neighborhoodPlots(listingsData, selectedNeighborhood, priceAvailabilityData, defaultColors);
+    neighborhoodPlots(
+      listingsData,
+      selectedNeighborhood,
+      priceAvailabilityData,
+      defaultColors
+    );
   }
 }

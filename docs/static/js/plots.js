@@ -28,7 +28,6 @@ function resizePlots() {
 // master function to call plots for all of DC
 function allDCPlots(listingsData, priceAvailabilityData, colors) {
   plotPriceAvailability(priceAvailabilityData, "Washington, D.C.");
-  // plotLocation(listingsData, "Washington, D.C.", colors);
   updatePricePlot(listingsData, "Washington, D.C.", colors);
   updateRatingsPlot(listingsData, "Washington, D.C.", colors);
   plotLicenseDonut(listingsData, "Washington, D.C.", colors);
@@ -36,9 +35,13 @@ function allDCPlots(listingsData, priceAvailabilityData, colors) {
 }
 
 // master function to call plots for neighborhoods
-function neighborhoodPlots(listingsData, selectedNeighborhood, priceAvailabilityData, colors) {
+function neighborhoodPlots(
+  listingsData,
+  selectedNeighborhood,
+  priceAvailabilityData,
+  colors
+) {
   plotPriceAvailability(priceAvailabilityData, selectedNeighborhood);
-  // plotLocation(listingsData, selectedNeighborhood, colors);
   updatePricePlot(listingsData, selectedNeighborhood, colors);
   updateRatingsPlot(listingsData, selectedNeighborhood, colors);
   plotLicenseDonut(listingsData, selectedNeighborhood, colors);
@@ -65,84 +68,103 @@ function getLegendTraces(colors, selectedNeighborhood) {
       marker: { color: colors.cityColor },
       name: "DC",
       showlegend: showLegend,
-    }
+    },
   ];
 }
 
 // plot price and availability for all of DC or a neighborhood
-function plotPriceAvailability(data, selectedNeighborhood) { 
+function plotPriceAvailability(data, selectedNeighborhood) {
   // data for all of DC
-  const allDCData = data.filter(d => d.neighbourhood === "");  // Filter for overall Washington, D.C.
-  const allDates = allDCData.map(d => d.date);
-  const allAvgPrices = allDCData.map(d => +d.avg_price);
-  const allAvailableListings = allDCData.map(d => +d.available_listings);
+  const allDCData = data.filter((d) => d.neighbourhood === ""); // Filter for overall Washington, D.C.
+  const allDates = allDCData.map((d) => d.date);
+  const allAvgPrices = allDCData.map((d) => +d.avg_price);
+  const allAvailableListings = allDCData.map((d) => +d.available_listings);
 
   // data for neighborhood
-  const neighborhoodData = data.filter(d => d.neighbourhood === selectedNeighborhood);
-  const neighborhoodDates = neighborhoodData.map(d => d.date);
-  const neighborhoodAvgPrices = neighborhoodData.map(d => +d.avg_price);
-  const neighborhoodAvailableListings = neighborhoodData.map(d => +d.available_listings);
+  const neighborhoodData = data.filter(
+    (d) => d.neighbourhood === selectedNeighborhood
+  );
+  const neighborhoodDates = neighborhoodData.map((d) => d.date);
+  const neighborhoodAvgPrices = neighborhoodData.map((d) => +d.avg_price);
+  const neighborhoodAvailableListings = neighborhoodData.map(
+    (d) => +d.available_listings
+  );
 
   // select data based on selectedNeighborhood
-  const dates = selectedNeighborhood === "Washington, D.C." ? allDates : neighborhoodDates;
-  const avgPrices = selectedNeighborhood === "Washington, D.C." ? allAvgPrices : neighborhoodAvgPrices;
-  const availableListings = selectedNeighborhood === "Washington, D.C." ? allAvailableListings : neighborhoodAvailableListings;
+  const dates =
+    selectedNeighborhood === "Washington, D.C." ? allDates : neighborhoodDates;
+  const avgPrices =
+    selectedNeighborhood === "Washington, D.C."
+      ? allAvgPrices
+      : neighborhoodAvgPrices;
+  const availableListings =
+    selectedNeighborhood === "Washington, D.C."
+      ? allAvailableListings
+      : neighborhoodAvailableListings;
 
   // create traces (one line for each metric)
   const trace1 = {
-      x: dates,
-      y: avgPrices,
-      mode: 'lines',
-      name: 'Avg Price (≤ $500)',
-      line: { color: 'orange' },
-      hovertemplate: "<b>Price:</b> %{text}<extra></extra>",
-      text: avgPrices.map(price => `$${price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`)
+    x: dates,
+    y: avgPrices,
+    mode: "lines",
+    name: "Avg Price (≤ $500)",
+    line: { color: "orange" },
+    hovertemplate: "<b>Price:</b> %{text}<extra></extra>",
+    text: avgPrices.map(
+      (price) =>
+        `$${price.toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })}`
+    ),
   };
   const trace2 = {
-      x: dates,
-      y: availableListings,
-      mode: 'lines',
-      name: 'Availability',
-      line: { color: 'blue' },
-      yaxis: 'y2',
-      hovertemplate: "<b>Availability:</b> %{text}<extra></extra>",
-      text: availableListings.map(listing => `${listing.toLocaleString()}`)
+    x: dates,
+    y: availableListings,
+    mode: "lines",
+    name: "Availability",
+    line: { color: "blue" },
+    yaxis: "y2",
+    hovertemplate: "<b>Availability:</b> %{text}<extra></extra>",
+    text: availableListings.map((listing) => `${listing.toLocaleString()}`),
   };
 
   const layout = {
-      title: `Price and Availability Over Time<br>(${selectedNeighborhood})<br><i style='font-size: .8em;'>Hover for details, excludes Airbnb's ≥ $500/night</i>`,
-      xaxis: { title: "Date" },
-      yaxis: {
-          title: "Avg Price (≤ $500)",
-          titlefont: { color: 'orange' },
-          tickfont: { color: 'orange' }
-      },
-      yaxis2: {
-          title: "Availability",
-          titlefont: { color: 'blue' },
-          tickfont: { color: 'blue' },
-          overlaying: 'y',
-          side: 'right'
-      },
-      hovermode: 'x unified',
-      legend: {
-        orientation: "h",
-        y: -0.3,
-        x: 0.5,
-        xanchor: "center",
-        yanchor: "top",
-      },
+    title: `Price and Availability Over Time<br>(${selectedNeighborhood})<br><i style='font-size: .8em;'>Hover for details, excludes Airbnb's ≥ $500/night</i>`,
+    xaxis: { title: "Date" },
+    yaxis: {
+      title: "Avg Price (≤ $500)",
+      titlefont: { color: "orange" },
+      tickfont: { color: "orange" },
+    },
+    yaxis2: {
+      title: "Availability",
+      titlefont: { color: "blue" },
+      tickfont: { color: "blue" },
+      overlaying: "y",
+      side: "right",
+    },
+    hovermode: "x unified",
+    legend: {
+      orientation: "h",
+      y: -0.3,
+      x: 0.5,
+      xanchor: "center",
+      yanchor: "top",
+    },
   };
 
   // plot single neighborhood or DC-wide traces
-  Plotly.newPlot('price-availability-plot', [trace1, trace2], layout);
+  Plotly.newPlot("price-availability-plot", [trace1, trace2], layout);
 }
 
 function updatePricePlot(listingsData, selectedNeighborhood, colors) {
   // calculate price stats for DC and neighborhood
   const dcStats = calculateStats(listingsData);
   const isDC = selectedNeighborhood === "Washington, D.C.";
-  const filteredListings = isDC ? listingsData : filterListingsByNeighborhood(listingsData, selectedNeighborhood);
+  const filteredListings = isDC
+    ? listingsData
+    : filterListingsByNeighborhood(listingsData, selectedNeighborhood);
   const neighborhoodStats = calculateStats(filteredListings);
 
   // get container
@@ -150,15 +172,25 @@ function updatePricePlot(listingsData, selectedNeighborhood, colors) {
 
   // format data and labels
   let chosenData = isDC
-    ? [dcStats.meanPrice, dcStats.medianPrice] 
-    : [neighborhoodStats.meanPrice, neighborhoodStats.medianPrice, dcStats.meanPrice, dcStats.medianPrice];
-  let hoverText = chosenData.map(value => value.toLocaleString("en-US", { style: "currency", currency: "USD" }));
-  let xLabels = selectedNeighborhood === isDC
-    ? ["Mean (<b>$</b>)", "Median (<b>$</b>)"]
+    ? [dcStats.meanPrice, dcStats.medianPrice]
     : [
-        "Mean (<b>$</b>)<br>(Neighborhood)", "Median (<b>$</b>)<br>(Neighborhood)",
-        "Mean (<b>$</b>)<br>(All of DC)", "Median (<b>$</b>)<br>(All of DC)"
+        neighborhoodStats.meanPrice,
+        neighborhoodStats.medianPrice,
+        dcStats.meanPrice,
+        dcStats.medianPrice,
       ];
+  let hoverText = chosenData.map((value) =>
+    value.toLocaleString("en-US", { style: "currency", currency: "USD" })
+  );
+  let xLabels =
+    selectedNeighborhood === isDC
+      ? ["Mean (<b>$</b>)", "Median (<b>$</b>)"]
+      : [
+          "Mean (<b>$</b>)<br>(Neighborhood)",
+          "Median (<b>$</b>)<br>(Neighborhood)",
+          "Mean (<b>$</b>)<br>(All of DC)",
+          "Median (<b>$</b>)<br>(All of DC)",
+        ];
 
   // create trace
   let trace = {
@@ -169,9 +201,15 @@ function updatePricePlot(listingsData, selectedNeighborhood, colors) {
     text: hoverText,
     textposition: "auto",
     marker: {
-      color: selectedNeighborhood === "Washington, D.C."
-        ? [colors.cityColor, colors.cityColor]
-        : [colors.neighborhoodColor, colors.neighborhoodColor, colors.cityColor, colors.cityColor],
+      color:
+        selectedNeighborhood === "Washington, D.C."
+          ? [colors.cityColor, colors.cityColor]
+          : [
+              colors.neighborhoodColor,
+              colors.neighborhoodColor,
+              colors.cityColor,
+              colors.cityColor,
+            ],
       line: { color: "black", width: 1 },
     },
     showlegend: false,
@@ -183,10 +221,17 @@ function updatePricePlot(listingsData, selectedNeighborhood, colors) {
   // create layout
   let layout = {
     yaxis: { title: "Price ($)" },
-    title: selectedNeighborhood === "Washington, D.C."
-      ? `<b>Price</b> for Washington, D.C.<br><i style="font-size: .8em;">Mean and Median</i>`
-      : `Neighborhood <b>vs.</b> all of DC<br><b>Price</b> Comparison<br><i style="font-size: .8em;">Mean and Median</i>`,
-    legend: { orientation: "h", y: -0.3, x: 0.5, xanchor: "center", yanchor: "top" }
+    title:
+      selectedNeighborhood === "Washington, D.C."
+        ? `<b>Price</b> for Washington, D.C.<br><i style="font-size: .8em;">Mean and Median</i>`
+        : `Neighborhood <b>vs.</b> all of DC<br><b>Price</b> Comparison<br><i style="font-size: .8em;">Mean and Median</i>`,
+    legend: {
+      orientation: "h",
+      y: -0.3,
+      x: 0.5,
+      xanchor: "center",
+      yanchor: "top",
+    },
   };
 
   Plotly.newPlot(plotContainer, [trace, ...legendTraces], layout);
@@ -196,22 +241,37 @@ function updateRatingsPlot(listingsData, selectedNeighborhood, colors) {
   // calculate rating stats for DC and neighborhood
   const dcStats = calculateStats(listingsData);
   const isDC = selectedNeighborhood === "Washington, D.C.";
-  const filteredListings = isDC ? listingsData : filterListingsByNeighborhood(listingsData, selectedNeighborhood);
+  const filteredListings = isDC
+    ? listingsData
+    : filterListingsByNeighborhood(listingsData, selectedNeighborhood);
   const neighborhoodStats = calculateStats(filteredListings);
 
   // get container
   let plotContainer = document.querySelector("#ratings-plot");
 
   // format data and labels
-  let chosenData = isDC 
-    ? [dcStats.meanRating, dcStats.medianRating] 
-    : [neighborhoodStats.meanRating, neighborhoodStats.medianRating, dcStats.meanRating, dcStats.medianRating];
-  let hoverText = chosenData.map(value => value.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " \u2605");
+  let chosenData = isDC
+    ? [dcStats.meanRating, dcStats.medianRating]
+    : [
+        neighborhoodStats.meanRating,
+        neighborhoodStats.medianRating,
+        dcStats.meanRating,
+        dcStats.medianRating,
+      ];
+  let hoverText = chosenData.map(
+    (value) =>
+      value.toLocaleString("en-US", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }) + " \u2605"
+  );
   let xLabels = isDC
     ? ["Mean (\u2605)", "Median (\u2605)"]
     : [
-        "Mean (\u2605)<br>(Neighborhood)", "Median (\u2605)<br>(Neighborhood)",
-        "Mean (\u2605)<br>(All of DC)", "Median (\u2605)<br>(All of DC)"
+        "Mean (\u2605)<br>(Neighborhood)",
+        "Median (\u2605)<br>(Neighborhood)",
+        "Mean (\u2605)<br>(All of DC)",
+        "Median (\u2605)<br>(All of DC)",
       ];
 
   // create trace
@@ -223,9 +283,15 @@ function updateRatingsPlot(listingsData, selectedNeighborhood, colors) {
     text: hoverText,
     textposition: "auto",
     marker: {
-      color: selectedNeighborhood === "Washington, D.C."
-        ? [colors.cityColor, colors.cityColor]
-        : [colors.neighborhoodColor, colors.neighborhoodColor, colors.cityColor, colors.cityColor],
+      color:
+        selectedNeighborhood === "Washington, D.C."
+          ? [colors.cityColor, colors.cityColor]
+          : [
+              colors.neighborhoodColor,
+              colors.neighborhoodColor,
+              colors.cityColor,
+              colors.cityColor,
+            ],
       line: { color: "black", width: 1 },
     },
     showlegend: false,
@@ -236,11 +302,21 @@ function updateRatingsPlot(listingsData, selectedNeighborhood, colors) {
 
   // create layout
   let layout = {
-    yaxis: { title: "Rating (\u2605)", range: [4, Math.max(...chosenData) + 1] },
-    title: selectedNeighborhood === "Washington, D.C."
-      ? `<b>Ratings</b> for Washington, D.C.<br><i style="font-size: .8em;">N.B., y-axis <b>deceptively</b> starts at 4</i>`
-      : `Neighborhood <b>vs.</b> all of DC<br><b>Ratings</b> Comparison<br><i style="font-size: .8em;">N.B., y-axis <b>deceptively</b> starts at 4</i>`,
-    legend: { orientation: "h", y: -0.3, x: 0.5, xanchor: "center", yanchor: "top" }
+    yaxis: {
+      title: "Rating (\u2605)",
+      range: [4, Math.max(...chosenData) + 1],
+    },
+    title:
+      selectedNeighborhood === "Washington, D.C."
+        ? `<b>Ratings</b> for Washington, D.C.<br><i style="font-size: .8em;">N.B., y-axis <b>deceptively</b> starts at 4</i>`
+        : `Neighborhood <b>vs.</b> all of DC<br><b>Ratings</b> Comparison<br><i style="font-size: .8em;">N.B., y-axis <b>deceptively</b> starts at 4</i>`,
+    legend: {
+      orientation: "h",
+      y: -0.3,
+      x: 0.5,
+      xanchor: "center",
+      yanchor: "top",
+    },
   };
 
   Plotly.newPlot(plotContainer, [trace, ...legendTraces], layout);
@@ -320,7 +396,11 @@ function plotLicenseDonut(data, selectedNeighborhood, colors) {
       licensePercentageNeighborhood["Exempt"].percent,
       licensePercentageNeighborhood["No License"].percent,
     ];
-    neighborhoodColors = [colors.neighborhoodColor, colors.neighborhoodColorLight, colors.defaultGray];
+    neighborhoodColors = [
+      colors.neighborhoodColor,
+      colors.neighborhoodColorLight,
+      colors.defaultGray,
+    ];
 
     // two donut charts: one for Neighborhood, one for DC
     const neighborhoodTrace = {
@@ -483,7 +563,9 @@ function plotPropertyType(data, selectedNeighborhood, colors) {
     counts = combinedData.map((item) => item.count);
     xLabels = combinedData.map((item) => item.label);
     markerColors = combinedData.map((item) =>
-      item.label.includes("Neighborhood") ? colors.neighborhoodColor : colors.cityColor
+      item.label.includes("Neighborhood")
+        ? colors.neighborhoodColor
+        : colors.cityColor
     );
     title = `Neighborhood <b>vs.</b> Washington, D.C.<br><b>Property Type</b> Comparison<br><i style="font-size: .8em;">Percent of available Airbnb's in Area</i>`;
     customdata = combinedData.map((item) => ({
