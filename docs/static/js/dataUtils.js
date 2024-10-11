@@ -98,3 +98,38 @@ function getPropertyTypePercentage(data) {
 
   return percentageDistribution;
 }
+
+// calculate average price per license category
+function getAveragePriceByLicense(data) {
+  let totalCount = {
+    Licensed: 0,
+    Exempt: 0,
+    "No License": 0,
+  };
+
+  let totalSum = {
+    Licensed: 0,
+    Exempt: 0,
+    "No License": 0,
+  };
+
+  // aggregate price and count by category
+  data.forEach((item) => {
+    let price = parseFloat(item.price) || 0; // Ensure price is a valid number
+    totalSum[item.licenseCategory] += price;
+    if (price > 0) {
+      totalCount[item.licenseCategory]++;
+    }
+  });
+
+  // calculate average price for each category
+  let averagePriceDistribution = {};
+  for (let key in totalSum) {
+    averagePriceDistribution[key] = {
+      count: totalCount[key],
+      avgPrice: totalCount[key] > 0 ? (totalSum[key] / totalCount[key]).toFixed(2) : 0,
+    };
+  }
+
+  return averagePriceDistribution;
+}

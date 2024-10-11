@@ -186,12 +186,17 @@ function syncDropdownAndOverlay(
   }
 
   // update plots
-  neighborhoodPlots(
-    listingsData,
-    selectedNeighborhood,
-    priceAvailabilityData,
-    defaultColors
-  );
+  if (selectedNeighborhood === "top") {
+    resetMapView(map, activeOverlay, listingsData, priceAvailabilityData);
+  } else {
+    zoomIn(
+      map,
+      activeOverlay,
+      selectedNeighborhood,
+      listingsData,
+      priceAvailabilityData
+    );
+  }
 }
 
 // create dropdown for neighborhood interaction
