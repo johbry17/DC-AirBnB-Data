@@ -9,7 +9,7 @@ function createMap(neighborhoods, listingsData, priceAvailabilityData) {
   const overlays = initializeOverlays(markerGroups);
 
   let activeOverlay = markerGroups.default; // default overlay
-  
+
   addBaseLayerControl(map);
   addOverlayControl(map, overlays);
 
@@ -28,14 +28,25 @@ function createMap(neighborhoods, listingsData, priceAvailabilityData) {
   map.invalidateSize();
 
   // sync dropdown and overlays if needed
-  syncDropdownAndOverlay(map, "top", "Airbnb's", overlays, listingsData, priceAvailabilityData);
+  syncDropdownAndOverlay(
+    map,
+    "top",
+    "Airbnb's",
+    overlays,
+    listingsData,
+    priceAvailabilityData
+  );
 }
 
 // initialize the map
 function initializeMap() {
-  let baseLayer = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-  });
+  let baseLayer = L.tileLayer(
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    {
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    }
+  );
 
   return L.map("map-id", {
     center: [38.89511, -77.03637],
@@ -69,7 +80,9 @@ function initializeOverlays(markerGroups) {
 // add the base layers and control
 function addBaseLayerControl(map) {
   let baseMap = {
-    "Street Map": L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"),
+    "Street Map": L.tileLayer(
+      "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+    ),
     Satellite: L.esri.basemapLayer("Imagery"),
     "National Geographic": L.esri.basemapLayer("NationalGeographic"),
     Topographic: L.esri.basemapLayer("Topographic"),
@@ -100,7 +113,6 @@ function updateOverlay(map, newOverlay, overlayName) {
       map.removeControl(activeLegend);
     }
 
-
     map.addLayer(newOverlay);
 
     if (overlayName === "License Status") {
@@ -116,7 +128,12 @@ function updateOverlay(map, newOverlay, overlayName) {
 }
 
 // initialize neighborhoods layer and add event listener to neighborhoods
-function initializeNeighborhoodsLayer(map, neighborhoods, listingsData, priceAvailabilityData) {
+function initializeNeighborhoodsLayer(
+  map,
+  neighborhoods,
+  listingsData,
+  priceAvailabilityData
+) {
   const neighborhoodsLayer = L.geoJSON(neighborhoods, {
     style: {
       color: defaultColors.neighborhoodLayer,
@@ -126,8 +143,15 @@ function initializeNeighborhoodsLayer(map, neighborhoods, listingsData, priceAva
     onEachFeature: (feature, layer) => {
       layer.on("click", function () {
         const selectedNeighborhood = feature.properties.neighbourhood;
-        document.getElementById("neighborhoods-dropdown").value = selectedNeighborhood;
-        zoomIn(map, neighborhoodsLayer, selectedNeighborhood, listingsData, priceAvailabilityData);
+        document.getElementById("neighborhoods-dropdown").value =
+          selectedNeighborhood;
+        zoomIn(
+          map,
+          neighborhoodsLayer,
+          selectedNeighborhood,
+          listingsData,
+          priceAvailabilityData
+        );
       });
     },
   });
@@ -137,13 +161,24 @@ function initializeNeighborhoodsLayer(map, neighborhoods, listingsData, priceAva
 }
 
 // sync dropdown and overlays
-function syncDropdownAndOverlay(map, selectedNeighborhood, selectedOverlayName, overlays, listingsData, priceAvailabilityData) {
+function syncDropdownAndOverlay(
+  map,
+  selectedNeighborhood,
+  selectedOverlayName,
+  overlays,
+  listingsData,
+  priceAvailabilityData
+) {
   const dropdown = document.getElementById("neighborhoods-dropdown");
   dropdown.value = selectedNeighborhood;
 
   // update overlay
   if (overlays[selectedOverlayName]) {
-    const overlayState = updateOverlay(map, overlays[selectedOverlayName], selectedOverlayName);
+    const overlayState = updateOverlay(
+      map,
+      overlays[selectedOverlayName],
+      selectedOverlayName
+    );
     activeOverlay = overlayState.activeOverlay;
     activeLegend = overlayState.activeLegend;
   } else {
@@ -151,11 +186,21 @@ function syncDropdownAndOverlay(map, selectedNeighborhood, selectedOverlayName, 
   }
 
   // update plots
-  neighborhoodPlots(listingsData, selectedNeighborhood, priceAvailabilityData, defaultColors);
+  neighborhoodPlots(
+    listingsData,
+    selectedNeighborhood,
+    priceAvailabilityData,
+    defaultColors
+  );
 }
 
 // create dropdown for neighborhood interaction
-function neighborhoodsControl(map, neighborhoodsInfo, listingsData, priceAvailabilityData) {
+function neighborhoodsControl(
+  map,
+  neighborhoodsInfo,
+  listingsData,
+  priceAvailabilityData
+) {
   const controlDiv = document.getElementById("neighborhoods-control");
   const dropdown = createNeighborhoodDropdown(neighborhoodsInfo);
   controlDiv.innerHTML = `<div class="control-header">
@@ -165,24 +210,21 @@ function neighborhoodsControl(map, neighborhoodsInfo, listingsData, priceAvailab
   controlDiv.appendChild(dropdown);
 
   // create neighborhoods layer but don't add it to the map yet
-  const neighborhoodsLayer = initializeNeighborhoodsLayer(map, neighborhoodsInfo, listingsData, priceAvailabilityData);
+  const neighborhoodsLayer = initializeNeighborhoodsLayer(
+    map,
+    neighborhoodsInfo,
+    listingsData,
+    priceAvailabilityData
+  );
 
   // add event listener for dropdown changes
-  addDropdownChangeListener(dropdown, map, neighborhoodsLayer, listingsData, priceAvailabilityData);
-}
-
-// event listener for when a neighborhood is selected
-function addDropdownChangeListener(dropdown, map, neighborhoodsLayer, listingsData, priceAvailabilityData) {
-  dropdown.addEventListener("change", function () {
-    const selectedNeighborhood = this.value;
-    if (selectedNeighborhood === "top") {
-      resetMapView(map, neighborhoodsLayer, listingsData, priceAvailabilityData);
-    } else {
-      // add neighborhoodsLayer if a neighborhood is selected
-      neighborhoodsLayer.addTo(map);
-      zoomIn(map, neighborhoodsLayer, selectedNeighborhood, listingsData, priceAvailabilityData);
-    }
-  });
+  addDropdownChangeListener(
+    dropdown,
+    map,
+    neighborhoodsLayer,
+    listingsData,
+    priceAvailabilityData
+  );
 }
 
 // create neighborhood dropdown elements
@@ -198,9 +240,12 @@ function createNeighborhoodDropdown(neighborhoodsInfo) {
   // populate dropdown menu
   const allDC = createOption("Washington, D.C.", "top");
   dropdown.appendChild(allDC);
-  
+
   neighborhoodsInfo.features.forEach((feature) => {
-    const option = createOption(feature.properties.neighbourhood, feature.properties.neighbourhood);
+    const option = createOption(
+      feature.properties.neighbourhood,
+      feature.properties.neighbourhood
+    );
     dropdown.appendChild(option);
   });
 
@@ -208,13 +253,30 @@ function createNeighborhoodDropdown(neighborhoodsInfo) {
 }
 
 // event listener for dropdown changes
-function addDropdownChangeListener(dropdown, map, neighborhoodsLayer, listingsData, priceAvailabilityData) {
+function addDropdownChangeListener(
+  dropdown,
+  map,
+  neighborhoodsLayer,
+  listingsData,
+  priceAvailabilityData
+) {
   dropdown.addEventListener("change", function () {
     const selectedNeighborhood = this.value;
     if (selectedNeighborhood === "top") {
-      resetMapView(map, neighborhoodsLayer, listingsData, priceAvailabilityData);
+      resetMapView(
+        map,
+        neighborhoodsLayer,
+        listingsData,
+        priceAvailabilityData
+      );
     } else {
-      zoomIn(map, neighborhoodsLayer, selectedNeighborhood, listingsData, priceAvailabilityData);
+      zoomIn(
+        map,
+        neighborhoodsLayer,
+        selectedNeighborhood,
+        listingsData,
+        priceAvailabilityData
+      );
     }
   });
 }
@@ -241,9 +303,11 @@ function createMarkers(data, colorBy = null) {
 
     // determine marker color based on colorBy parameter
     if (colorBy === "license") {
-      markerColor = licenseColors[listing.licenseCategory] || licenseColors.default;
+      markerColor =
+        licenseColors[listing.licenseCategory] || licenseColors.default;
     } else if (colorBy === "propertyType") {
-      markerColor = propertyTypeColors[listing.room_type] || propertyTypeColors.default;
+      markerColor =
+        propertyTypeColors[listing.room_type] || propertyTypeColors.default;
     }
 
     // marker design
