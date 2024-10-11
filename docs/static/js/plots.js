@@ -7,6 +7,7 @@ function resizePlots() {
     "license-plot",
     "license-price-plot",
     "property-type-plot",
+    "property-type-price-plot",
   ];
 
   plotIds.forEach((id) => {
@@ -34,6 +35,7 @@ function allDCPlots(listingsData, priceAvailabilityData, colors) {
   plotLicenseDonut(listingsData, "Washington, D.C.", colors);
   plotLicensePrice(listingsData, "Washington, D.C.", colors);
   plotPropertyType(listingsData, "Washington, D.C.", colors);
+  plotPropertyTypePrice(listingsData, "Washington, D.C.", colors);
 }
 
 // master function to call plots for neighborhoods
@@ -49,6 +51,7 @@ function neighborhoodPlots(
   plotLicenseDonut(listingsData, selectedNeighborhood, colors);
   plotLicensePrice(listingsData, selectedNeighborhood, colors);
   plotPropertyType(listingsData, selectedNeighborhood, colors);
+  plotPropertyTypePrice(listingsData, selectedNeighborhood, colors);
 }
 
 // traces for each plot
@@ -768,4 +771,133 @@ function plotPropertyType(data, selectedNeighborhood, colors) {
   };
 
   Plotly.newPlot(plotContainer, [trace, ...legendTraces], layout);
+}
+
+// plot mean price per property type
+function plotPropertyTypePrice(data, selectedNeighborhood, colors) {
+  const plotContainer = document.getElementById("property-type-price-plot");
+  const neighborhoodData = filterListingsByNeighborhood(
+    data,
+    selectedNeighborhood
+  );
+
+  // calculate average price for each property type
+  const dcPropertyTypes = getPropertyTypePrice(data);
+  const neighborhoodPropertyTypes = getPropertyTypePrice(neighborhoodData);
+
+  // declare variables
+  let dcLabels, dcAvgPrices, dcTitle, dcColors;
+  let neighborhoodLabels, neighborhoodAvgPrices, neighborhoodColors;
+  
+  // assign DC data to variables
+  dcLabels = Object.keys(dcPropertyTypes);
+  dcAvgPrices = Object.values(dcPropertyTypes).map((obj) => obj.avgPrice);
+  dcTitle = `Average <b>Price by Property Type</b> for Washington, D.C.`;
+  dcColors = dcLabels.map((label) => colors.cityColor);
+
+  // conditional for DC only or neighborhood and DC
+  if (selectedNeighborhood === "Washington, D.C.") {
+    // create trace
+    const dcTrace = {
+      x: dcLabels,
+      y: dcAvgPrices,
+      type: "bar",
+      marker: { color: dcColors, line: { color: "black", width: 1 } },
+      text: dcAvgPrices.map(
+        (price) => `$${parseFloat(price).toFixed(2).toLocaleString("en-US")}`
+      ),
+      textposition: "auto",
+      hoverinfo: "x+y",
+      hovertemplate: "%{x}: $%{y:,.2f}<extra></extra>",
+    };
+
+    const layout = {
+      title: dcTitle,
+      showlegend: false,
+      xaxis: { title: "Property Type" },
+      yaxis: { title: "Average Price ($)" },
+      margin: { l: 50, r: 50, t: 100, b: 50 },
+    };
+
+    // plot DC only
+    Plotly.newPlot(plotContainer, [dcTrace], layout);
+  } else {
+    // assign neighborhood data to variables
+    neighborhoodLabels = Object.keys(neighborhoodPropertyTypes);
+    neighborhoodAvgPrices = Object.values(neighborhoodPropertyTypes).map(
+      (obj) => obj.avgPrice
+    );
+    neighborhoodColors = neighborhoodLabels.map((label) => colors.neighborhoodColor);
+
+    // create trace
+    const neighborhoodTrace = {
+      x: neighborhoodLabels,
+      y: neighborhoodAvgPrices,
+      type: "bar",
+      marker: { color: neighborhoodColors, line: { color: "black", width: 1 } },
+      text: neighborhoodAvgPrices.map(
+        (price) => `$${parseFloat(price).toFixed(2).toLocaleString("en-US")}`
+      ),
+      textposition: "auto",
+      hoverinfo: "x+y",
+      hovertemplate: "%{x}: $%{y:,.2f}<extra></extra>",
+      showlegend: false,
+    };
+
+    // create trace
+    const dcTrace = {
+      x: dcLabels,
+      y: dcAvgPrices,
+      type: "bar",
+      marker: { color: dcColors, line: { color: "black", width: 1 } },
+      text: dcAvgPrices.map(
+        (price) => `$${parseFloat(price).toFixed(2).toLocaleString("en-US")}`
+      ),
+      textposition: "auto",
+      hoverinfo: "x+y",
+      hovertemplate: "%{x}: $%{y:,.2f}<extra></extra>",
+      showlegend: false,
+    };
+
+    // dummy traces for the legend
+    const legendTraces = [
+      {
+        x: [null],
+        y: [null],
+        mode: "markers",
+        marker: { color: colors.neighborhoodColor, symbol: "square", size: 12 },
+        name: "Neighborhood",
+        showlegend: true,
+      },
+      {
+        x: [null],
+        y: [null],
+        mode: "markers",
+        marker: { color: colors.cityColor, symbol: "square", size: 12 },
+        name: "DC",
+        showlegend: true,
+      },
+    ];
+
+    const layout = {
+      title: `Average <b>Price by Property Type</b> Comparison:<br>Neighborhood <b>vs.</b> Washington, D.C.`,
+      barmode: "group",
+      xaxis: { title: "Property Type" },
+      yaxis: { title: "Average Price ($)" },
+      margin: { l: 50, r: 50, t: 100, b: 50 },
+      legend: {
+        x: 0.5,
+        y: -0.3,
+        xanchor: "center",
+        yanchor: "top",
+        orientation: "h",
+      },
+    };
+
+    Plotly.newPlot(
+      plotContainer,
+      [neighborhoodTrace, dcTrace, ...legendTraces],
+      layout
+    );
+  }
 }

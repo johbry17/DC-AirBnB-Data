@@ -133,3 +133,33 @@ function getAveragePriceByLicense(data) {
 
   return averagePriceDistribution;
 }
+
+// calculate average price per room_type
+function getPropertyTypePrice(data) {
+  let totalSum = {};
+  let totalCount = {};
+
+  // aggregate price and count by room_type
+  data.forEach((item) => {
+    let price = parseFloat(item.price) || 0; // Ensure price is a valid number
+    if (!isNaN(price) && price <= 2000) { // remove gratuitous outliers
+      totalSum[item.room_type] = totalSum[item.room_type]
+        ? totalSum[item.room_type] + price
+        : price;
+      totalCount[item.room_type] = totalCount[item.room_type]
+        ? totalCount[item.room_type] + 1
+        : 1;
+    }
+  });
+
+  // calculate average price for each room_type
+  let averagePriceDistribution = {};
+  for (let key in totalSum) {
+    averagePriceDistribution[key] = {
+      count: totalCount[key],
+      avgPrice: totalCount[key] > 0 ? (totalSum[key] / totalCount[key]).toFixed(2) : 0,
+    };
+  }
+
+  return averagePriceDistribution;
+}
