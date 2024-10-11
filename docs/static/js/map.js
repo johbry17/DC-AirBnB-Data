@@ -1,168 +1,194 @@
+// global variables
+let activeOverlay = null;
+let activeLegend = null;
+
 // map creation
 function createMap(neighborhoods, listingsData, priceAvailabilityData) {
-  // create base layer
-  let baseLayer = L.tileLayer(
-    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-    {
-      attribution:
-        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    }
-  );
+  const map = initializeMap();
+  const markerGroups = initializeMarkerGroups(listingsData);
+  const overlays = initializeOverlays(markerGroups);
 
-  // create objects to hold the base maps...
+  let activeOverlay = markerGroups.default; // default overlay
+  
+  addBaseLayerControl(map);
+  addOverlayControl(map, overlays);
+
+  // initial call for controls, infoBox, and plots
+  neighborhoodsControl(map, neighborhoods, listingsData, priceAvailabilityData);
+  updateInfoBox(listingsData, "Washington, D.C.");
+  allDCPlots(listingsData, priceAvailabilityData, defaultColors);
+
+  // event listeners for resizing
+  window.addEventListener("resize", () => {
+    map.invalidateSize();
+    resizePlots();
+  });
+
+  // resize map to ensure it loads correctly
+  map.invalidateSize();
+
+  // sync dropdown and overlays if needed
+  syncDropdownAndOverlay(map, "top", "Airbnb's", overlays, listingsData, priceAvailabilityData);
+}
+
+// initialize the map
+function initializeMap() {
+  let baseLayer = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  });
+
+  return L.map("map-id", {
+    center: [38.89511, -77.03637],
+    zoom: 12,
+    layers: [baseLayer],
+  });
+}
+
+// initialize marker groups
+function initializeMarkerGroups(listingsData) {
+  const defaultMarkers = createMarkers(listingsData);
+  const licenseMarkers = createMarkers(listingsData, "license");
+  const propertyTypeMarkers = createMarkers(listingsData, "propertyType");
+
+  return {
+    default: defaultMarkers,
+    license: licenseMarkers,
+    propertyType: propertyTypeMarkers,
+  };
+}
+
+// initialize overlays
+function initializeOverlays(markerGroups) {
+  return {
+    "Airbnb's": markerGroups.default,
+    "License Status": markerGroups.license,
+    "Property Type": markerGroups.propertyType,
+  };
+}
+
+// add the base layers and control
+function addBaseLayerControl(map) {
   let baseMap = {
-    "Street Map": baseLayer,
+    "Street Map": L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"),
     Satellite: L.esri.basemapLayer("Imagery"),
     "National Geographic": L.esri.basemapLayer("NationalGeographic"),
     Topographic: L.esri.basemapLayer("Topographic"),
     Grayscale: L.esri.basemapLayer("Gray"),
   };
+  L.control.layers(baseMap, null).addTo(map);
+}
 
-  // different marker layers
-  const defaultMarkers = createMarkers(listingsData);
-  const licenseMarkers = createMarkers(listingsData, "license");
-  const propertyTypeMarkers = createMarkers(listingsData, "propertyType");
+// add the overlay control
+function addOverlayControl(map, overlays) {
+  const overlayControl = document.getElementById("overlay-control"); // Custom control div in HTML
 
-  // initialize marker groups
-  const markerGroups = {
-    default: defaultMarkers,
-    license: licenseMarkers,
-    propertyType: propertyTypeMarkers,
-  };
-
-  // add marker overlays for toggling
-  const overlays = {
-    "Airbnb's": markerGroups.default,
-    "License Status": markerGroups.license,
-    "Property Type": markerGroups.propertyType,
-  };
-
-  // initialize map
-  const map = L.map("map-id", {
-    center: [38.89511, -77.03637],
-    zoom: 12,
-    layers: [baseLayer, markerGroups.default],
-  });
-
-  // create toggle for map layers
-  L.control.layers(baseMap, overlays).addTo(map);
-  // L.control.layers(baseMap, overlays,
-  // { collapsed: false }
-  // )
-  // .addTo(map);
-
-  let activeOverlay = markerGroups.default;
-  let activeLegend = null;
-
-  // event listeners for overlay add/remove
-  map.on("overlayadd", function (eventLayer) {
-    const selectedOverlay = overlays[eventLayer.name];
-    if (activeOverlay !== selectedOverlay) {
-      // Remove the current legend if it exists
-      if (activeLegend) {
-        map.removeControl(activeLegend);
-      }
-
-      // Add the new legend
-      if (eventLayer.name === "License Status") {
-        activeLegend = addLegend("License Status").addTo(map);
-      } else if (eventLayer.name === "Property Type") {
-        activeLegend = addLegend("Property Type").addTo(map);
-      }
-
-      // bring markers to front
-      selectedOverlay.eachLayer((layer) => {
-        if (layer.bringToFront) {
-          layer.bringToFront();
-        }
-      });
-
-      activeOverlay = selectedOverlay;
+  overlayControl.addEventListener("click", function (e) {
+    const selectedOverlay = e.target.getAttribute("data-overlay");
+    if (selectedOverlay && overlays[selectedOverlay]) {
+      updateOverlay(map, overlays[selectedOverlay], selectedOverlay);
     }
   });
+}
 
-  map.on("overlayremove", function (eventLayer) {
-    if (
-      (eventLayer.name === "License Status" &&
-        activeOverlay === markerGroups.license) ||
-      (eventLayer.name === "Property Type" &&
-        activeOverlay === markerGroups.propertyType)
-    ) {
-      if (activeLegend) {
-        map.removeControl(activeLegend);
-        activeLegend = null;
-        activeOverlay = null;
-      }
+// update the overlay
+function updateOverlay(map, newOverlay, overlayName) {
+  if (activeOverlay !== newOverlay) {
+    if (activeOverlay) {
+      map.removeLayer(activeOverlay);
+    }
+    if (activeLegend) {
+      map.removeControl(activeLegend);
     }
 
-    // activeOverlay = null;
-  });
 
-  // initialize neighborhoodLayer
+    map.addLayer(newOverlay);
+
+    if (overlayName === "License Status") {
+      activeLegend = addLegend("License Status").addTo(map);
+    } else if (overlayName === "Property Type") {
+      activeLegend = addLegend("Property Type").addTo(map);
+    }
+
+    activeOverlay = newOverlay;
+  }
+
+  return { activeOverlay, activeLegend };
+}
+
+// initialize neighborhoods layer and add event listener to neighborhoods
+function initializeNeighborhoodsLayer(map, neighborhoods, listingsData, priceAvailabilityData) {
   const neighborhoodsLayer = L.geoJSON(neighborhoods, {
     style: {
-      // opacity: 0,
       color: defaultColors.neighborhoodLayer,
       weight: 3,
     },
-    // event listener, zooms into neighborhood on click
+    // update dropdown and zoom in on neighborhood
     onEachFeature: (feature, layer) => {
       layer.on("click", function () {
         const selectedNeighborhood = feature.properties.neighbourhood;
-
-        // update dropdown to selected neighborhood
-        const dropdown = document.getElementById("neighborhoods-dropdown");
-        dropdown.value = selectedNeighborhood;
-
-        zoomIn(
-          map,
-          neighborhoodsLayer,
-          selectedNeighborhood,
-          listingsData,
-          priceAvailabilityData
-        );
+        document.getElementById("neighborhoods-dropdown").value = selectedNeighborhood;
+        zoomIn(map, neighborhoodsLayer, selectedNeighborhood, listingsData, priceAvailabilityData);
       });
     },
   });
 
-  // initial call for controls, infoBox, and plots
-  neighborhoodsControl(
-    map,
-    neighborhoods,
-    neighborhoodsLayer,
-    listingsData,
-    priceAvailabilityData
-  );
-  updateInfoBox(listingsData, "Washington, D.C.");
-  allDCPlots(listingsData, priceAvailabilityData, defaultColors);
+  // return the layer without adding it to the map
+  return neighborhoodsLayer;
+}
 
-  // event listeners for plot and map resizing
-  window.addEventListener("resize", resizePlots);
+// sync dropdown and overlays
+function syncDropdownAndOverlay(map, selectedNeighborhood, selectedOverlayName, overlays, listingsData, priceAvailabilityData) {
+  const dropdown = document.getElementById("neighborhoods-dropdown");
+  dropdown.value = selectedNeighborhood;
 
-  // resize map to current container size
-  map.invalidateSize();
+  // update overlay
+  if (overlays[selectedOverlayName]) {
+    const overlayState = updateOverlay(map, overlays[selectedOverlayName], selectedOverlayName);
+    activeOverlay = overlayState.activeOverlay;
+    activeLegend = overlayState.activeLegend;
+  } else {
+    console.error(`Overlay "${selectedOverlayName}" is not defined.`);
+  }
 
-  // resize plots
-  resizePlots();
+  // update plots
+  neighborhoodPlots(listingsData, selectedNeighborhood, priceAvailabilityData, defaultColors);
 }
 
 // create dropdown for neighborhood interaction
-function neighborhoodsControl(
-  map,
-  neighborhoodsInfo,
-  neighborhoodsLayer,
-  listingsData,
-  priceAvailabilityData
-) {
-  // create neighorhoods dropdown menu
+function neighborhoodsControl(map, neighborhoodsInfo, listingsData, priceAvailabilityData) {
   const controlDiv = document.getElementById("neighborhoods-control");
-  const dropdown = document.createElement("select");
-  dropdown.id = "neighborhoods-dropdown";
+  const dropdown = createNeighborhoodDropdown(neighborhoodsInfo);
   controlDiv.innerHTML = `<div class="control-header">
     <label for="neighborhoods-dropdown">Select a Neighborhood</label>
     <br>
-    </div>`;
+  </div>`;
   controlDiv.appendChild(dropdown);
+
+  // create neighborhoods layer but don't add it to the map yet
+  const neighborhoodsLayer = initializeNeighborhoodsLayer(map, neighborhoodsInfo, listingsData, priceAvailabilityData);
+
+  // add event listener for dropdown changes
+  addDropdownChangeListener(dropdown, map, neighborhoodsLayer, listingsData, priceAvailabilityData);
+}
+
+// event listener for when a neighborhood is selected
+function addDropdownChangeListener(dropdown, map, neighborhoodsLayer, listingsData, priceAvailabilityData) {
+  dropdown.addEventListener("change", function () {
+    const selectedNeighborhood = this.value;
+    if (selectedNeighborhood === "top") {
+      resetMapView(map, neighborhoodsLayer, listingsData, priceAvailabilityData);
+    } else {
+      // add neighborhoodsLayer if a neighborhood is selected
+      neighborhoodsLayer.addTo(map);
+      zoomIn(map, neighborhoodsLayer, selectedNeighborhood, listingsData, priceAvailabilityData);
+    }
+  });
+}
+
+// create neighborhood dropdown elements
+function createNeighborhoodDropdown(neighborhoodsInfo) {
+  const dropdown = document.createElement("select");
+  dropdown.id = "neighborhoods-dropdown";
 
   // sort neighborhoods alphabetically
   neighborhoodsInfo.features.sort((a, b) =>
@@ -172,32 +198,23 @@ function neighborhoodsControl(
   // populate dropdown menu
   const allDC = createOption("Washington, D.C.", "top");
   dropdown.appendChild(allDC);
+  
   neighborhoodsInfo.features.forEach((feature) => {
-    const option = createOption(
-      feature.properties.neighbourhood,
-      feature.properties.neighbourhood
-    );
+    const option = createOption(feature.properties.neighbourhood, feature.properties.neighbourhood);
     dropdown.appendChild(option);
   });
 
-  // event listener, calls to update page to user's selection
+  return dropdown;
+}
+
+// event listener for dropdown changes
+function addDropdownChangeListener(dropdown, map, neighborhoodsLayer, listingsData, priceAvailabilityData) {
   dropdown.addEventListener("change", function () {
     const selectedNeighborhood = this.value;
     if (selectedNeighborhood === "top") {
-      resetMapView(
-        map,
-        neighborhoodsLayer,
-        listingsData,
-        priceAvailabilityData
-      );
+      resetMapView(map, neighborhoodsLayer, listingsData, priceAvailabilityData);
     } else {
-      zoomIn(
-        map,
-        neighborhoodsLayer,
-        selectedNeighborhood,
-        listingsData,
-        priceAvailabilityData
-      );
+      zoomIn(map, neighborhoodsLayer, selectedNeighborhood, listingsData, priceAvailabilityData);
     }
   });
 }
@@ -283,7 +300,6 @@ function addLegend(type) {
       labels = ["Licensed", "Exempt", "No License"];
       colors = ["green", "yellow", "red"];
       div.innerHTML = '<div class="legend-title">License Status</div>';
-      console.log(colors);
     } else if (type === "Property Type") {
       labels = ["Entire home/apt", "Private room", "Shared room", "Hotel room"];
       colors = ["orange", "blue", "green", "red"];
@@ -343,7 +359,9 @@ function resetMapView(
 ) {
   map.setView([38.89511, -77.03637], 12);
   map.removeLayer(neighborhoodsLayer); // remove neighborhood boundaries from zoomIn()
-  // call to update infoBox and plots
+  // update markers, legend, infoBox, and plots
+  createMarkers(listingsData).addTo(map);
+  activeLegend = null;
   updateInfoBox(listingsData, "Washington, D.C.");
   allDCPlots(listingsData, priceAvailabilityData, defaultColors);
 }
@@ -390,11 +408,8 @@ function zoomIn(
 
     // add new markers
     createMarkers(filteredListings).addTo(map);
-    // newMarkers.addTo(map);
 
     // update infoBox, and plots
-    // const newMarkers = createMarkers(listingsData);
-    // newMarkers.addTo(map);
     updateInfoBox(listingsData, selectedNeighborhood);
     neighborhoodPlots(
       listingsData,

@@ -108,6 +108,13 @@
       </div>
     </div>
   </div>
+  <!-- Radio Buttons -->
+  <div id="overlay-control">
+    <button data-overlay="Airbnb's">Airbnb's</button>
+    <button data-overlay="License Status">License Status</button>
+    <button data-overlay="Property Type">Property Type</button>
+  </div>
+  <!-- Info Box -->
   <div id="info-box" class="info legend" style="text-align: center;">
     <strong class="neighborhood-toggle" id="neighborhood-name">${selectedNeighborhood}</strong>
     <!-- <br> -->
@@ -135,7 +142,7 @@
       Median Price: <span id="dc-median-price">0</span><br>
     </div>
   </div>
-  
+  <!-- Tableau Mobile Embed -->
   <div class="col-sm-12 col-md-12">
     <!-- begin tableau css div to center on mobile, at very end of styles.css -->
     <div id="tableau-viz">
@@ -176,6 +183,7 @@
     </div>
     <!-- end tableau css div -->
   </div>
+  <!-- Plots -->
   <div id="plot-container" class="container">
     <div class="row">
       <div class="col-md-12">
@@ -198,6 +206,7 @@
     </div>
   </div>
 
+  <!-- JavaScript -->
   <!-- d3 JS -->
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <!-- Leaflet JS -->
@@ -212,7 +221,6 @@
   <script>
     // const isGitHubPages = window.location.hostname.includes('github.io');
     // const isLocalhost = window.location.hostname.includes('127.0.0.1') || window.location.hostname.includes('localhost');
-  
     function loadScript(src) {
       const script = document.createElement('script');
       script.src = src;
