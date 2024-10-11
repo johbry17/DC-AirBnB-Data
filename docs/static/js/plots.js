@@ -185,15 +185,14 @@ function updatePricePlot(listingsData, selectedNeighborhood, colors) {
   let hoverText = chosenData.map((value) =>
     value.toLocaleString("en-US", { style: "currency", currency: "USD" })
   );
-  let xLabels =
-    selectedNeighborhood === isDC
-      ? ["Mean (<b>$</b>)", "Median (<b>$</b>)"]
-      : [
-          "Mean (<b>$</b>)<br>(Neighborhood)",
-          "Median (<b>$</b>)<br>(Neighborhood)",
-          "Mean (<b>$</b>)<br>(All of DC)",
-          "Median (<b>$</b>)<br>(All of DC)",
-        ];
+  let xLabels = isDC
+    ? ["Mean (<b>$</b>)", "Median (<b>$</b>)"]
+    : [
+        "Mean (<b>$</b>)<br>(Neighborhood)",
+        "Median (<b>$</b>)<br>(Neighborhood)",
+        "Mean (<b>$</b>)<br>(All of DC)",
+        "Median (<b>$</b>)<br>(All of DC)",
+      ];
 
   // create trace
   let trace = {
@@ -496,6 +495,159 @@ function plotLicenseDonut(data, selectedNeighborhood, colors) {
   }
 }
 
+// // plot mean price per license category
+function plotLicensePrice(data, selectedNeighborhood, colors) {
+  const plotContainer = document.getElementById("license-price-plot");
+  const categorizedDCData = setLicenseStatus(data);
+  const averagePriceDC = getAveragePriceByLicense(categorizedDCData);
+
+  // assign DC data to variables
+  let dcLabels = ["Licensed", "Exempt", "No License"];
+  let dcAvgPrices = [
+    averagePriceDC["Licensed"].avgPrice,
+    averagePriceDC["Exempt"].avgPrice,
+    averagePriceDC["No License"].avgPrice,
+  ];
+  let dcTitle = `Average <b>Price by License Status</b> for Washington, D.C.`;
+  let dcColors = [colors.cityColor, colors.cityColorLight, colors.defaultGray];
+
+  // conditional for DC only or neighborhood and DC
+  if (selectedNeighborhood === "Washington, D.C.") {
+    // for DC only
+    const dcTrace = {
+      x: dcLabels,
+      y: dcAvgPrices,
+      type: "bar",
+      marker: { color: dcColors, line: { color: "black", width: 1 } },
+      text: dcAvgPrices.map(
+        (price) => `$${parseFloat(price).toLocaleString("en-US")}`
+      ),
+      textposition: "auto",
+      hoverinfo: "x+y",
+      hovertemplate: "%{x}: $%{y:,.2f}<extra></extra>",
+    };
+
+    const layout = {
+      title: dcTitle,
+      showlegend: false,
+      xaxis: { title: "License Category" },
+      yaxis: { title: "Average Price ($)" },
+      margin: { l: 50, r: 50, t: 100, b: 50 },
+    };
+
+    // plot DC only
+    Plotly.newPlot(plotContainer, [dcTrace], layout);
+  } else {
+    // compare Neighborhood and DC average prices
+    const neighborhoodData = filterListingsByNeighborhood(
+      data,
+      selectedNeighborhood
+    );
+    const categorizedNeighborhoodData = setLicenseStatus(neighborhoodData);
+    const averagePriceNeighborhood = getAveragePriceByLicense(
+      categorizedNeighborhoodData
+    );
+
+    // assign neighborhood data to variables
+    let neighborhoodAvgPrices = [
+      averagePriceNeighborhood["Licensed"].avgPrice,
+      averagePriceNeighborhood["Exempt"].avgPrice,
+      averagePriceNeighborhood["No License"].avgPrice,
+    ];
+    let neighborhoodColors = [
+      colors.neighborhoodColor,
+      colors.neighborhoodColorLight,
+      colors.defaultGray,
+    ];
+
+    // Bar chart comparison: Neighborhood vs. DC
+    const neighborhoodTrace = {
+      x: dcLabels,
+      y: neighborhoodAvgPrices,
+      type: "bar",
+      marker: { color: neighborhoodColors, line: { color: "black", width: 1 } },
+      text: neighborhoodAvgPrices.map(
+        (price) => `$${parseFloat(price).toFixed(2).toLocaleString("en-US")}`
+      ),
+      textposition: "auto",
+      name: "Neighborhood",
+      hoverinfo: "x+y",
+      hovertemplate: "%{x}: $%{y:,.2f}<extra></extra>",
+      showlegend: false,
+    };
+
+    const dcTrace = {
+      x: dcLabels,
+      y: dcAvgPrices,
+      type: "bar",
+      marker: { color: dcColors, line: { color: "black", width: 1 } },
+      text: dcAvgPrices.map(
+        (price) => `$${parseFloat(price).toFixed(2).toLocaleString("en-US")}`
+      ),
+      textposition: "auto",
+      name: "DC",
+      hoverinfo: "x+y",
+      hovertemplate: "%{x}: $%{y:,.2f}<extra></extra>",
+      showlegend: false,
+    };
+
+    // dummy traces for the legend
+    const legendTraces = [
+      {
+        x: [null],
+        y: [null],
+        // type: "bar",
+        mode: "markers",
+        marker: { color: colors.neighborhoodColor, symbol: "square", size: 12 },
+        name: "Neighborhood",
+        showlegend: true,
+        // visible: "legendonly",
+      },
+      {
+        x: [null],
+        y: [null],
+        // type: "bar",
+        mode: "markers",
+        marker: { color: colors.cityColor, symbol: "square", size: 12 },
+        name: "DC",
+        showlegend: true,
+        // visible: "legendonly",
+      },
+      {
+        x: [null],
+        y: [null],
+        // type: "bar",
+        mode: "markers",
+        marker: { color: colors.defaultGray, symbol: "square", size: 12 },
+        name: "No License",
+        showlegend: true,
+        // visible: "legendonly",
+      },
+    ];
+
+    const layout = {
+      title: `Average <b>Price by License Status</b> Comparison:<br>Neighborhood <b>vs.</b> Washington, D.C.`,
+      barmode: "group",
+      xaxis: { title: "License Category" },
+      yaxis: { title: "Average Price ($)" },
+      margin: { l: 50, r: 50, t: 100, b: 50 },
+      legend: {
+        x: 0.5,
+        y: -0.3,
+        xanchor: "center",
+        yanchor: "top",
+        orientation: "h",
+      },
+    };
+
+    Plotly.newPlot(
+      plotContainer,
+      [neighborhoodTrace, dcTrace, ...legendTraces],
+      layout
+    );
+  }
+}
+
 // plot of property type percentage
 function plotPropertyType(data, selectedNeighborhood, colors) {
   // get container and set data
@@ -616,145 +768,4 @@ function plotPropertyType(data, selectedNeighborhood, colors) {
   };
 
   Plotly.newPlot(plotContainer, [trace, ...legendTraces], layout);
-}
-
-// // plot mean price per license category
-function plotLicensePrice(data, selectedNeighborhood, colors) {
-  const plotContainer = document.getElementById("license-price-plot");
-  const categorizedDCData = setLicenseStatus(data);
-  const averagePriceDC = getAveragePriceByLicense(categorizedDCData);
-
-  // assign DC data to variables
-  let dcLabels = ["Licensed", "Exempt", "No License"];
-  let dcAvgPrices = [
-    averagePriceDC["Licensed"].avgPrice,
-    averagePriceDC["Exempt"].avgPrice,
-    averagePriceDC["No License"].avgPrice,
-  ];
-  let dcTitle = `Average <b>Price by License Status</b> for Washington, D.C.`;
-  let dcColors = [colors.cityColor, colors.cityColorLight, colors.defaultGray];
-
-  // conditional for DC only or neighborhood and DC
-  if (selectedNeighborhood === "Washington, D.C.") {
-    // for DC only
-    const dcTrace = {
-      x: dcLabels,
-      y: dcAvgPrices,
-      type: "bar",
-      marker: { color: dcColors, line: { color: "black", width: 1 } },
-      text: dcAvgPrices.map((price) =>
-        `$${parseFloat(price).toLocaleString("en-US")}`
-      ),
-      textposition: "auto",
-      hoverinfo: "x+y",
-      hovertemplate: "%{x}: $%{y:,.2f}<extra></extra>",
-    };
-
-    const layout = {
-      title: dcTitle,
-      showlegend: false,
-      xaxis: { title: "License Category" },
-      yaxis: { title: "Average Price ($)" },
-      margin: { l: 50, r: 50, t: 100, b: 50 },
-    };
-
-    // plot DC only
-    Plotly.newPlot(plotContainer, [dcTrace], layout);
-  } else {
-    // compare Neighborhood and DC average prices
-    const neighborhoodData = filterListingsByNeighborhood(
-      data,
-      selectedNeighborhood
-    );
-    const categorizedNeighborhoodData = setLicenseStatus(neighborhoodData);
-    const averagePriceNeighborhood = getAveragePriceByLicense(categorizedNeighborhoodData);
-
-    // assign neighborhood data to variables
-    let neighborhoodAvgPrices = [
-      averagePriceNeighborhood["Licensed"].avgPrice,
-      averagePriceNeighborhood["Exempt"].avgPrice,
-      averagePriceNeighborhood["No License"].avgPrice,
-    ];
-    let neighborhoodColors = [
-      colors.neighborhoodColor,
-      colors.neighborhoodColorLight,
-      colors.defaultGray,
-    ];
-
-    // Bar chart comparison: Neighborhood vs. DC
-    const neighborhoodTrace = {
-      x: dcLabels,
-      y: neighborhoodAvgPrices,
-      type: "bar",
-      marker: { color: neighborhoodColors, line: { color: "black", width: 1 } },
-      text: neighborhoodAvgPrices.map((price) =>
-        `$${parseFloat(price).toFixed(2).toLocaleString("en-US")}`
-      ),
-      textposition: "auto",
-      name: "Neighborhood",
-      hoverinfo: "x+y",
-      hovertemplate: "%{x}: $%{y:,.2f}<extra></extra>",
-      showlegend: false,
-    };
-
-    const dcTrace = {
-      x: dcLabels,
-      y: dcAvgPrices,
-      type: "bar",
-      marker: { color: dcColors, line: { color: "black", width: 1 } },
-      text: dcAvgPrices.map((price) =>
-        `$${parseFloat(price).toFixed(2).toLocaleString("en-US")}`
-      ),
-      textposition: "auto",
-      name: "DC",
-      hoverinfo: "x+y",
-      hovertemplate: "%{x}: $%{y:,.2f}<extra></extra>",
-      showlegend: false,
-    };
-
-    // dummy traces for the legend
-    const legendTraces = [
-      {
-        x: [null],
-        y: [null],
-        // type: "bar",
-        mode: "markers",
-        marker: { color: colors.neighborhoodColor, symbol: "square", size: 12 },
-        name: "Neighborhood",
-        showlegend: true,
-        // visible: "legendonly",
-      },
-      {
-        x: [null],
-        y: [null],
-        // type: "bar",
-        mode: "markers",
-        marker: { color: colors.cityColor, symbol: "square", size: 12 },
-        name: "DC",
-        showlegend: true,
-        // visible: "legendonly",
-      },
-      {
-        x: [null],
-        y: [null],
-        // type: "bar",
-        mode: "markers",
-        marker: { color: colors.defaultGray, symbol: "square", size: 12 },
-        name: "No License",
-        showlegend: true,
-        // visible: "legendonly",
-      },
-    ];
-
-    const layout = {
-      title: `Average <b>Price by License Status</b> Comparison:<br>Neighborhood <b>vs.</b> Washington, D.C.`,
-      barmode: "group",
-      xaxis: { title: "License Category" },
-      yaxis: { title: "Average Price ($)" },
-      margin: { l: 50, r: 50, t: 100, b: 50 },
-      legend: { x: 0.5, y: -0.3, xanchor: "center", yanchor: "top", orientation: "h" },
-    };
-
-    Plotly.newPlot(plotContainer, [neighborhoodTrace, dcTrace, ...legendTraces], layout);
-  }
 }
