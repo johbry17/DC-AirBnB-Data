@@ -70,11 +70,11 @@ It all began with an exploratory data analysis, located at `/exploratory_data_an
 
 ### - Note to self: If updating data...
 
-Run `data_cleaning.ipynb` to update the data source for both the Flask and GitHub Pages versions of this project. Make any alterations necessary to `schema.sql` and `data_cleaning.ipynb` (the `paths` or `neighbourhoods_dict` at the top), both located in `/resources/data/cleaned_data/`. Pay particular attention to the `map_listings` and `price_availability` views, as they are exported to csv's for GitHub Pages and Tableau.
+Run `data_processing.ipynb` to update the data source for both the Flask and GitHub Pages versions of this project. Make any alterations necessary to `schema.sql` and `data_processing.ipynb` (the `paths` or `neighbourhoods_dict` at the top), both located in `/resources/data/cleaned_data/`. Pay particular attention to the `map_listings` and `price_availability` views, as they are exported to csv's for GitHub Pages and Tableau.
 
 Don't forget to .gitignore any files over 100MB.
 
-The ETL process depicted in `data_cleaning.ipynb` served as the final project for [cs50's Introduction to Databases with SQL](https://cs50.harvard.edu/sql/2024/), which can be found in my [DC-AirBnB-SQL-Database](https://github.com/johbry17/DC-AirBnB-SQL-Database) repo. The Jupyter Notebook not only cleans the data, it automatically loads a PostgreSQL database and extracts relevant data into csv's for the GitHub Pages version of the site, neatly preparing the data for the full-stack Flask version and the static, front-end-only version. The Tableau exploratory data analysis uses the same csv's.
+The ETL process depicted in `data_processing.ipynb` served as the final project for [cs50's Introduction to Databases with SQL](https://cs50.harvard.edu/sql/2024/), which can be found in my [DC-AirBnB-SQL-Database](https://github.com/johbry17/DC-AirBnB-SQL-Database) repo. The Jupyter Notebook not only cleans the data, it automatically loads a PostgreSQL database and extracts relevant data into csv's for the GitHub Pages version of the site, neatly preparing the data for the full-stack Flask version and the static, front-end-only version. The Tableau exploratory data analysis uses the same csv's.
 
 ## Gallery
 

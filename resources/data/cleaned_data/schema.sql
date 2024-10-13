@@ -198,6 +198,7 @@ REFERENCES "listings" ("listing_id");
 
 CREATE VIEW map_listings AS
 SELECT 
+    l.listing_id,
     l.latitude,
     l.longitude,
     lc.hover_description,
@@ -213,12 +214,14 @@ SELECT
     lr.last_review,
     lr.review_scores_rating,
     lr.reviews_per_month,
+    l.host_id,
     h.host_name,
     h.host_identity_verified,
     h.host_listings_count,
     h.host_total_listings_count,
     lc.license,
-    n.neighbourhood
+    n.neighbourhood,
+    m.minimum_nights
 FROM 
     listings l
 JOIN 
@@ -228,7 +231,10 @@ JOIN
 JOIN 
     hosts h ON l.host_id = h.host_id
 JOIN
-    neighbourhoods n ON l.neighbourhood_id = n.neighbourhood_id;
+    neighbourhoods n ON l.neighbourhood_id = n.neighbourhood_id
+JOIN
+    min_max_night m ON l.listing_id = m.listing_id;
+
 
 CREATE VIEW price_availability AS
 SELECT
