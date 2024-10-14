@@ -8,6 +8,7 @@ function resizePlots() {
     "license-price-plot",
     "property-type-plot",
     "property-type-price-plot",
+    "minimum-nights-plot",
   ];
 
   plotIds.forEach((id) => {
@@ -36,6 +37,7 @@ function allDCPlots(listingsData, priceAvailabilityData, colors) {
   plotLicensePrice(listingsData, "Washington, D.C.", colors);
   plotPropertyType(listingsData, "Washington, D.C.", colors);
   plotPropertyTypePrice(listingsData, "Washington, D.C.", colors);
+  plotMinimumNights(listingsData, "Washington, D.C.", colors);
 }
 
 // master function to call plots for neighborhoods
@@ -52,6 +54,7 @@ function neighborhoodPlots(
   plotLicensePrice(listingsData, selectedNeighborhood, colors);
   plotPropertyType(listingsData, selectedNeighborhood, colors);
   plotPropertyTypePrice(listingsData, selectedNeighborhood, colors);
+  plotMinimumNights(listingsData, selectedNeighborhood, colors);
 }
 
 // traces for each plot
@@ -788,7 +791,7 @@ function plotPropertyTypePrice(data, selectedNeighborhood, colors) {
   // declare variables
   let dcLabels, dcAvgPrices, dcTitle, dcColors;
   let neighborhoodLabels, neighborhoodAvgPrices, neighborhoodColors;
-  
+
   // assign DC data to variables
   dcLabels = Object.keys(dcPropertyTypes);
   dcAvgPrices = Object.values(dcPropertyTypes).map((obj) => obj.avgPrice);
@@ -827,7 +830,9 @@ function plotPropertyTypePrice(data, selectedNeighborhood, colors) {
     neighborhoodAvgPrices = Object.values(neighborhoodPropertyTypes).map(
       (obj) => obj.avgPrice
     );
-    neighborhoodColors = neighborhoodLabels.map((label) => colors.neighborhoodColor);
+    neighborhoodColors = neighborhoodLabels.map(
+      (label) => colors.neighborhoodColor
+    );
 
     // create trace
     const neighborhoodTrace = {
@@ -900,4 +905,86 @@ function plotPropertyTypePrice(data, selectedNeighborhood, colors) {
       layout
     );
   }
+}
+
+// plot minimum nights required for booking <= 32 nights
+function plotMinimumNights(data, selectedNeighborhood, colors) {
+  // get container and set data
+  const plotContainer = document.getElementById("minimum-nights-plot");
+
+  // run calculations for minimum nights required
+  const minimumNights =
+    selectedNeighborhood === "Washington, D.C."
+      ? getMinimumNights(data)
+      : getMinimumNights(
+          filterListingsByNeighborhood(data, selectedNeighborhood)
+        );
+
+  // declare variables
+  let labels, counts, title, barColors;
+
+  // assign data to variables
+  labels = Object.keys(minimumNights);
+  counts = Object.values(minimumNights);
+  title = `Number of Airbnb's per<br><b>Minimum Nights</b> Required for Booking<br>${selectedNeighborhood}`;
+  barColors = labels.map((label) =>
+    selectedNeighborhood === "Washington, D.C."
+      ? colors.cityColor
+      : colors.neighborhoodColor
+  );
+
+  // convert counts to formatted strings for hover template
+  localeCounts = counts.map((count) => count.toLocaleString());
+
+  // create trace
+  const trace = {
+    x: labels,
+    y: counts,
+    type: "bar",
+    marker: { color: barColors, line: { color: "black", width: 1 } },
+    // text: counts.map((count) => count.toLocaleString()),
+    // textposition: "auto",
+    hoverinfo: "x+y",
+    hovertemplate:
+      "Minimum Nights required for booking: %{x}<br>Number of Airbnb's: %{customdata}<extra></extra>",
+    customdata: localeCounts,
+  };
+
+  const layout = {
+    title: title,
+    showlegend: false,
+    xaxis: { title: "Minimum Nights" },
+    yaxis: { title: "Count" },
+    margin: { l: 50, r: 50, t: 100, b: 50 },
+    shapes: [
+      {
+        type: "line",
+        x0: 30,
+        y0: 0,
+        x1: 30,
+        y1: Math.max(...counts),
+        line: {
+          color: "red",
+          width: 2,
+          dash: "dot",
+        },
+      },
+    ],
+    annotations: [
+      {
+        x: 30,
+        y: Math.max(...counts),
+        xref: "x",
+        yref: "y",
+        text: "STR threshold, 30 days",
+        showarrow: true,
+        arrowhead: 2,
+        ax: 0,
+        ay: -40,
+      },
+    ],
+  };
+
+  // plot the data
+  Plotly.newPlot(plotContainer, [trace], layout);
 }

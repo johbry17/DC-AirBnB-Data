@@ -127,7 +127,8 @@ function getAveragePriceByLicense(data) {
   for (let key in totalSum) {
     averagePriceDistribution[key] = {
       count: totalCount[key],
-      avgPrice: totalCount[key] > 0 ? (totalSum[key] / totalCount[key]).toFixed(2) : 0,
+      avgPrice:
+        totalCount[key] > 0 ? (totalSum[key] / totalCount[key]).toFixed(2) : 0,
     };
   }
 
@@ -141,7 +142,7 @@ function getPropertyTypePrice(data) {
 
   // aggregate price and count by room_type
   data.forEach((item) => {
-    let price = parseFloat(item.price) || 0; // Ensure price is a valid number
+    let price = parseFloat(item.price) || 0;
     totalSum[item.room_type] = totalSum[item.room_type]
       ? totalSum[item.room_type] + price
       : price;
@@ -155,9 +156,27 @@ function getPropertyTypePrice(data) {
   for (let key in totalSum) {
     averagePriceDistribution[key] = {
       count: totalCount[key],
-      avgPrice: totalCount[key] > 0 ? (totalSum[key] / totalCount[key]).toFixed(2) : 0,
+      avgPrice:
+        totalCount[key] > 0 ? (totalSum[key] / totalCount[key]).toFixed(2) : 0,
     };
   }
 
   return averagePriceDistribution;
+}
+
+// calculate number of listings per minimum nights required for booking <= 32
+function getMinimumNights(data) {
+  let distribution = {};
+
+  // filter out listings with minimum_nights > 32
+  data = data.filter((item) => item.minimum_nights <= 32);
+
+  // count for each minimum_nights bin
+  data.forEach((item) => {
+    distribution[item.minimum_nights] = distribution[item.minimum_nights]
+      ? distribution[item.minimum_nights] + 1
+      : 1;
+  });
+
+  return distribution;
 }

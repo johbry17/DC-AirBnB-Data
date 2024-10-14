@@ -18,7 +18,6 @@ Toolbar of radio buttons to change map
     ? choropleth avg listing duration ?
 
 Plots
-    Listings per minimum nights (with STR bar at 30 days)
     Sorted list of Max/Median price per neighbourhood, highlight chosen neighbourhood
     Host number of listings (bar chart)
     List top 10 hosts with most listings
