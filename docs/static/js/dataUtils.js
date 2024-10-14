@@ -142,14 +142,12 @@ function getPropertyTypePrice(data) {
   // aggregate price and count by room_type
   data.forEach((item) => {
     let price = parseFloat(item.price) || 0; // Ensure price is a valid number
-    if (!isNaN(price) && price <= 2000) { // remove gratuitous outliers
-      totalSum[item.room_type] = totalSum[item.room_type]
-        ? totalSum[item.room_type] + price
-        : price;
-      totalCount[item.room_type] = totalCount[item.room_type]
-        ? totalCount[item.room_type] + 1
-        : 1;
-    }
+    totalSum[item.room_type] = totalSum[item.room_type]
+      ? totalSum[item.room_type] + price
+      : price;
+    totalCount[item.room_type] = totalCount[item.room_type]
+      ? totalCount[item.room_type] + 1
+      : 1;
   });
 
   // calculate average price for each room_type

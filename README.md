@@ -4,8 +4,6 @@
 
 ADA aria-labels, toLocaleString
 
-Remove Airbnb outliers (above $2000) for most plots
-
 Add % difference neighborhood vs dc price (mean and median)
 
 Toolbar of radio buttons to change map

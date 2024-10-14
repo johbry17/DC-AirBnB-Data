@@ -25,6 +25,11 @@ Promise.all([
   fetch(geojson).then((response) => response.json()),
   getPriceAvailabilityData,
 ]).then(([data, neighborhoodData, priceAvailabilityData]) => {
+  // filter out listings with price > 3000
+  // a few listings have prices above this, errors in data entry
+  // like, a $7,000/night dorm room, which should be $70/night
+  data = data.filter((listing) => parseFloat(listing.price) <= 3000);
+
   createMap(neighborhoodData, data, priceAvailabilityData);
 });
 
