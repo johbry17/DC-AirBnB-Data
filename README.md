@@ -4,10 +4,7 @@
 
 ADA aria-labels, toLocaleString
 
-Add % difference neighborhood vs dc price (mean and median)
-
 Toolbar of radio buttons to change map
-    Bubble map of number of listings
     ? Avg available days per neighbourhood ?
     ? choropleth avg # of reviews ?
     ? choropleth avg listing duration ?

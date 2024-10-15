@@ -3,6 +3,7 @@
 // global variables
 let activeOverlay = null;
 let activeLegend = null;
+let baseLayer = null;
 
 // map creation
 function createMap(neighborhoods, listingsData, priceAvailabilityData) {
@@ -43,7 +44,7 @@ function createMap(neighborhoods, listingsData, priceAvailabilityData) {
     overlays,
     listingsData,
     priceAvailabilityData,
-    // neighborhoodsLayer,
+    neighborhoods,
     choroplethLayer
   );
 
@@ -60,7 +61,7 @@ function createMap(neighborhoods, listingsData, priceAvailabilityData) {
           overlays,
           listingsData,
           priceAvailabilityData,
-          // neighborhoodsLayer,
+          neighborhoods,
           choroplethLayer
         );
       }
@@ -69,7 +70,7 @@ function createMap(neighborhoods, listingsData, priceAvailabilityData) {
 
 // initialize the map
 function initializeMap() {
-  let baseLayer = L.tileLayer(
+  baseLayer = L.tileLayer(
     "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
     {
       attribution:
@@ -104,12 +105,14 @@ function initializeOverlays(markerGroups, neighborhoods, listingsData) {
     neighborhoods,
     averagePrices
   );
+  const bubbleLayer = initializeBubbleChartLayer(neighborhoods, listingsData);
 
   return {
     "Airbnb's": markerGroups.default,
     "License Status": markerGroups.license,
     "Property Type": markerGroups.propertyType,
     "Average Price": choroplethLayer,
+    "Total Airbnbs": bubbleLayer
   };
 }
 
@@ -211,6 +214,54 @@ function initializeChoroplethLayer(neighborhoods, averagePrices) {
   });
 }
 
+// create bubble chart layer of airbnb's per neighborhood
+function initializeBubbleChartLayer(neighborhoods, listingsData) {
+  const neighborhoodData = calculateAirbnbCountsPerNeighborhood(listingsData);
+  const bubbleLayerGroup = L.layerGroup(); // create layer group for circle markers
+
+  neighborhoods.features.forEach(feature => {
+    const neighborhood = feature.properties.neighbourhood;
+    const count = neighborhoodData[neighborhood] || 0;
+    const radius = Math.sqrt(count) * 2;
+
+    // calculate centroid
+    const centroid = turf.centroid(feature);
+    const latlng = [centroid.geometry.coordinates[1], centroid.geometry.coordinates[0]];
+
+    // create circle marker at centroid
+    const circleMarker = L.circleMarker(latlng, {
+      radius: radius,
+      fillColor: defaultColors.neighborhoodColor,
+      color: "black",
+      weight: 1,
+      opacity: 1,
+      fillOpacity: 0.8,
+    }).bindPopup(`${neighborhood}<br><strong style='display: block; text-align: right;'>Airbnb Count: ${count}</strong>`, { className: 'marker-popup' });
+
+    // add circle marker to layer group
+    bubbleLayerGroup.addLayer(circleMarker);
+
+    // open || close popup
+    circleMarker.on('mouseover', function (e) {
+      this.openPopup();
+    });
+    circleMarker.on('mouseout', function (e) {
+      this.closePopup();
+    });
+
+    // for touch events on mobile devices
+    circleMarker.on('click', function (e) {
+      if (this.isPopupOpen()) {
+        this.closePopup();
+      } else {
+        this.openPopup();
+      }
+    });
+  });
+
+  return bubbleLayerGroup;
+}
+
 // update the overlay
 function updateOverlay(
   map,
@@ -219,7 +270,6 @@ function updateOverlay(
   listingsData,
   selectedNeighborhood
 ) {
-  console.log("Updating overlay:", overlayName);
   // remove previous overlay
   if (activeOverlay !== newOverlay) {
     if (activeOverlay) {
@@ -264,7 +314,7 @@ function syncDropdownAndOverlay(
   overlays,
   listingsData,
   priceAvailabilityData,
-  // neighborhoods,
+  neighborhoods,
   choroplethLayer
 ) {
   // remove all existing markers
@@ -282,6 +332,16 @@ function syncDropdownAndOverlay(
     map.addLayer(choroplethLayer);
     activeOverlay = choroplethLayer;
     activeLegend = addLegend("Average Price").addTo(map);
+  } else if (selectedOverlayName === "Total Airbnbs") {
+    map.eachLayer(layer => {
+      if (layer !== baseLayer) { // Replace `baseLayer` with your actual base layer variable
+        map.removeLayer(layer);
+      }
+    });
+    // add bubble chart layer
+    const bubbleLayer = initializeBubbleChartLayer(neighborhoods, listingsData);
+    map.addLayer(bubbleLayer);
+    activeOverlay = bubbleLayer;
   } else {
     // or update overlays with markers
     if (overlays[selectedOverlayName]) {
@@ -556,7 +616,7 @@ function createPopupContent(listing) {
     <b>Rating:</b> ${rating}<br>
     <b>Host:</b> ${listing.host_name}<br>
     <b>Host Verified:</b> ${hostVerified}<br>
-    <b>Host Total Listings:</b> ${listing.host_listings_count}<br>
+    <b>Host Total Airbnbs:</b> ${listing.host_listings_count}<br>
     <b>License:</b> ${license}<br>
   `;
 }
@@ -599,6 +659,11 @@ function resetMapView(
     averagePriceButton.disabled = false; // enable button
     // averagePriceButton.style.display = 'block'; // show button
   }
+  const totalAirbnbsButton = document.getElementById("total-airbnbs-button");
+  if (totalAirbnbsButton) {
+    totalAirbnbsButton.disabled = false; // enable button
+    // totalAirbnbsButton.style.display = 'block'; // show button
+  }
 }
 
 // zooms map for neighborhood view, updates infoBox and plots
@@ -620,6 +685,12 @@ function zoomIn(
     activeLegend._container.innerHTML.includes("Average Price")
   ) {
     activeLegend._container.style.display = "none";
+  }
+  // toggle total airbnbs button
+  const totalAirbnbsButton = document.getElementById("total-airbnbs-button");
+  if (totalAirbnbsButton) {
+    totalAirbnbsButton.disabled = true; // disnable button
+    // totalAirbnbsButton.style.display = 'block'; // hide button
   }
 
   // remove previous neighborhood boundaries

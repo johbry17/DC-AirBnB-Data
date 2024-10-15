@@ -63,6 +63,18 @@ function calculateAveragePricePerNeighborhood(listingsData) {
   return averagePrices;
 }
 
+// calculate number of listings per neighborhood
+function calculateAirbnbCountsPerNeighborhood(listingsData) {
+  const neighborhoodCounts = {};
+
+  listingsData.forEach(listing => {
+    const neighborhood = listing.neighbourhood;
+    neighborhoodCounts[neighborhood] = neighborhoodCounts[neighborhood] ? neighborhoodCounts[neighborhood] + 1 : 1;
+  });
+
+  return neighborhoodCounts;
+}
+
 // label each license status
 function setLicenseStatus(data) {
   return data.map((item) => {
