@@ -85,33 +85,6 @@ h2 i {
   background-position: center center;
 }
 
-#tableau-viz {
-  margin: 0 auto;
-  margin-bottom: 10px;
-  overflow-x: hidden;
-  box-sizing: border-box;
-  color: #333333;
-  border: 2px solid #e0e0e0;
-  border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  max-width: 420px;
-}
-@media (min-width: 768px) {
-  #tableau-viz {
-    max-width: 90%;
-  }
-}
-@media (min-width: 1200px) {
-  #tableau-viz {
-    max-width: 80%;
-  }
-}
-
 .leaflet-container.leaflet-touch-drag {
   -ms-touch-action: pinch-zoom;
   touch-action: pinch-zoom;
@@ -119,7 +92,6 @@ h2 i {
   height: 100vh;
 }
 
-/* Leaflet layers control */
 .leaflet-control-layers {
   font-size: 12px;
   font-family: Arial;
@@ -177,6 +149,60 @@ h2 i {
   height: 12px;
   margin-right: 5px;
   border-radius: 2px;
+}
+
+#overlay-control {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 5px;
+  display: flex;
+  gap: 10px;
+  z-index: 1000;
+}
+#overlay-control button {
+  background-color: #0085A1;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+#overlay-control button:hover {
+  background-color: #0056b3;
+}
+#overlay-control button:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+#tableau-viz {
+  margin: 0 auto;
+  margin-bottom: 10px;
+  overflow-x: hidden;
+  box-sizing: border-box;
+  color: #333333;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  max-width: 420px;
+}
+@media (min-width: 768px) {
+  #tableau-viz {
+    max-width: 90%;
+  }
+}
+@media (min-width: 1200px) {
+  #tableau-viz {
+    max-width: 80%;
+  }
 }
 
 .plot {

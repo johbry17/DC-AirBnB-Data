@@ -8,7 +8,6 @@
 
 
 style buttons
-set hover popup for choropleth neighborhoods
 change color of plots
 lollipop the price plot
 move price availability plot - remove $500 limit?
