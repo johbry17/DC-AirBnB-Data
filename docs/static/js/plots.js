@@ -956,7 +956,7 @@ function plotMinimumNights(data, selectedNeighborhood, colors) {
   const layout = {
     title: title,
     showlegend: false,
-    xaxis: { title: "Minimum Nights" },
+    xaxis: { title: "Minimum Nights", range: [0, 33] },
     yaxis: { title: "Count" },
     margin: { l: 50, r: 50, t: 100, b: 50 },
     shapes: [
@@ -979,7 +979,7 @@ function plotMinimumNights(data, selectedNeighborhood, colors) {
         y: Math.max(...counts),
         xref: "x",
         yref: "y",
-        text: "STR threshold, 30 days",
+        text: "<b>Short Term Rental threshold, 30 days</b>",
         showarrow: true,
         arrowhead: 2,
         ax: 0,
@@ -1016,25 +1016,8 @@ function plotHostAirbnbs(data, selectedNeighborhood, colors) {
       : colors.neighborhoodColor
   );
 
-    // Sort labels and counts to ensure "10+" appears correctly
-    const sortedIndices = labels
-    .map((label, index) => ({ label, count: counts[index], color: barColors[index] }))
-    .sort((a, b) => {
-      if (a.label === "10+") return 1;
-      if (b.label === "10+") return -1;
-      return a.label - b.label;
-    });
-
-  labels = sortedIndices.map((item) => item.label);
-  counts = sortedIndices.map((item) => item.count);
-  barColors = sortedIndices.map((item) => item.color);
-
-
   // convert counts to formatted strings for hover template
   localeCounts = counts.map((count) => count.toLocaleString());
-
-  console.log(labels);
-  console.log(counts);
 
   // create trace
   const trace = {
