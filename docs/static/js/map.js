@@ -367,11 +367,11 @@ function addLegend(type) {
     let labels, colors;
     if (type === "License Status") {
       labels = ["Licensed", "Exempt", "No License"];
-      colors = ["green", "yellow", "red"];
+      colors = labels.map(label => licenseColors[label] || licenseColors.default);
       div.innerHTML = '<div class="legend-title">License Status</div>';
     } else if (type === "Property Type") {
       labels = ["Entire home/apt", "Private room", "Shared room", "Hotel room"];
-      colors = ["orange", "blue", "green", "red"];
+      colors = labels.map(label => propertyTypeColors[label] || propertyTypeColors.default);
       div.innerHTML = '<div class="legend-title">Property Type</div>';
     }
 
