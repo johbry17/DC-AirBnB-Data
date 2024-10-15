@@ -267,7 +267,7 @@ function syncDropdownAndOverlay(
   neighborhoods,
   choroplethLayer
 ) {
-  // Remove all existing markers
+  // remove all existing markers
   if (activeOverlay) {
     map.removeLayer(activeOverlay);
   }
@@ -275,14 +275,15 @@ function syncDropdownAndOverlay(
     map.removeControl(activeLegend);
   }
 
-  // Check if "Average Price" is selected
+  //update overlays
+  // check if "Average Price" is selected
   if (selectedOverlayName === "Average Price") {
-    // Add the choropleth layer
+    // add choropleth layer
     map.addLayer(choroplethLayer);
     activeOverlay = choroplethLayer;
     activeLegend = addLegend("Average Price").addTo(map);
   } else {
-    // Update overlay
+    // or update overlays with markers
     if (overlays[selectedOverlayName]) {
       const overlayState = updateOverlay(
         map,
@@ -337,17 +338,36 @@ function addLegend(type) {
       );
       div.innerHTML = '<div class="legend-title">Property Type</div>';
     } else if (type === "Average Price") {
-      labels = [50, 100, 150, 200, 250, 300];
-      colors = labels.map((label) =>
-        d3.scaleSequential(d3.interpolateViridis).domain([50, 300])(label)
-      );
       div.innerHTML = '<div class="legend-title">Average Price</div>';
+
+      // create gradient bar
+      const gradientBar = document.createElement("div");
+      gradientBar.style.width = "100%";
+      gradientBar.style.height = "20px";
+      gradientBar.style.background = "linear-gradient(to right, " +
+        Array.from({ length: 101 }, (_, i) => d3.scaleSequential(d3.interpolateViridis).domain([50, 300])(50 + (i * 2.5))).join(", ") +
+        ")";
+      div.appendChild(gradientBar);
+
+      // add labels
+      const labelContainer = document.createElement("div");
+      labelContainer.style.display = "flex";
+      labelContainer.style.justifyContent = "space-between";
+      const labelStart = document.createElement("div");
+      labelStart.innerHTML = "$50";
+      const labelEnd = document.createElement("div");
+      labelEnd.innerHTML = "$300";
+      labelContainer.appendChild(labelStart);
+      labelContainer.appendChild(labelEnd);
+      div.appendChild(labelContainer);
     }
 
-    // populate the legend
-    labels.forEach(function (label, index) {
-      div.innerHTML += `<div><i class="legend-color" style="background:${colors[index]}"></i>${label}</div>`;
-    });
+    // populate the legend if not "Average Price"
+    if (type !== "Average Price") {
+      labels.forEach(function (label, index) {
+        div.innerHTML += `<div><i class="legend-color" style="background:${colors[index]}"></i>${label}</div>`;
+      });
+    }
 
     return div;
   };
