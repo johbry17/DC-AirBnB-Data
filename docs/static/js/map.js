@@ -238,8 +238,20 @@ function initializeBubbleChartLayer(neighborhoods, listingsData) {
       fillOpacity: 0.8,
     }).bindPopup(`${neighborhood}<br><strong style='display: block; text-align: right;'>Airbnb Count: ${count}</strong>`, { className: 'marker-popup' });
 
+    // create a divIcon to show the text inside the bubble
+    const textIcon = L.divIcon({
+      className: 'bubble-text', // define custom CSS class for styling
+      html: `<div style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;  font-size: 12px; color: white;">${count}</div>`,
+      iconSize: [radius * 2, radius * 2], // match the size of the circle marker
+      iconAnchor: [radius, radius] // center the text inside the bubble
+    });
+
+    // create marker with the text inside and add it to the layer
+    const textMarker = L.marker(latlng, { icon: textIcon, interactive: false });
+
     // add circle marker to layer group
     bubbleLayerGroup.addLayer(circleMarker);
+    bubbleLayerGroup.addLayer(textMarker);
 
     // open || close popup
     circleMarker.on('mouseover', function (e) {
