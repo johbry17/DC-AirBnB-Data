@@ -1000,11 +1000,12 @@ function plotMinimumNights(data, selectedNeighborhood, colors) {
         y: Math.max(...counts),
         xref: "x",
         yref: "y",
-        text: "<b>Short Term Rental threshold, 30 days</b>",
+        text: "<b style='color: red;'>30 days,<br>Short Term Rental threshold</b>",
         showarrow: true,
         arrowhead: 2,
         ax: 0,
         ay: -40,
+        xanchor: "right",
       },
     ],
   };
@@ -1030,7 +1031,7 @@ function plotHostAirbnbs(data, selectedNeighborhood, colors) {
   // assign data to variables
   labels = Object.keys(hostAirbnbs);
   counts = Object.values(hostAirbnbs);
-  title = `Number of Airbnb's per Host<br>${selectedNeighborhood}`;
+  title = `Number of <b>Airbnb's per Host</b><br>${selectedNeighborhood}`;
   barColors = labels.map((label) =>
     selectedNeighborhood === "Washington, D.C."
       ? colors.cityColor
@@ -1102,7 +1103,7 @@ function plotTop10Hosts(data) {
 
   // create layout
   const layout = {
-    title: "Top 20 Hosts with the Most Listings",
+    title: "<b>Top 20 Hosts</b> with the Most Listings",
     margin: { t: 50, l: 25, r: 25, b: 25 },
   };
 
