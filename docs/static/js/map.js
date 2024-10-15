@@ -564,13 +564,13 @@ function createPopupContent(listing) {
 // get color scheme for markers when changing map view / zoom level
 function getColorScheme() {
   if (activeLegend) {
-    if (activeLegend.options.position === "topright") {
+    // if (activeLegend.options.position === "topright") {
       if (activeLegend._container.innerHTML.includes("License Status")) {
         return "license";
       } else if (activeLegend._container.innerHTML.includes("Property Type")) {
         return "propertyType";
       }
-    }
+    // }
   }
   return null;
 }

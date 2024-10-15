@@ -2,25 +2,6 @@
 
 ## Ideas / Notes to self:
 
-
-
-
-
-
-style buttons
-change color of plots
-lollipop the price plot
-move price availability plot - remove $500 limit?
-add bubble map
-
-
-
-
-
-
-
-
-
 ADA aria-labels, toLocaleString
 
 Add % difference neighborhood vs dc price (mean and median)

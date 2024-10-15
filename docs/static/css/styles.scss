@@ -151,7 +151,7 @@ h2 i {
 
 // map container
 .map-container {
-    width: 95%;
+    width: 90%;
     height: 80vh;
     margin: 0 auto;
     border-color: $border-color;
@@ -171,16 +171,19 @@ h2 i {
 
 // map legend box
 .custom-legend {
-    background: white;
-    padding: 10px;
-    border-radius: 5px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-    font-size: 14px;
+    background: rgba(255, 255, 255, 0.8);
+    padding: $padding;
+    border-radius: $border-radius;
+    box-shadow: $box-shadow;
+    font-size: 11px;
     line-height: 18px;
     color: #555;
+    font-weight: bold;
+    top: 250px;
   
     .legend-title {
-        font-weight: bold;
+        // font-weight: bold;
+        font-size: 14px;
         margin-bottom: 5px;
     }
     
