@@ -19,7 +19,6 @@ Toolbar of radio buttons to change map
 
 Plots
     Sorted list of Max/Median price per neighbourhood, highlight chosen neighbourhood
-    List top 10 hosts with most listings
     ? Availability by neighborhood, like price per nghbrhd ?
     ? Avg # of reviews by nghbrhd ?
 

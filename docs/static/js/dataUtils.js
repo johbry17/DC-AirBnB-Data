@@ -205,3 +205,23 @@ function getHostAirbnbs(data) {
 
   return distribution;
 }
+
+// get top 20 hosts with the most listings
+function getTopHosts(data) {
+  let hostCounts = {};
+
+  // count the number of listings per host and include host_name
+  data.forEach((item) => {
+    if (hostCounts[item.host_id]) {
+      hostCounts[item.host_id].count += 1;
+    } else {
+      hostCounts[item.host_id] = { name: item.host_name, count: 1 };
+    }
+  });
+
+  // sort the hosts by number of listings
+  const sortedHosts = Object.entries(hostCounts).sort((a, b) => b[1].count - a[1].count);
+
+  // get the top 20 hosts
+  return sortedHosts.slice(0, 20).map(([host_id, { name, count }]) => ({ host_id, host_name: name, count }));
+}

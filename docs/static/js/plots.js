@@ -10,6 +10,7 @@ function resizePlots() {
     "property-type-price-plot",
     "minimum-nights-plot",
     "host-number-of-airbnbs-plot",
+    "top-20-hosts-table",
   ];
 
   plotIds.forEach((id) => {
@@ -40,6 +41,7 @@ function allDCPlots(listingsData, priceAvailabilityData, colors) {
   plotPropertyTypePrice(listingsData, "Washington, D.C.", colors);
   plotMinimumNights(listingsData, "Washington, D.C.", colors);
   plotHostAirbnbs(listingsData, "Washington, D.C.", colors);
+  plotTop10Hosts(listingsData);
 }
 
 // master function to call plots for neighborhoods
@@ -58,6 +60,7 @@ function neighborhoodPlots(
   plotPropertyTypePrice(listingsData, selectedNeighborhood, colors);
   plotMinimumNights(listingsData, selectedNeighborhood, colors);
   plotHostAirbnbs(listingsData, selectedNeighborhood, colors);
+  document.getElementById("top-20-hosts-table").style.display = "none";
 }
 
 // traces for each plot
@@ -1045,3 +1048,46 @@ function plotHostAirbnbs(data, selectedNeighborhood, colors) {
   Plotly.newPlot(plotContainer, [trace], layout);
 }
 
+// show top 10 hosts with the most listings using Plotly table
+function plotTop10Hosts(data) {
+  const topHosts = getTopHosts(data);
+  const topHostsContainer = document.getElementById("top-20-hosts-table");
+
+  // clear previous content
+  topHostsContainer.innerHTML = "";
+
+  // extract headers and values
+  const headers = ["Host Name", "Number of Airbnb's"];
+  const rows = topHosts.map((host) => [host.host_name, host.count]);
+
+  // transpose rows to columns for Plotly
+  const columns = headers.map((_, colIndex) => rows.map((row) => row[colIndex]));
+
+  // create trace
+  const trace = {
+    type: "table",
+    header: {
+      values: headers,
+      align: "left",
+      line: { width: 1, color: "black" },
+      fill: { color: "paleturquoise" },
+      font: { family: "Arial", size: 12, color: "black" },
+    },
+    cells: {
+      values: columns,
+      align: "left",
+      line: { width: 1, color: "black" },
+      fill: { color: "lavender" },
+      font: { family: "Arial", size: 11, color: ["black"] },
+    },
+  };
+
+  // create layout
+  const layout = {
+    title: "Top 20 Hosts with the Most Listings",
+    margin: { t: 50, l: 25, r: 25, b: 25 },
+  };
+
+  // plot chart
+  Plotly.newPlot(topHostsContainer, [trace], layout);
+}
