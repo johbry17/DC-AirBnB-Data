@@ -1,3 +1,12 @@
+// Description: Utility functions for data processing and analysis
+
+// filter listings by neighborhood
+function filterListingsByNeighborhood(listingsData, selectedNeighborhood) {
+  return listingsData.filter(
+    (listing) => listing.neighbourhood === selectedNeighborhood
+  );
+}
+
 // calculate stats for data, filter out NaN values
 function calculateStats(data) {
   const prices = data
@@ -28,6 +37,30 @@ function calculateMedian(data) {
   return sortedData.length % 2 === 0
     ? (sortedData[mid - 1] + sortedData[mid]) / 2
     : sortedData[mid];
+}
+
+// calculate average price per neighborhood
+function calculateAveragePricePerNeighborhood(listingsData) {
+  const neighborhoodPrices = {};
+
+  listingsData.forEach(listing => {
+    const neighborhood = listing.neighbourhood;
+    const price = parseFloat(listing.price);
+
+    if (!neighborhoodPrices[neighborhood]) {
+      neighborhoodPrices[neighborhood] = { total: 0, count: 0 };
+    }
+
+    neighborhoodPrices[neighborhood].total += price;
+    neighborhoodPrices[neighborhood].count += 1;
+  });
+
+  const averagePrices = {};
+  for (const neighborhood in neighborhoodPrices) {
+    averagePrices[neighborhood] = neighborhoodPrices[neighborhood].total / neighborhoodPrices[neighborhood].count;
+  }
+
+  return averagePrices;
 }
 
 // label each license status

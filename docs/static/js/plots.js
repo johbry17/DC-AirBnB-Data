@@ -1,3 +1,5 @@
+// Description: JavaScript file for creating plots using Plotly.js
+
 //resizePlots();
 function resizePlots() {
   const plotIds = [

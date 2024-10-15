@@ -2,17 +2,34 @@
 
 ## Ideas / Notes to self:
 
+
+
+
+
+
+disable choropleth button, clean code
+style buttons
+set hover popup for choropleth neighborhoods
+change color of plots
+lollipop the price plot
+move price availability plot - remove $500 limit?
+add bubble map
+
+
+
+
+
+
+
+
+
 ADA aria-labels, toLocaleString
 
 Add % difference neighborhood vs dc price (mean and median)
 
 Toolbar of radio buttons to change map
-    ~~Airbnbs~~
-    ~~Property Type~~
-    ~~License Status~~
     Bubble map of number of listings
     Choropleth price/neighbourhood (maybe listings/neighborhood)
-    Most expensive listings
     ? Avg available days per neighbourhood ?
     ? choropleth avg # of reviews ?
     ? choropleth avg listing duration ?

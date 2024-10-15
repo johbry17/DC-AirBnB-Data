@@ -1,3 +1,5 @@
+// Description: Main JavaScript file for the DC Airbnb Data Analysis project
+
 // variables to check if running on GitHub Pages or Flask app
 const isGitPages = window.location.hostname.includes("github.io"); // for GitHub Pages
 const isHostedLocally =
@@ -84,9 +86,9 @@ function updateInfoBox(listingsData, selectedNeighborhood) {
   infoBoxElement.innerHTML = infoBoxElement.innerHTML; // trigger an update
 }
 
-// filter listings by neighborhood
-function filterListingsByNeighborhood(listingsData, selectedNeighborhood) {
-  return listingsData.filter(
-    (listing) => listing.neighbourhood === selectedNeighborhood
-  );
-}
+// // filter listings by neighborhood
+// function filterListingsByNeighborhood(listingsData, selectedNeighborhood) {
+//   return listingsData.filter(
+//     (listing) => listing.neighbourhood === selectedNeighborhood
+//   );
+// }
