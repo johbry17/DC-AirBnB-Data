@@ -9,6 +9,7 @@ function resizePlots() {
     "property-type-plot",
     "property-type-price-plot",
     "minimum-nights-plot",
+    "host-number-of-airbnbs-plot",
   ];
 
   plotIds.forEach((id) => {
@@ -38,6 +39,7 @@ function allDCPlots(listingsData, priceAvailabilityData, colors) {
   plotPropertyType(listingsData, "Washington, D.C.", colors);
   plotPropertyTypePrice(listingsData, "Washington, D.C.", colors);
   plotMinimumNights(listingsData, "Washington, D.C.", colors);
+  plotHostAirbnbs(listingsData, "Washington, D.C.", colors);
 }
 
 // master function to call plots for neighborhoods
@@ -55,6 +57,7 @@ function neighborhoodPlots(
   plotPropertyType(listingsData, selectedNeighborhood, colors);
   plotPropertyTypePrice(listingsData, selectedNeighborhood, colors);
   plotMinimumNights(listingsData, selectedNeighborhood, colors);
+  plotHostAirbnbs(listingsData, selectedNeighborhood, colors);
 }
 
 // traces for each plot
@@ -988,3 +991,74 @@ function plotMinimumNights(data, selectedNeighborhood, colors) {
   // plot the data
   Plotly.newPlot(plotContainer, [trace], layout);
 }
+
+// plot number of airbnbs per host, binned by number of listings, with 10+ listings as one bin
+function plotHostAirbnbs(data, selectedNeighborhood, colors) {
+  // get container and set data
+  const plotContainer = document.getElementById("host-number-of-airbnbs-plot");
+
+  // run calculations for number of listings per host
+  const hostAirbnbs =
+    selectedNeighborhood === "Washington, D.C."
+      ? getHostAirbnbs(data)
+      : getHostAirbnbs(filterListingsByNeighborhood(data, selectedNeighborhood));
+
+  // declare variables
+  let labels, counts, title, barColors;
+
+  // assign data to variables
+  labels = Object.keys(hostAirbnbs);
+  counts = Object.values(hostAirbnbs);
+  title = `Number of Airbnb's per Host<br>${selectedNeighborhood}`;
+  barColors = labels.map((label) =>
+    selectedNeighborhood === "Washington, D.C."
+      ? colors.cityColor
+      : colors.neighborhoodColor
+  );
+
+    // Sort labels and counts to ensure "10+" appears correctly
+    const sortedIndices = labels
+    .map((label, index) => ({ label, count: counts[index], color: barColors[index] }))
+    .sort((a, b) => {
+      if (a.label === "10+") return 1;
+      if (b.label === "10+") return -1;
+      return a.label - b.label;
+    });
+
+  labels = sortedIndices.map((item) => item.label);
+  counts = sortedIndices.map((item) => item.count);
+  barColors = sortedIndices.map((item) => item.color);
+
+
+  // convert counts to formatted strings for hover template
+  localeCounts = counts.map((count) => count.toLocaleString());
+
+  console.log(labels);
+  console.log(counts);
+
+  // create trace
+  const trace = {
+    x: labels,
+    y: counts,
+    type: "bar",
+    marker: { color: barColors, line: { color: "black", width: 1 } },
+    text: counts.map((count) => count.toLocaleString()),
+    textposition: "auto",
+    hoverinfo: "x+y",
+    hovertemplate:
+      "Number of Listings per Host: %{x}<br>Number of Airbnb's: %{customdata}<extra></extra>",
+    customdata: localeCounts,
+  };
+
+  const layout = {
+    title: title,
+    showlegend: false,
+    xaxis: { title: "Number of Listings per Host", type: "category" },
+    yaxis: { title: "Count" },
+    margin: { l: 50, r: 50, t: 100, b: 50 },
+  };
+
+  // plot the data
+  Plotly.newPlot(plotContainer, [trace], layout);
+}
+

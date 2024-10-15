@@ -167,13 +167,11 @@ h2 i {
   line-height: 18px;
   color: #555;
 }
-
-.custom-legend .legend-title {
+.custom-legend .custom-legend .legend-title {
   font-weight: bold;
   margin-bottom: 5px;
 }
-
-.custom-legend .legend-color {
+.custom-legend .custom-legend .legend-color {
   display: inline-block;
   width: 12px;
   height: 12px;

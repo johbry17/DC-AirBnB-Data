@@ -180,3 +180,28 @@ function getMinimumNights(data) {
 
   return distribution;
 }
+
+// calculate number of airbnbs per host, binned by number of listings, with 10+ listings as one bin
+function getHostAirbnbs(data) {
+  let hostCounts = {};
+  let distribution = {};
+
+  // count the number of listings per host
+  data.forEach((item) => {
+    hostCounts[item.host_id] = hostCounts[item.host_id] ? hostCounts[item.host_id] + 1 : 1;
+  });
+
+  // create bins for number of listings
+  const labels = [...Array(10).keys()].map(String).concat(["10+"]);
+
+  // initialize distribution with labels
+  labels.forEach(label => distribution[label] = 0);
+
+  // bin the hosts based on the number of listings and sum counts
+  Object.values(hostCounts).forEach((count) => {
+    let bin = count >= 10 ? "10+" : String(count);
+    distribution[bin] += count;
+  });
+
+  return distribution;
+}
