@@ -4,15 +4,9 @@
 
 ADA aria-labels, toLocaleString
 
-Toolbar of radio buttons to change map
-    ? Avg available days per neighbourhood ?
-    ? choropleth avg # of reviews ?
-    ? choropleth avg listing duration ?
+Plots - add sorted list of Max/Median price per neighbourhood, highlight chosen neighbourhood
 
-Plots
-    Sorted list of Max/Median price per neighbourhood, highlight chosen neighbourhood
-    ? Availability by neighborhood, like price per nghbrhd ?
-    ? Avg # of reviews by nghbrhd ?
+change plot color based on overlay
 
 Annotate price and availability over time plot
 

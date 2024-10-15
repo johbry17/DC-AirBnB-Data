@@ -85,10 +85,3 @@ function updateInfoBox(listingsData, selectedNeighborhood) {
   // update infoBox
   infoBoxElement.innerHTML = infoBoxElement.innerHTML; // trigger an update
 }
-
-// // filter listings by neighborhood
-// function filterListingsByNeighborhood(listingsData, selectedNeighborhood) {
-//   return listingsData.filter(
-//     (listing) => listing.neighbourhood === selectedNeighborhood
-//   );
-// }

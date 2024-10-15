@@ -43,7 +43,7 @@ function calculateMedian(data) {
 function calculateAveragePricePerNeighborhood(listingsData) {
   const neighborhoodPrices = {};
 
-  listingsData.forEach(listing => {
+  listingsData.forEach((listing) => {
     const neighborhood = listing.neighbourhood;
     const price = parseFloat(listing.price);
 
@@ -57,7 +57,9 @@ function calculateAveragePricePerNeighborhood(listingsData) {
 
   const averagePrices = {};
   for (const neighborhood in neighborhoodPrices) {
-    averagePrices[neighborhood] = neighborhoodPrices[neighborhood].total / neighborhoodPrices[neighborhood].count;
+    averagePrices[neighborhood] =
+      neighborhoodPrices[neighborhood].total /
+      neighborhoodPrices[neighborhood].count;
   }
 
   return averagePrices;
@@ -67,9 +69,11 @@ function calculateAveragePricePerNeighborhood(listingsData) {
 function calculateAirbnbCountsPerNeighborhood(listingsData) {
   const neighborhoodCounts = {};
 
-  listingsData.forEach(listing => {
+  listingsData.forEach((listing) => {
     const neighborhood = listing.neighbourhood;
-    neighborhoodCounts[neighborhood] = neighborhoodCounts[neighborhood] ? neighborhoodCounts[neighborhood] + 1 : 1;
+    neighborhoodCounts[neighborhood] = neighborhoodCounts[neighborhood]
+      ? neighborhoodCounts[neighborhood] + 1
+      : 1;
   });
 
   return neighborhoodCounts;
@@ -233,14 +237,16 @@ function getHostAirbnbs(data) {
 
   // count the number of listings per host
   data.forEach((item) => {
-    hostCounts[item.host_id] = hostCounts[item.host_id] ? hostCounts[item.host_id] + 1 : 1;
+    hostCounts[item.host_id] = hostCounts[item.host_id]
+      ? hostCounts[item.host_id] + 1
+      : 1;
   });
 
   // create bins for number of listings
   const labels = [...Array(10).keys()].map(String).concat(["10+"]);
 
   // initialize distribution with labels
-  labels.forEach(label => distribution[label] = 0);
+  labels.forEach((label) => (distribution[label] = 0));
 
   // bin the hosts based on the number of listings and sum counts
   Object.values(hostCounts).forEach((count) => {
@@ -265,8 +271,12 @@ function getTopHosts(data) {
   });
 
   // sort the hosts by number of listings
-  const sortedHosts = Object.entries(hostCounts).sort((a, b) => b[1].count - a[1].count);
+  const sortedHosts = Object.entries(hostCounts).sort(
+    (a, b) => b[1].count - a[1].count
+  );
 
   // get the top 20 hosts
-  return sortedHosts.slice(0, 20).map(([host_id, { name, count }]) => ({ host_id, host_name: name, count }));
+  return sortedHosts
+    .slice(0, 20)
+    .map(([host_id, { name, count }]) => ({ host_id, host_name: name, count }));
 }

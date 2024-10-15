@@ -197,24 +197,31 @@ function updatePricePlot(listingsData, selectedNeighborhood, colors) {
         dcStats.meanPrice,
         dcStats.medianPrice,
       ];
-    let percentDifference = isDC
-      ? [0, 0]
-      : [
-          ((neighborhoodStats.meanPrice - dcStats.meanPrice) / dcStats.meanPrice) * 100,
-          ((neighborhoodStats.medianPrice - dcStats.medianPrice) / dcStats.medianPrice) * 100,
-        ];
+  let percentDifference = isDC
+    ? [0, 0]
+    : [
+        ((neighborhoodStats.meanPrice - dcStats.meanPrice) /
+          dcStats.meanPrice) *
+          100,
+        ((neighborhoodStats.medianPrice - dcStats.medianPrice) /
+          dcStats.medianPrice) *
+          100,
+      ];
 
-    let hoverText = chosenData.map((value, index) => {
-      let text = value.toLocaleString("en-US", { style: "currency", currency: "USD" });
-      if (!isDC && index < 2) {
-        let percentDiff = percentDifference[index].toFixed(1);
-        if (percentDifference[index] > 0) {
-          percentDiff = `+${percentDiff}`;
-        }
-        text += ` (${percentDiff}%)`;
-      }
-      return text;
+  let hoverText = chosenData.map((value, index) => {
+    let text = value.toLocaleString("en-US", {
+      style: "currency",
+      currency: "USD",
     });
+    if (!isDC && index < 2) {
+      let percentDiff = percentDifference[index].toFixed(1);
+      if (percentDifference[index] > 0) {
+        percentDiff = `+${percentDiff}`;
+      }
+      text += ` (${percentDiff}%)`;
+    }
+    return text;
+  });
   let xLabels = isDC
     ? ["Mean (<b>$</b>)", "Median (<b>$</b>)"]
     : [
@@ -1023,7 +1030,9 @@ function plotHostAirbnbs(data, selectedNeighborhood, colors) {
   const hostAirbnbs =
     selectedNeighborhood === "Washington, D.C."
       ? getHostAirbnbs(data)
-      : getHostAirbnbs(filterListingsByNeighborhood(data, selectedNeighborhood));
+      : getHostAirbnbs(
+          filterListingsByNeighborhood(data, selectedNeighborhood)
+        );
 
   // declare variables
   let labels, counts, title, barColors;
@@ -1080,7 +1089,9 @@ function plotTop10Hosts(data) {
   const rows = topHosts.map((host) => [host.host_name, host.count]);
 
   // transpose rows to columns for Plotly
-  const columns = headers.map((_, colIndex) => rows.map((row) => row[colIndex]));
+  const columns = headers.map((_, colIndex) =>
+    rows.map((row) => row[colIndex])
+  );
 
   // create trace
   const trace = {

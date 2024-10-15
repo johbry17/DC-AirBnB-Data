@@ -112,7 +112,7 @@ function initializeOverlays(markerGroups, neighborhoods, listingsData) {
     "License Status": markerGroups.license,
     "Property Type": markerGroups.propertyType,
     "Average Price": choroplethLayer,
-    "Total Airbnbs": bubbleLayer
+    "Total Airbnbs": bubbleLayer,
   };
 }
 
@@ -189,21 +189,23 @@ function initializeChoroplethLayer(neighborhoods, averagePrices) {
     onEachFeature: (feature, layer) => {
       const neighborhood = feature.properties.neighbourhood;
       const avgPrice = averagePrices[neighborhood] || "No Data";
-      const popupContent = `${neighborhood}<br><strong style='display: block; text-align: right;'>Average Price: $${avgPrice.toFixed(2)}</strong>`;
+      const popupContent = `${neighborhood}<br><strong style='display: block; text-align: right;'>Average Price: $${avgPrice.toFixed(
+        2
+      )}</strong>`;
 
       // bind popup to the layer
-      layer.bindPopup(popupContent, { className: 'marker-popup' });
+      layer.bindPopup(popupContent, { className: "marker-popup" });
 
       // open || close popup
-      layer.on('mouseover', function (e) {
+      layer.on("mouseover", function (e) {
         this.openPopup();
       });
-      layer.on('mouseout', function (e) {
+      layer.on("mouseout", function (e) {
         this.closePopup();
       });
 
       // for touch events on mobile devices
-      layer.on('click', function (e) {
+      layer.on("click", function (e) {
         if (this.isPopupOpen()) {
           this.closePopup();
         } else {
@@ -219,14 +221,17 @@ function initializeBubbleChartLayer(neighborhoods, listingsData) {
   const neighborhoodData = calculateAirbnbCountsPerNeighborhood(listingsData);
   const bubbleLayerGroup = L.layerGroup(); // create layer group for circle markers
 
-  neighborhoods.features.forEach(feature => {
+  neighborhoods.features.forEach((feature) => {
     const neighborhood = feature.properties.neighbourhood;
     const count = neighborhoodData[neighborhood] || 0;
     const radius = Math.sqrt(count) * 2;
 
     // calculate centroid
     const centroid = turf.centroid(feature);
-    const latlng = [centroid.geometry.coordinates[1], centroid.geometry.coordinates[0]];
+    const latlng = [
+      centroid.geometry.coordinates[1],
+      centroid.geometry.coordinates[0],
+    ];
 
     // create circle marker at centroid
     const circleMarker = L.circleMarker(latlng, {
@@ -236,14 +241,17 @@ function initializeBubbleChartLayer(neighborhoods, listingsData) {
       weight: 1,
       opacity: 1,
       fillOpacity: 0.8,
-    }).bindPopup(`${neighborhood}<br><strong style='display: block; text-align: right;'>Airbnb Count: ${count}</strong>`, { className: 'marker-popup' });
+    }).bindPopup(
+      `${neighborhood}<br><strong style='display: block; text-align: right;'>Airbnb Count: ${count}</strong>`,
+      { className: "marker-popup" }
+    );
 
     // create a divIcon to show the text inside the bubble
     const textIcon = L.divIcon({
-      className: 'bubble-text', // define custom CSS class for styling
+      className: "bubble-text", // define custom CSS class for styling
       html: `<div style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;  font-size: 12px; color: white;">${count}</div>`,
       iconSize: [radius * 2, radius * 2], // match the size of the circle marker
-      iconAnchor: [radius, radius] // center the text inside the bubble
+      iconAnchor: [radius, radius], // center the text inside the bubble
     });
 
     // create marker with the text inside and add it to the layer
@@ -254,15 +262,15 @@ function initializeBubbleChartLayer(neighborhoods, listingsData) {
     bubbleLayerGroup.addLayer(textMarker);
 
     // open || close popup
-    circleMarker.on('mouseover', function (e) {
+    circleMarker.on("mouseover", function (e) {
       this.openPopup();
     });
-    circleMarker.on('mouseout', function (e) {
+    circleMarker.on("mouseout", function (e) {
       this.closePopup();
     });
 
     // for touch events on mobile devices
-    circleMarker.on('click', function (e) {
+    circleMarker.on("click", function (e) {
       if (this.isPopupOpen()) {
         this.closePopup();
       } else {
@@ -345,8 +353,8 @@ function syncDropdownAndOverlay(
     activeOverlay = choroplethLayer;
     activeLegend = addLegend("Average Price").addTo(map);
   } else if (selectedOverlayName === "Total Airbnbs") {
-    map.eachLayer(layer => {
-      if (layer !== baseLayer) { // Replace `baseLayer` with your actual base layer variable
+    map.eachLayer((layer) => {
+      if (layer !== baseLayer) {
         map.removeLayer(layer);
       }
     });
@@ -416,8 +424,13 @@ function addLegend(type) {
       const gradientBar = document.createElement("div");
       gradientBar.style.width = "100%";
       gradientBar.style.height = "20px";
-      gradientBar.style.background = "linear-gradient(to right, " +
-        Array.from({ length: 101 }, (_, i) => d3.scaleSequential(d3.interpolateViridis).domain([50, 300])(50 + (i * 2.5))).join(", ") +
+      gradientBar.style.background =
+        "linear-gradient(to right, " +
+        Array.from({ length: 101 }, (_, i) =>
+          d3.scaleSequential(d3.interpolateViridis).domain([50, 300])(
+            50 + i * 2.5
+          )
+        ).join(", ") +
         ")";
       div.appendChild(gradientBar);
 
@@ -637,11 +650,11 @@ function createPopupContent(listing) {
 function getColorScheme() {
   if (activeLegend) {
     // if (activeLegend.options.position === "topright") {
-      if (activeLegend._container.innerHTML.includes("License Status")) {
-        return "license";
-      } else if (activeLegend._container.innerHTML.includes("Property Type")) {
-        return "propertyType";
-      }
+    if (activeLegend._container.innerHTML.includes("License Status")) {
+      return "license";
+    } else if (activeLegend._container.innerHTML.includes("Property Type")) {
+      return "propertyType";
+    }
     // }
   }
   return null;
