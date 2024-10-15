@@ -8,7 +8,6 @@ Add % difference neighborhood vs dc price (mean and median)
 
 Toolbar of radio buttons to change map
     Bubble map of number of listings
-    Choropleth price/neighbourhood (maybe listings/neighborhood)
     ? Avg available days per neighbourhood ?
     ? choropleth avg # of reviews ?
     ? choropleth avg listing duration ?

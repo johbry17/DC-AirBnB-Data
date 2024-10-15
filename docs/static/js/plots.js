@@ -197,9 +197,24 @@ function updatePricePlot(listingsData, selectedNeighborhood, colors) {
         dcStats.meanPrice,
         dcStats.medianPrice,
       ];
-  let hoverText = chosenData.map((value) =>
-    value.toLocaleString("en-US", { style: "currency", currency: "USD" })
-  );
+    let percentDifference = isDC
+      ? [0, 0]
+      : [
+          ((neighborhoodStats.meanPrice - dcStats.meanPrice) / dcStats.meanPrice) * 100,
+          ((neighborhoodStats.medianPrice - dcStats.medianPrice) / dcStats.medianPrice) * 100,
+        ];
+
+    let hoverText = chosenData.map((value, index) => {
+      let text = value.toLocaleString("en-US", { style: "currency", currency: "USD" });
+      if (!isDC && index < 2) {
+        let percentDiff = percentDifference[index].toFixed(1);
+        if (percentDifference[index] > 0) {
+          percentDiff = `+${percentDiff}`;
+        }
+        text += ` (${percentDiff}%)`;
+      }
+      return text;
+    });
   let xLabels = isDC
     ? ["Mean (<b>$</b>)", "Median (<b>$</b>)"]
     : [

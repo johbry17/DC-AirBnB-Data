@@ -43,7 +43,7 @@ function createMap(neighborhoods, listingsData, priceAvailabilityData) {
     overlays,
     listingsData,
     priceAvailabilityData,
-    neighborhoodsLayer,
+    // neighborhoodsLayer,
     choroplethLayer
   );
 
@@ -60,7 +60,7 @@ function createMap(neighborhoods, listingsData, priceAvailabilityData) {
           overlays,
           listingsData,
           priceAvailabilityData,
-          neighborhoodsLayer,
+          // neighborhoodsLayer,
           choroplethLayer
         );
       }
@@ -264,7 +264,7 @@ function syncDropdownAndOverlay(
   overlays,
   listingsData,
   priceAvailabilityData,
-  neighborhoods,
+  // neighborhoods,
   choroplethLayer
 ) {
   // remove all existing markers
