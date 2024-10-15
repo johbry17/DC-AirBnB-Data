@@ -7,7 +7,6 @@
 
 
 
-disable choropleth button, clean code
 style buttons
 set hover popup for choropleth neighborhoods
 change color of plots

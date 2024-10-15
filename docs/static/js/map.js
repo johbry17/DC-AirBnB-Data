@@ -186,9 +186,27 @@ function initializeChoroplethLayer(neighborhoods, averagePrices) {
     onEachFeature: (feature, layer) => {
       const neighborhood = feature.properties.neighbourhood;
       const avgPrice = averagePrices[neighborhood] || "No Data";
-      layer.bindPopup(
-        `<strong>${neighborhood}</strong><br>Avg Price: $${avgPrice.toFixed(2)}`
-      );
+      const popupContent = `${neighborhood}<br><strong style='display: block; text-align: right;'>Average Price: $${avgPrice.toFixed(2)}</strong>`;
+
+      // bind popup to the layer
+      layer.bindPopup(popupContent, { className: 'marker-popup' });
+
+      // open || close popup
+      layer.on('mouseover', function (e) {
+        this.openPopup();
+      });
+      layer.on('mouseout', function (e) {
+        this.closePopup();
+      });
+
+      // for touch events on mobile devices
+      layer.on('click', function (e) {
+        if (this.isPopupOpen()) {
+          this.closePopup();
+        } else {
+          this.openPopup();
+        }
+      });
     },
   });
 }
