@@ -15,8 +15,8 @@ function createMap(neighborhoods, listingsData, priceAvailabilityData) {
 
   // initial call for controls, infoBox, and plots
   neighborhoodsControl(map, neighborhoods, listingsData, priceAvailabilityData);
-  updateInfoBox(listingsData, "Washington, D.C.");
-  allDCPlots(listingsData, priceAvailabilityData, defaultColors);
+  // updateInfoBox(listingsData, "Washington, D.C.");
+  // allDCPlots(listingsData, priceAvailabilityData, defaultColors);
 
   // event listeners for resizing
   window.addEventListener("resize", () => {
