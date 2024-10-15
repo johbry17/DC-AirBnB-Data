@@ -41,6 +41,7 @@ function allDCPlots(listingsData, priceAvailabilityData, colors) {
   plotPropertyTypePrice(listingsData, "Washington, D.C.", colors);
   plotMinimumNights(listingsData, "Washington, D.C.", colors);
   plotHostAirbnbs(listingsData, "Washington, D.C.", colors);
+  document.getElementById("top-20-hosts-table").style.display = "block";
   plotTop10Hosts(listingsData);
 }
 
