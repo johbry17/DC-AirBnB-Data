@@ -8,10 +8,10 @@ function createMap(neighborhoods, listingsData, priceAvailabilityData) {
   const markerGroups = initializeMarkerGroups(listingsData);
   const overlays = initializeOverlays(markerGroups);
 
-  let activeOverlay = markerGroups.default; // default overlay
+  // let activeOverlay = markerGroups.default; // default overlay
 
   addBaseLayerControl(map);
-  addOverlayControl(map, overlays);
+  // addOverlayControl(map, overlays);
 
   // initial call for controls, infoBox, and plots
   neighborhoodsControl(map, neighborhoods, listingsData, priceAvailabilityData);
@@ -27,7 +27,7 @@ function createMap(neighborhoods, listingsData, priceAvailabilityData) {
   // resize map to ensure it loads correctly
   map.invalidateSize();
 
-  // sync dropdown and overlays if needed
+  // sync dropdown and overlays with initial values
   syncDropdownAndOverlay(
     map,
     "top",
@@ -36,6 +36,21 @@ function createMap(neighborhoods, listingsData, priceAvailabilityData) {
     listingsData,
     priceAvailabilityData
   );
+
+  // event listener for dropdown and overlay changes
+  document.getElementById("overlay-control").addEventListener("click", function (e) {
+    const selectedOverlay = e.target.getAttribute("data-overlay");
+    if (selectedOverlay && overlays[selectedOverlay]) {
+      syncDropdownAndOverlay(
+        map,
+        document.getElementById("neighborhoods-dropdown").value,
+        selectedOverlay,
+        overlays,
+        listingsData,
+        priceAvailabilityData
+      );
+    }
+  });
 }
 
 // initialize the map
@@ -91,20 +106,9 @@ function addBaseLayerControl(map) {
   L.control.layers(baseMap, null).addTo(map);
 }
 
-// add the overlay control
-function addOverlayControl(map, overlays) {
-  const overlayControl = document.getElementById("overlay-control"); // Custom control div in HTML
-
-  overlayControl.addEventListener("click", function (e) {
-    const selectedOverlay = e.target.getAttribute("data-overlay");
-    if (selectedOverlay && overlays[selectedOverlay]) {
-      updateOverlay(map, overlays[selectedOverlay], selectedOverlay);
-    }
-  });
-}
-
 // update the overlay
-function updateOverlay(map, newOverlay, overlayName) {
+function updateOverlay(map, newOverlay, overlayName, listingsData, selectedNeighborhood) {
+  // remove previous overlay
   if (activeOverlay !== newOverlay) {
     if (activeOverlay) {
       map.removeLayer(activeOverlay);
@@ -113,15 +117,28 @@ function updateOverlay(map, newOverlay, overlayName) {
       map.removeControl(activeLegend);
     }
 
-    map.addLayer(newOverlay);
+    // filter listings by neighborhood
+    const filteredListings = filterListingsByNeighborhood(
+      listingsData,
+      selectedNeighborhood
+    );
 
+    // set active overlay and legend
+    let updatedMarkers;
     if (overlayName === "License Status") {
+      updatedMarkers = createMarkers(filteredListings, "license");
       activeLegend = addLegend("License Status").addTo(map);
     } else if (overlayName === "Property Type") {
+      updatedMarkers = createMarkers(filteredListings, "propertyType");
       activeLegend = addLegend("Property Type").addTo(map);
+    } else {
+      updatedMarkers = createMarkers(filteredListings); // default markers
+      activeLegend = null;
     }
 
-    activeOverlay = newOverlay;
+    // add new overlay
+    map.addLayer(updatedMarkers);
+    activeOverlay = updatedMarkers; 
   }
 
   return { activeOverlay, activeLegend };
@@ -169,15 +186,17 @@ function syncDropdownAndOverlay(
   listingsData,
   priceAvailabilityData
 ) {
-  const dropdown = document.getElementById("neighborhoods-dropdown");
-  dropdown.value = selectedNeighborhood;
+  // const dropdown = document.getElementById("neighborhoods-dropdown");
+  // dropdown.value = selectedNeighborhood;
 
   // update overlay
   if (overlays[selectedOverlayName]) {
     const overlayState = updateOverlay(
       map,
       overlays[selectedOverlayName],
-      selectedOverlayName
+      selectedOverlayName,
+      listingsData,
+      selectedNeighborhood
     );
     activeOverlay = overlayState.activeOverlay;
     activeLegend = overlayState.activeLegend;
@@ -295,7 +314,7 @@ function createOption(text, value) {
 }
 
 // initialize markers with custom color options based on a property
-function createMarkers(data, colorBy = null) {
+function createMarkers(data, colorScheme = null) {
   // process data for license status
   data = setLicenseStatus(data);
 
@@ -306,11 +325,11 @@ function createMarkers(data, colorBy = null) {
   data.forEach((listing) => {
     let markerColor = defaultColors.airbnbs; // default color
 
-    // determine marker color based on colorBy parameter
-    if (colorBy === "license") {
+    // determine marker color based on colorScheme parameter
+    if (colorScheme === "license") {
       markerColor =
         licenseColors[listing.licenseCategory] || licenseColors.default;
-    } else if (colorBy === "propertyType") {
+    } else if (colorScheme === "propertyType") {
       markerColor =
         propertyTypeColors[listing.room_type] || propertyTypeColors.default;
     }
@@ -419,6 +438,20 @@ function createPopupContent(listing) {
   `;
 }
 
+// get color scheme for markers when changing map view / zoom level
+function getColorScheme() {
+  if (activeLegend) {
+    if (activeLegend.options.position === "topright") {
+      if (activeLegend._container.innerHTML.includes("License Status")) {
+        return "license";
+      } else if (activeLegend._container.innerHTML.includes("Property Type")) {
+        return "propertyType";
+      }
+    }
+  }
+  return null;
+}
+
 // resets map view to all of D.C., updates infoBox and plots
 function resetMapView(
   map,
@@ -428,9 +461,12 @@ function resetMapView(
 ) {
   map.setView([38.89511, -77.03637], 12);
   map.removeLayer(neighborhoodsLayer); // remove neighborhood boundaries from zoomIn()
-  // update markers, legend, infoBox, and plots
-  createMarkers(listingsData).addTo(map);
-  activeLegend = null;
+
+  // set color scheme
+  const colorScheme = getColorScheme();
+
+  // update markers, infoBox, and plots
+  createMarkers(listingsData, colorScheme).addTo(map);
   updateInfoBox(listingsData, "Washington, D.C.");
   allDCPlots(listingsData, priceAvailabilityData, defaultColors);
 }
@@ -475,8 +511,11 @@ function zoomIn(
     // add layers
     neighborhoodsLayer.addTo(map);
 
+    // set color scheme
+    const colorScheme = getColorScheme();
+
     // add new markers
-    createMarkers(filteredListings).addTo(map);
+    createMarkers(filteredListings, colorScheme).addTo(map);
 
     // update infoBox, and plots
     updateInfoBox(listingsData, selectedNeighborhood);
