@@ -173,7 +173,11 @@ function initializeChoroplethLayer(neighborhoods, averagePrices) {
     return colorScale(price);
   };
 
-  return L.geoJSON(neighborhoods, {
+  // to hold the choropleth and text markers
+  const layerGroup = L.layerGroup();
+
+  // layer for the choropleth polygons
+  const choroplethLayer = L.geoJSON(neighborhoods, {
     style: (feature) => {
       const neighborhood = feature.properties.neighbourhood;
       const avgPrice = averagePrices[neighborhood] || 0;
@@ -212,8 +216,37 @@ function initializeChoroplethLayer(neighborhoods, averagePrices) {
           this.openPopup();
         }
       });
+
+      // calculate centroid
+      const centroid = turf.centroid(feature);
+      const latlng = [
+        centroid.geometry.coordinates[1],
+        centroid.geometry.coordinates[0],
+      ];
+
+      // for text inside the neighborhood polygons
+      const textIcon = L.divIcon({
+        className: "custom-label",
+        html: `<div style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;  font-size: 12px; color: black;"><b>$${avgPrice.toFixed(
+          0
+        )}</b></div>`,
+        iconSize: [100, 50],
+        iconAnchor: [50, 25], // anchor point of the text box
+      });
+
+      // add marker to layer
+      const textMarker = L.marker(latlng, {
+        icon: textIcon,
+        interactive: false,
+      });
+      layerGroup.addLayer(textMarker);
     },
   });
+
+  // add choropleth to layer
+  layerGroup.addLayer(choroplethLayer);
+
+  return layerGroup;
 }
 
 // create bubble chart layer of airbnb's per neighborhood
@@ -246,18 +279,18 @@ function initializeBubbleChartLayer(neighborhoods, listingsData) {
       { className: "marker-popup" }
     );
 
-    // create a divIcon to show the text inside the bubble
+    // for text inside the bubble
     const textIcon = L.divIcon({
-      className: "bubble-text", // define custom CSS class for styling
+      className: "bubble-text",
       html: `<div style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;  font-size: 12px; color: white;">${count}</div>`,
-      iconSize: [radius * 2, radius * 2], // match the size of the circle marker
-      iconAnchor: [radius, radius], // center the text inside the bubble
+      iconSize: [radius * 2, radius * 2], // match size of circle marker
+      iconAnchor: [radius, radius], // center text
     });
 
-    // create marker with the text inside and add it to the layer
+    // create marker with text inside and add to layer
     const textMarker = L.marker(latlng, { icon: textIcon, interactive: false });
 
-    // add circle marker to layer group
+    // add marker to layer
     bubbleLayerGroup.addLayer(circleMarker);
     bubbleLayerGroup.addLayer(textMarker);
 
