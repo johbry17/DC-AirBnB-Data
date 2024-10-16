@@ -201,21 +201,7 @@ function initializeChoroplethLayer(neighborhoods, averagePrices) {
       layer.bindPopup(popupContent, { className: "marker-popup" });
 
       // open || close popup
-      layer.on("mouseover", function (e) {
-        this.openPopup();
-      });
-      layer.on("mouseout", function (e) {
-        this.closePopup();
-      });
-
-      // for touch events on mobile devices
-      layer.on("click", function (e) {
-        if (this.isPopupOpen()) {
-          this.closePopup();
-        } else {
-          this.openPopup();
-        }
-      });
+      popupMouseEvents(layer);
 
       // calculate centroid
       const centroid = turf.centroid(feature);
@@ -290,30 +276,34 @@ function initializeBubbleChartLayer(neighborhoods, listingsData) {
     // create marker with text inside and add to layer
     const textMarker = L.marker(latlng, { icon: textIcon, interactive: false });
 
-    // add marker to layer
-    bubbleLayerGroup.addLayer(circleMarker);
-    bubbleLayerGroup.addLayer(textMarker);
-
     // open || close popup
-    circleMarker.on("mouseover", function (e) {
-      this.openPopup();
-    });
-    circleMarker.on("mouseout", function (e) {
-      this.closePopup();
-    });
+    popupMouseEvents(circleMarker);
 
-    // for touch events on mobile devices
-    circleMarker.on("click", function (e) {
-      if (this.isPopupOpen()) {
-        this.closePopup();
-      } else {
-        this.openPopup();
-      }
-    });
+    // add markers to layer group
+    bubbleLayerGroup.addLayer(circleMarker).addLayer(textMarker);
   });
 
   return bubbleLayerGroup;
 }
+
+// handle popup events
+function popupMouseEvents(layer) {
+  let popupOpen = false; // tracks popup state
+
+  layer.on({
+    mouseover() {
+      if (!popupOpen) this.openPopup();
+    },
+    mouseout() {
+      if (!popupOpen) this.closePopup();
+    },
+    click() {
+      popupOpen ? this.closePopup() : this.openPopup();
+      popupOpen = !popupOpen;
+    }
+  });
+}
+
 
 // update the overlay
 function updateOverlay(
@@ -628,14 +618,7 @@ function createMarkers(data, colorScheme = null) {
     });
 
     // open || close popup
-    let popupOpen = false; // boolean to track if a popup is open
-    marker.on("mouseover", () => marker.openPopup());
-    marker.on("mouseout", () => {
-      if (!popupOpen) marker.closePopup();
-    });
-    marker.on("click", () => {
-      popupOpen = !popupOpen;
-    });
+    popupMouseEvents(marker);
 
     // bring marker to front on hover
     marker.bringToFront();
