@@ -36,6 +36,7 @@ function resizePlots() {
 function allDCPlots(listingsData, priceAvailabilityData, colors) {
   plotPriceAvailability(priceAvailabilityData, "Washington, D.C.");
   updatePricePlot(listingsData, "Washington, D.C.", colors);
+  // document.getElementById("ratings-plot").style.display = "none";
   updateRatingsPlot(listingsData, "Washington, D.C.", colors);
   plotLicenseDonut(listingsData, "Washington, D.C.", colors);
   plotLicensePrice(listingsData, "Washington, D.C.", colors);
@@ -56,6 +57,7 @@ function neighborhoodPlots(
 ) {
   plotPriceAvailability(priceAvailabilityData, selectedNeighborhood);
   updatePricePlot(listingsData, selectedNeighborhood, colors);
+  // document.getElementById("ratings-plot").style.display = "none";
   updateRatingsPlot(listingsData, selectedNeighborhood, colors);
   plotLicenseDonut(listingsData, selectedNeighborhood, colors);
   plotLicensePrice(listingsData, selectedNeighborhood, colors);
@@ -93,7 +95,7 @@ function getLegendTraces(colors, selectedNeighborhood) {
 // plot price and availability for all of DC or a neighborhood
 function plotPriceAvailability(data, selectedNeighborhood) {
   // data for all of DC
-  const allDCData = data.filter((d) => d.neighbourhood === ""); // Filter for overall Washington, D.C.
+  const allDCData = data.filter((d) => d.neighbourhood === ""); // filter for overall Washington, D.C.
   const allDates = allDCData.map((d) => d.date);
   const allAvgPrices = allDCData.map((d) => +d.avg_price);
   const allAvailableListings = allDCData.map((d) => +d.available_listings);
@@ -125,7 +127,7 @@ function plotPriceAvailability(data, selectedNeighborhood) {
     x: dates,
     y: avgPrices,
     mode: "lines",
-    name: "Avg Price (≤ $500)",
+    name: "Average Price",
     line: { color: "orange" },
     hovertemplate: "<b>Price:</b> %{text}<extra></extra>",
     text: avgPrices.map(
@@ -148,10 +150,10 @@ function plotPriceAvailability(data, selectedNeighborhood) {
   };
 
   const layout = {
-    title: `Price and Availability Over Time<br>(${selectedNeighborhood})<br><i style='font-size: .8em;'>Hover for details, excludes Airbnb's ≥ $500/night</i>`,
+    title: `<b>Price</b> and <b>Availability</b> Over Time<br>(${selectedNeighborhood})<br><i style='font-size: .8em;'>Hover for details</i>`,
     xaxis: { title: "Date" },
     yaxis: {
-      title: "Avg Price (≤ $500)",
+      title: "Average Price ($)",
       titlefont: { color: "orange" },
       tickfont: { color: "orange" },
     },
@@ -567,7 +569,7 @@ function plotLicensePrice(data, selectedNeighborhood, colors) {
     const layout = {
       title: dcTitle,
       showlegend: false,
-      xaxis: { title: "License Category" },
+      xaxis: { title: { text: "License Category", standoff: 10 } },
       yaxis: { title: "Average Price ($)" },
       margin: { l: 50, r: 50, t: 100, b: 50 },
     };
@@ -848,7 +850,7 @@ function plotPropertyTypePrice(data, selectedNeighborhood, colors) {
     const layout = {
       title: dcTitle,
       showlegend: false,
-      xaxis: { title: "Property Type" },
+      xaxis: { title: { text: "Property Type", standoff: 10 } },
       yaxis: { title: "Average Price ($)" },
       margin: { l: 50, r: 50, t: 100, b: 50 },
     };
@@ -984,7 +986,7 @@ function plotMinimumNights(data, selectedNeighborhood, colors) {
   const layout = {
     title: title,
     showlegend: false,
-    xaxis: { title: "Minimum Nights", range: [0, 33] },
+    xaxis: { title: { text: "Minimum Nights", standoff: 10 }, range: [0, 33] },
     yaxis: { title: "Count" },
     margin: { l: 50, r: 50, t: 100, b: 50 },
     shapes: [
@@ -1007,7 +1009,7 @@ function plotMinimumNights(data, selectedNeighborhood, colors) {
         y: Math.max(...counts),
         xref: "x",
         yref: "y",
-        text: "<b style='color: red;'>30 days,<br>Short Term Rental threshold</b>",
+        text: "<b style='color: red;'>30 days<br>The legal Short Term Rental threshold</b>",
         showarrow: true,
         arrowhead: 2,
         ax: 0,
@@ -1067,7 +1069,7 @@ function plotHostAirbnbs(data, selectedNeighborhood, colors) {
   const layout = {
     title: title,
     showlegend: false,
-    xaxis: { title: "Number of Listings per Host", type: "category" },
+    xaxis: { title: { text: "Number of Listings per Host", standoff: 10 }, type: "category" },
     yaxis: { title: "Count" },
     margin: { l: 50, r: 50, t: 100, b: 50 },
   };
