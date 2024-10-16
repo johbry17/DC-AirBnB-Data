@@ -37,51 +37,44 @@ Promise.all([
 
 // infoBox
 function updateInfoBox(listingsData, selectedNeighborhood) {
-  const infoBoxElement = document.querySelector("#info-box");
+  const allListingsCount = listingsData.length;
+  const filteredListings = selectedNeighborhood === "Washington, D.C."
+    ? listingsData
+    : filterListingsByNeighborhood(listingsData, selectedNeighborhood);
 
-  // get stats for DC, maybe for neighborhood
-  const stats = calculateStats(listingsData);
-  const filteredListings = filterListingsByNeighborhood(
-    listingsData,
-    selectedNeighborhood
-  );
-  const neighborhoodStats =
-    selectedNeighborhood === "Washington, D.C."
-      ? null
-      : calculateStats(filteredListings);
+  // get stats for DC and neighborhood
+  const neighborhoodStats = calculateStats(filteredListings);
+  const dcStats = calculateStats(listingsData);
 
-  // update neighborhood info
-  document.getElementById("neighborhood-name").innerText = selectedNeighborhood;
-  document.getElementById("neighborhood-count").innerText =
-    filteredListings.length.toLocaleString();
-  document.getElementById("total-count").innerText =
-    listingsData.length.toLocaleString();
-  document.getElementById("total-count-all-dc").innerText =
-    listingsData.length.toLocaleString();
-  document.getElementById(
-    "dc-mean-price"
-  ).innerText = `$${stats.meanPrice.toFixed(2)}`;
-  document.getElementById(
-    "dc-median-price"
-  ).innerText = `$${stats.medianPrice.toFixed(2)}`;
+  // cache DOM elements that will be updated
+  const elements = {
+    neighborhoodName: document.getElementById("neighborhood-name"),
+    neighborhoodCount: document.getElementById("neighborhood-count"),
+    totalCount: document.getElementById("total-count"),
+    totalCountAllDc: document.getElementById("total-count-all-dc"),
+    dcMeanPrice: document.getElementById("dc-mean-price"),
+    dcMedianPrice: document.getElementById("dc-median-price"),
+    neighborhoodMeanPrice: document.getElementById("neighborhood-mean-price"),
+    neighborhoodMedianPrice: document.getElementById("neighborhood-median-price"),
+    neighborhoodToggles: document.querySelectorAll(".neighborhood-toggle"),
+    allDcComparison: document.getElementById("all-dc-comparison"),
+  };
 
-  if (neighborhoodStats) {
-    document.getElementById(
-      "neighborhood-mean-price"
-    ).innerText = `$${neighborhoodStats.meanPrice.toFixed(2)}`;
-    document.getElementById(
-      "neighborhood-median-price"
-    ).innerText = `$${neighborhoodStats.medianPrice.toFixed(2)}`;
+  // update text content
+  elements.neighborhoodName.textContent = selectedNeighborhood;
+  elements.neighborhoodCount.textContent = filteredListings.length.toLocaleString();
+  elements.totalCount.textContent = allListingsCount.toLocaleString();
+  elements.totalCountAllDc.textContent = allListingsCount.toLocaleString();
+  elements.dcMeanPrice.textContent = `$${dcStats.meanPrice.toFixed(2)}`;
+  elements.dcMedianPrice.textContent = `$${dcStats.medianPrice.toFixed(2)}`;
+
+  if (selectedNeighborhood !== "Washington, D.C.") {
+    elements.neighborhoodMeanPrice.textContent = `$${neighborhoodStats.meanPrice.toFixed(2)}`;
+    elements.neighborhoodMedianPrice.textContent = `$${neighborhoodStats.medianPrice.toFixed(2)}`;
   }
 
-  // toggle display of neighborhood comparison stats
-  const neighborhoodToggles = document.querySelectorAll(".neighborhood-toggle");
-  const displayStyle =
-    selectedNeighborhood === "Washington, D.C." ? "none" : "block";
-  neighborhoodToggles.forEach((div) => (div.style.display = displayStyle));
-  document.getElementById("all-dc-comparison").style.display =
-    selectedNeighborhood === "Washington, D.C." ? "block" : "none";
-
-  // update infoBox
-  infoBoxElement.innerHTML = infoBoxElement.innerHTML; // trigger an update
+  // toggle visibility of neighborhood comparison stats
+  const displayStyle = selectedNeighborhood === "Washington, D.C." ? "none" : "block";
+  elements.neighborhoodToggles.forEach((toggle) => toggle.style.display = displayStyle);
+  elements.allDcComparison.style.display = selectedNeighborhood === "Washington, D.C." ? "block" : "none";
 }
