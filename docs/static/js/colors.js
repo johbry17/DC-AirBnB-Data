@@ -23,5 +23,5 @@ const propertyTypeColors = {
 "Private room": "blue",
 "Shared room": "green",
 "Hotel room": "red",
-default: "purple",
+default: "gray",
 };

@@ -38,9 +38,10 @@ Promise.all([
 // infoBox
 function updateInfoBox(listingsData, selectedNeighborhood) {
   const allListingsCount = listingsData.length;
-  const filteredListings = selectedNeighborhood === "Washington, D.C."
-    ? listingsData
-    : filterListingsByNeighborhood(listingsData, selectedNeighborhood);
+  const filteredListings =
+    selectedNeighborhood === "Washington, D.C."
+      ? listingsData
+      : filterListingsByNeighborhood(listingsData, selectedNeighborhood);
 
   // get stats for DC and neighborhood
   const neighborhoodStats = calculateStats(filteredListings);
@@ -55,26 +56,37 @@ function updateInfoBox(listingsData, selectedNeighborhood) {
     dcMeanPrice: document.getElementById("dc-mean-price"),
     dcMedianPrice: document.getElementById("dc-median-price"),
     neighborhoodMeanPrice: document.getElementById("neighborhood-mean-price"),
-    neighborhoodMedianPrice: document.getElementById("neighborhood-median-price"),
+    neighborhoodMedianPrice: document.getElementById(
+      "neighborhood-median-price"
+    ),
     neighborhoodToggles: document.querySelectorAll(".neighborhood-toggle"),
     allDcComparison: document.getElementById("all-dc-comparison"),
   };
 
   // update text content
   elements.neighborhoodName.textContent = selectedNeighborhood;
-  elements.neighborhoodCount.textContent = filteredListings.length.toLocaleString();
+  elements.neighborhoodCount.textContent =
+    filteredListings.length.toLocaleString();
   elements.totalCount.textContent = allListingsCount.toLocaleString();
   elements.totalCountAllDc.textContent = allListingsCount.toLocaleString();
   elements.dcMeanPrice.textContent = `$${dcStats.meanPrice.toFixed(2)}`;
   elements.dcMedianPrice.textContent = `$${dcStats.medianPrice.toFixed(2)}`;
 
   if (selectedNeighborhood !== "Washington, D.C.") {
-    elements.neighborhoodMeanPrice.textContent = `$${neighborhoodStats.meanPrice.toFixed(2)}`;
-    elements.neighborhoodMedianPrice.textContent = `$${neighborhoodStats.medianPrice.toFixed(2)}`;
+    elements.neighborhoodMeanPrice.textContent = `$${neighborhoodStats.meanPrice.toFixed(
+      2
+    )}`;
+    elements.neighborhoodMedianPrice.textContent = `$${neighborhoodStats.medianPrice.toFixed(
+      2
+    )}`;
   }
 
   // toggle visibility of neighborhood comparison stats
-  const displayStyle = selectedNeighborhood === "Washington, D.C." ? "none" : "block";
-  elements.neighborhoodToggles.forEach((toggle) => toggle.style.display = displayStyle);
-  elements.allDcComparison.style.display = selectedNeighborhood === "Washington, D.C." ? "block" : "none";
+  const displayStyle =
+    selectedNeighborhood === "Washington, D.C." ? "none" : "block";
+  elements.neighborhoodToggles.forEach(
+    (toggle) => (toggle.style.display = displayStyle)
+  );
+  elements.allDcComparison.style.display =
+    selectedNeighborhood === "Washington, D.C." ? "block" : "none";
 }

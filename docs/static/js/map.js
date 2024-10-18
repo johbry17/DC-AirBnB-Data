@@ -17,8 +17,14 @@ function createMap(neighborhoods, listingsData, priceAvailabilityData) {
 
   addBaseLayerControl(map);
 
-  // initial call for controls, infoBox, and plots
+  // initial call for controls, infoBox, plots, neighborhood and choropleth layers
   neighborhoodsControl(map, neighborhoods, listingsData, priceAvailabilityData);
+  // initializeNeighborhoodsLayer(neighborhoods); // added by neighborhoodsControl
+  const averagePrices = calculateAveragePricePerNeighborhood(listingsData);
+  const choroplethLayer = initializeChoroplethLayer(
+    neighborhoods,
+    averagePrices
+  );
 
   // event listeners for resizing
   window.addEventListener("resize", () => {
@@ -28,13 +34,6 @@ function createMap(neighborhoods, listingsData, priceAvailabilityData) {
 
   // resize map to ensure it loads correctly
   map.invalidateSize();
-
-  const neighborhoodsLayer = initializeNeighborhoodsLayer(neighborhoods);
-  const averagePrices = calculateAveragePricePerNeighborhood(listingsData);
-  const choroplethLayer = initializeChoroplethLayer(
-    neighborhoods,
-    averagePrices
-  );
 
   // sync dropdown and overlays with initial values
   syncDropdownAndOverlay(
@@ -51,21 +50,24 @@ function createMap(neighborhoods, listingsData, priceAvailabilityData) {
   // event listener for overlay changes
   document
     .getElementById("overlay-control")
-    .addEventListener("click", function (e) {
-      const selectedOverlay = e.target.getAttribute("data-overlay");
-      if (selectedOverlay && overlays[selectedOverlay]) {
-        syncDropdownAndOverlay(
-          map,
-          document.getElementById("neighborhoods-dropdown").value,
-          selectedOverlay,
-          overlays,
-          listingsData,
-          priceAvailabilityData,
-          neighborhoods,
-          choroplethLayer
-        );
-      }
-    });
+    .addEventListener("click", handleOverlayClick);
+
+  // change overlay based on click
+  function handleOverlayClick(e) {
+    const selectedOverlay = e.target.getAttribute("data-overlay");
+    if (selectedOverlay && overlays[selectedOverlay]) {
+      syncDropdownAndOverlay(
+        map,
+        document.getElementById("neighborhoods-dropdown").value,
+        selectedOverlay,
+        overlays,
+        listingsData,
+        priceAvailabilityData,
+        neighborhoods,
+        choroplethLayer
+      );
+    }
+  }
 }
 
 // initialize the map
@@ -77,7 +79,6 @@ function initializeMap() {
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }
   );
-
   return L.map("map-id", {
     center: [38.89511, -77.03637],
     zoom: 12,
@@ -87,32 +88,22 @@ function initializeMap() {
 
 // initialize marker groups
 function initializeMarkerGroups(listingsData) {
-  const defaultMarkers = createMarkers(listingsData);
-  const licenseMarkers = createMarkers(listingsData, "license");
-  const propertyTypeMarkers = createMarkers(listingsData, "propertyType");
-
   return {
-    default: defaultMarkers,
-    license: licenseMarkers,
-    propertyType: propertyTypeMarkers,
+    default: createMarkers(listingsData),
+    license: createMarkers(listingsData, "license"),
+    propertyType: createMarkers(listingsData, "propertyType"),
   };
 }
 
 // initialize overlays
 function initializeOverlays(markerGroups, neighborhoods, listingsData) {
   const averagePrices = calculateAveragePricePerNeighborhood(listingsData);
-  const choroplethLayer = initializeChoroplethLayer(
-    neighborhoods,
-    averagePrices
-  );
-  const bubbleLayer = initializeBubbleChartLayer(neighborhoods, listingsData);
-
   return {
     "Airbnb's": markerGroups.default,
     "License Status": markerGroups.license,
     "Property Type": markerGroups.propertyType,
-    "Average Price": choroplethLayer,
-    "Total Airbnbs": bubbleLayer,
+    "Average Price": initializeChoroplethLayer(neighborhoods, averagePrices),
+    "Total Airbnbs": initializeBubbleChartLayer(neighborhoods, listingsData),
   };
 }
 
@@ -165,74 +156,72 @@ function initializeNeighborhoodsLayer(
 
 // create choropleth layer for neighborhood boundaries
 function initializeChoroplethLayer(neighborhoods, averagePrices) {
-  const getColor = (price) => {
-    const colorScale = d3
-      .scaleSequential(d3.interpolateViridis)
-      .domain([50, 300]);
-
-    return colorScale(price);
-  };
+  const getColor = (price) =>
+    d3.scaleSequential(d3.interpolateViridis).domain([50, 300])(price);
 
   // to hold the choropleth and text markers
   const layerGroup = L.layerGroup();
 
   // layer for the choropleth polygons
   const choroplethLayer = L.geoJSON(neighborhoods, {
-    style: (feature) => {
-      const neighborhood = feature.properties.neighbourhood;
-      const avgPrice = averagePrices[neighborhood] || 0;
-      return {
-        fillColor: getColor(avgPrice),
-        weight: 2,
-        opacity: 1,
-        color: "white",
-        dashArray: "3",
-        fillOpacity: 1,
-      };
-    },
-    onEachFeature: (feature, layer) => {
-      const neighborhood = feature.properties.neighbourhood;
-      const avgPrice = averagePrices[neighborhood] || "No Data";
-      const popupContent = `${neighborhood}<br><strong style='display: block; text-align: right;'>Average Price: $${avgPrice.toFixed(
-        2
-      )}</strong>`;
-
-      // bind popup to the layer
-      layer.bindPopup(popupContent, { className: "marker-popup" });
-
-      // open || close popup
-      popupMouseEvents(layer);
-
-      // calculate centroid
-      const centroid = turf.centroid(feature);
-      const latlng = [
-        centroid.geometry.coordinates[1],
-        centroid.geometry.coordinates[0],
-      ];
-
-      // for text inside the neighborhood polygons
-      const textIcon = L.divIcon({
-        className: "custom-label",
-        html: `<div style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;  font-size: 12px; color: black;"><b>$${avgPrice.toFixed(
-          0
-        )}</b></div>`,
-        iconSize: [100, 50],
-        iconAnchor: [50, 25], // anchor point of the text box
-      });
-
-      // add marker to layer
-      const textMarker = L.marker(latlng, {
-        icon: textIcon,
-        interactive: false,
-      });
-      layerGroup.addLayer(textMarker);
-    },
+    style: (feature) => ({
+      // const neighborhood = feature.properties.neighbourhood;
+      // const avgPrice = averagePrices[neighborhood] || 0;
+      // return {
+      fillColor: getColor(averagePrices[feature.properties.neighbourhood] || 0),
+      weight: 2,
+      opacity: 1,
+      color: "white",
+      dashArray: "3",
+      fillOpacity: 1,
+      // };
+    }),
+    onEachFeature: setChoroplethFeatures(averagePrices, layerGroup),
   });
 
   // add choropleth to layer
   layerGroup.addLayer(choroplethLayer);
 
   return layerGroup;
+}
+
+// set features for choropleth layer
+function setChoroplethFeatures(averagePrices, layerGroup) {
+  return (feature, layer) => {
+    const neighborhood = feature.properties.neighbourhood;
+    const avgPrice = averagePrices[neighborhood] || "No Data";
+    const popupContent = `${neighborhood}<br><strong style='display: block; text-align: right;'>Average Price: $${avgPrice.toFixed(
+      2
+    )}</strong>`;
+
+    // bind popup to layer
+    layer.bindPopup(popupContent, { className: "marker-popup" });
+
+    // open || close popup
+    popupMouseEvents(layer);
+
+    // calculate centroid
+    const centroid = turf.centroid(feature);
+    const latlng = [
+      centroid.geometry.coordinates[1],
+      centroid.geometry.coordinates[0],
+    ];
+
+    // add create text marker and add to layer
+    const textMarker = L.marker(latlng, {
+      icon: L.divIcon({
+        className: "custom-label",
+        html: `<div style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;  font-size: 12px; color: black;"><b>$${avgPrice.toFixed(
+          0
+        )}</b></div>`,
+        iconSize: [100, 50],
+        iconAnchor: [50, 25], // anchor point of the text box
+      }),
+      interactive: false,
+    });
+
+    layerGroup.addLayer(textMarker);
+  };
 }
 
 // create bubble chart layer of airbnb's per neighborhood
@@ -265,16 +254,16 @@ function initializeBubbleChartLayer(neighborhoods, listingsData) {
       { className: "marker-popup" }
     );
 
-    // for text inside the bubble
-    const textIcon = L.divIcon({
-      className: "bubble-text",
-      html: `<div style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;  font-size: 12px; color: white;">${count}</div>`,
-      iconSize: [radius * 2, radius * 2], // match size of circle marker
-      iconAnchor: [radius, radius], // center text
-    });
-
     // create marker with text inside and add to layer
-    const textMarker = L.marker(latlng, { icon: textIcon, interactive: false });
+    const textMarker = L.marker(latlng, {
+      icon: L.divIcon({
+        className: "bubble-text",
+        html: `<div style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;  font-size: 12px; color: white;">${count}</div>`,
+        iconSize: [radius * 2, radius * 2], // match size of circle marker
+        iconAnchor: [radius, radius], // center text
+      }),
+      interactive: false,
+    });
 
     // open || close popup
     popupMouseEvents(circleMarker);
@@ -300,10 +289,9 @@ function popupMouseEvents(layer) {
     click() {
       popupOpen ? this.closePopup() : this.openPopup();
       popupOpen = !popupOpen;
-    }
+    },
   });
 }
-
 
 // update the overlay
 function updateOverlay(
@@ -315,12 +303,7 @@ function updateOverlay(
 ) {
   // remove previous overlay
   if (activeOverlay !== newOverlay) {
-    if (activeOverlay) {
-      map.removeLayer(activeOverlay);
-    }
-    if (activeLegend) {
-      map.removeControl(activeLegend);
-    }
+    removeOverlays(map);
 
     // filter listings by neighborhood
     const filteredListings = filterListingsByNeighborhood(
@@ -361,126 +344,153 @@ function syncDropdownAndOverlay(
   choroplethLayer
 ) {
   // remove all existing markers
-  if (activeOverlay) {
-    map.removeLayer(activeOverlay);
-  }
-  if (activeLegend) {
-    map.removeControl(activeLegend);
-  }
+  removeOverlays(map);
 
-  //update overlays
-  // check if "Average Price" is selected
+  // update overlays
+  // choropleth layer
   if (selectedOverlayName === "Average Price") {
-    // add choropleth layer
-    map.addLayer(choroplethLayer);
-    activeOverlay = choroplethLayer;
+    activateOverlay(map, choroplethLayer);
     activeLegend = addLegend("Average Price").addTo(map);
+    // bubble chart layer
   } else if (selectedOverlayName === "Total Airbnbs") {
     map.eachLayer((layer) => {
       if (layer !== baseLayer) {
         map.removeLayer(layer);
       }
     });
-    // add bubble chart layer
     const bubbleLayer = initializeBubbleChartLayer(neighborhoods, listingsData);
-    map.addLayer(bubbleLayer);
-    activeOverlay = bubbleLayer;
+    activateOverlay(map, bubbleLayer);
+    // marker overlays
   } else {
-    // or update overlays with markers
-    if (overlays[selectedOverlayName]) {
-      const overlayState = updateOverlay(
-        map,
-        overlays[selectedOverlayName],
-        selectedOverlayName,
-        listingsData,
-        selectedNeighborhood
-      );
-      activeOverlay = overlayState.activeOverlay;
-      activeLegend = overlayState.activeLegend;
-      // update plots and reset map view
-      if (selectedNeighborhood === "top") {
-        resetMapView(map, activeOverlay, listingsData, priceAvailabilityData);
-      } else {
-        zoomIn(
-          map,
-          activeOverlay,
-          selectedNeighborhood,
-          listingsData,
-          priceAvailabilityData
-        );
-      }
-    } else {
-      console.error(`Overlay "${selectedOverlayName}" is not defined.`);
-    }
+    activateMarkerOverlay(
+      map,
+      selectedOverlayName,
+      overlays,
+      listingsData,
+      selectedNeighborhood,
+      priceAvailabilityData
+    );
+  }
+}
+
+// remove overlay from map
+function removeOverlays(map) {
+  if (activeOverlay) {
+    map.removeLayer(activeOverlay);
+  }
+  if (activeLegend) {
+    map.removeControl(activeLegend);
+  }
+}
+
+// add overlay to map
+function activateOverlay(map, overlay) {
+  map.addLayer(overlay);
+  activeOverlay = overlay;
+}
+
+// add marker overlay to map
+function activateMarkerOverlay(
+  map,
+  selectedOverlayName,
+  overlays,
+  listingsData,
+  selectedNeighborhood,
+  priceAvailabilityData
+) {
+  const overlayState = updateOverlay(
+    map,
+    overlays[selectedOverlayName],
+    selectedOverlayName,
+    listingsData,
+    selectedNeighborhood
+  );
+  activeOverlay = overlayState.activeOverlay;
+  activeLegend = overlayState.activeLegend;
+  // update plots and reset map view
+  if (selectedNeighborhood === "top") {
+    resetMapView(map, activeOverlay, listingsData, priceAvailabilityData);
+  } else {
+    zoomIn(
+      map,
+      activeOverlay,
+      selectedNeighborhood,
+      listingsData,
+      priceAvailabilityData
+    );
   }
 }
 
 // create legend
 function addLegend(type) {
-  let legend = L.control({
-    position: "topright",
-  });
+  let legend = L.control({ position: "topright" });
 
-  // format legend based on type
   legend.onAdd = function () {
     let div = L.DomUtil.create("div", "custom-legend");
     div.style.zIndex = "1000"; // ensure legend is on top
 
-    // conditional to set labels and colors
-    let labels, colors;
-    if (type === "License Status") {
-      labels = ["Licensed", "Exempt", "No License"];
-      colors = labels.map(
-        (label) => licenseColors[label] || licenseColors.default
-      );
-      div.innerHTML = '<div class="legend-title">License Status</div>';
-    } else if (type === "Property Type") {
-      labels = ["Entire home/apt", "Private room", "Shared room", "Hotel room"];
-      colors = labels.map(
-        (label) => propertyTypeColors[label] || propertyTypeColors.default
-      );
-      div.innerHTML = '<div class="legend-title">Property Type</div>';
-    } else if (type === "Average Price") {
-      div.innerHTML = '<div class="legend-title">Average Price</div>';
-
-      // create gradient bar
-      const gradientBar = document.createElement("div");
-      gradientBar.style.width = "100%";
-      gradientBar.style.height = "20px";
-      gradientBar.style.background =
-        "linear-gradient(to right, " +
-        Array.from({ length: 101 }, (_, i) =>
-          d3.scaleSequential(d3.interpolateViridis).domain([50, 300])(
-            50 + i * 2.5
-          )
-        ).join(", ") +
-        ")";
-      div.appendChild(gradientBar);
-
-      // add labels
-      const labelContainer = document.createElement("div");
-      labelContainer.style.display = "flex";
-      labelContainer.style.justifyContent = "space-between";
-      const labelStart = document.createElement("div");
-      labelStart.innerHTML = "$50";
-      const labelEnd = document.createElement("div");
-      labelEnd.innerHTML = "$300";
-      labelContainer.appendChild(labelStart);
-      labelContainer.appendChild(labelEnd);
-      div.appendChild(labelContainer);
+    // set labels and colors based on type
+    let labels = [],
+      colors = [];
+    switch (type) {
+      case "License Status":
+        labels = ["Licensed", "Exempt", "No License"];
+        colors = labels.map(
+          (label) => licenseColors[label] || licenseColors.default
+        );
+        div.innerHTML = '<div class="legend-title">License Status</div>';
+        break;
+      case "Property Type":
+        labels = [
+          "Entire home/apt",
+          "Private room",
+          "Shared room",
+          "Hotel room",
+        ];
+        colors = labels.map(
+          (label) => propertyTypeColors[label] || propertyTypeColors.default
+        );
+        div.innerHTML = '<div class="legend-title">Property Type</div>';
+        break;
+      case "Average Price":
+        div.innerHTML = '<div class="legend-title">Average Price</div>';
+        const gradientBar = createGradientBar();
+        div.appendChild(gradientBar);
+        div.appendChild(createPriceLabels());
+        return div;
     }
 
-    // populate the legend if not "Average Price"
-    if (type !== "Average Price") {
-      labels.forEach(function (label, index) {
-        div.innerHTML += `<div><i class="legend-color" style="background:${colors[index]}"></i>${label}</div>`;
-      });
-    }
+    // Append the legend colors and labels
+    labels.forEach((label, index) => {
+      div.innerHTML += `<div><i class="legend-color" style="background:${colors[index]}"></i><strong>${label}</strong></div>`;
+    });
 
     return div;
   };
 
   return legend;
+}
+
+// create gradient bar for choropleth legend
+function createGradientBar() {
+  const gradientBar = document.createElement("div");
+  gradientBar.style.width = "100%";
+  gradientBar.style.height = "20px";
+  gradientBar.style.background = `linear-gradient(to right, ${Array.from(
+    { length: 101 },
+    (_, i) =>
+      d3.scaleSequential(d3.interpolateViridis).domain([50, 300])(50 + i * 2.5)
+  ).join(", ")})`;
+  return gradientBar;
+}
+
+// create labels for choropleth legend price range
+function createPriceLabels() {
+  const labelContainer = document.createElement("div");
+  labelContainer.style.display = "flex";
+  labelContainer.style.justifyContent = "space-between";
+  labelContainer.innerHTML = `<div>$50</div><div>$300</div>`;
+  return labelContainer;
 }
 
 // create dropdown for neighborhood interaction
@@ -492,10 +502,6 @@ function neighborhoodsControl(
 ) {
   const controlDiv = document.getElementById("neighborhoods-control");
   const dropdown = createNeighborhoodDropdown(neighborhoodsInfo);
-  controlDiv.innerHTML = `<div class="control-header">
-    <label for="neighborhoods-dropdown">Select a Neighborhood</label>
-    <br>
-  </div>`;
   controlDiv.appendChild(dropdown);
 
   // create neighborhoods layer but don't add it to the map yet
@@ -526,10 +532,9 @@ function createNeighborhoodDropdown(neighborhoodsInfo) {
     a.properties.neighbourhood.localeCompare(b.properties.neighbourhood)
   );
 
-  // populate dropdown menu
+  // populate dropdown menu, DC first, then sorted neighborhoods
   const allDC = createOption("Washington, D.C.", "top");
   dropdown.appendChild(allDC);
-
   neighborhoodsInfo.features.forEach((feature) => {
     const option = createOption(
       feature.properties.neighbourhood,
@@ -665,7 +670,6 @@ function createPopupContent(listing) {
 // get color scheme for markers when changing map view / zoom level
 function getColorScheme() {
   if (activeLegend) {
-    // if (activeLegend.options.position === "topright") {
     if (activeLegend._container.innerHTML.includes("License Status")) {
       return "license";
     } else if (activeLegend._container.innerHTML.includes("Property Type")) {
@@ -674,6 +678,15 @@ function getColorScheme() {
     // }
   }
   return null;
+}
+
+// enable || disable buttons
+function toggleButton(buttonId, enable = true) {
+  const button = document.getElementById(buttonId);
+  if (button) {
+    button.disabled = !enable;
+    // button.style.display = enable ? 'block' : 'none'; // use if visibility needs changing
+  }
 }
 
 // resets map view to all of D.C., updates infoBox and plots
@@ -686,25 +699,15 @@ function resetMapView(
   map.setView([38.89511, -77.03637], 12);
   map.removeLayer(neighborhoodsLayer); // remove neighborhood boundaries from zoomIn()
 
-  // set color scheme
+  // update markers with appropriate color scheme, infoBox, and plots
   const colorScheme = getColorScheme();
-
-  // update markers, infoBox, and plots
   createMarkers(listingsData, colorScheme).addTo(map);
   updateInfoBox(listingsData, "Washington, D.C.");
   allDCPlots(listingsData, priceAvailabilityData, defaultColors);
 
   // toggle average price button
-  const averagePriceButton = document.getElementById("average-price-button");
-  if (averagePriceButton) {
-    averagePriceButton.disabled = false; // enable button
-    // averagePriceButton.style.display = 'block'; // show button
-  }
-  const totalAirbnbsButton = document.getElementById("total-airbnbs-button");
-  if (totalAirbnbsButton) {
-    totalAirbnbsButton.disabled = false; // enable button
-    // totalAirbnbsButton.style.display = 'block'; // show button
-  }
+  toggleButton("average-price-button", true);
+  toggleButton("total-airbnbs-button", true);
 }
 
 // zooms map for neighborhood view, updates infoBox and plots
@@ -715,26 +718,17 @@ function zoomIn(
   listingsData,
   priceAvailabilityData
 ) {
-  // toggle average price button and choropleth legend
-  const averagePriceButton = document.getElementById("average-price-button");
-  if (averagePriceButton) {
-    averagePriceButton.disabled = true; // disable button
-    // averagePriceButton.style.display = 'none'; // hide button
-  }
+  // toggle buttons and choropleth legend
+  toggleButton("total-airbnbs-button", false);
+  toggleButton("average-price-button", false);
   if (
     activeLegend &&
     activeLegend._container.innerHTML.includes("Average Price")
   ) {
     activeLegend._container.style.display = "none";
   }
-  // toggle total airbnbs button
-  const totalAirbnbsButton = document.getElementById("total-airbnbs-button");
-  if (totalAirbnbsButton) {
-    totalAirbnbsButton.disabled = true; // disnable button
-    // totalAirbnbsButton.style.display = 'block'; // hide button
-  }
 
-  // remove previous neighborhood boundaries
+  // remove previous neighborhood boundaries (or they will remain uncovered)
   neighborhoodsLayer.resetStyle();
 
   // get neighborhood boundaries
@@ -748,7 +742,6 @@ function zoomIn(
   if (boundaries) {
     boundaries.setStyle({ weight: 3, color: "transparent" });
     map.fitBounds(boundaries.getBounds());
-    // neighborhoodsLayer.addTo(map);
 
     // filter listings by neighbourhood
     const filteredListings = filterListingsByNeighborhood(
@@ -766,10 +759,8 @@ function zoomIn(
     // add layers
     neighborhoodsLayer.addTo(map);
 
-    // set color scheme
-    const colorScheme = getColorScheme();
-
     // add new markers
+    const colorScheme = getColorScheme();
     createMarkers(filteredListings, colorScheme).addTo(map);
 
     // update infoBox, and plots
