@@ -69,9 +69,7 @@ function setChoroplethFeatures(averagePrices, layerGroup) {
   return (feature, layer) => {
     const neighborhood = feature.properties.neighbourhood;
     const avgPrice = averagePrices[neighborhood] || "No Data";
-    const popupContent = `${neighborhood}<br><strong style='display: block; text-align: right;'>Average Price: $${avgPrice.toFixed(
-      2
-    )}</strong>`;
+    const popupContent = `${neighborhood}<br><span class="popup-text-right">Average Price: $${avgPrice.toFixed(2)}</span>`;
 
     // bind popup to layer
     layer.bindPopup(popupContent, { className: "marker-popup" });
@@ -89,10 +87,8 @@ function setChoroplethFeatures(averagePrices, layerGroup) {
     // add create text marker and add to layer
     const textMarker = L.marker(latlng, {
       icon: L.divIcon({
-        className: "custom-label",
-        html: `<div style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;  font-size: 12px; color: black;"><b>$${avgPrice.toFixed(
-          0
-        )}</b></div>`,
+        className: "choropleth-label",
+        html: `<div>$${avgPrice.toFixed(0)}</div>`,
         iconSize: [100, 50],
         iconAnchor: [50, 25], // anchor point of the text box
       }),
@@ -143,7 +139,7 @@ function initializeBubbleChartLayer(neighborhoods, listingsData) {
       opacity: 1,
       fillOpacity: 0.8,
     }).bindPopup(
-      `${neighborhood}<br><strong style='display: block; text-align: right;'>Airbnb Count: ${count}</strong>`,
+      `${neighborhood}<br><span class="popup-text-right">Airbnb Count: ${count}</span>`,
       { className: "marker-popup" }
     );
 
@@ -151,7 +147,7 @@ function initializeBubbleChartLayer(neighborhoods, listingsData) {
     const textMarker = L.marker(latlng, {
       icon: L.divIcon({
         className: "bubble-text",
-        html: `<div style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;  font-size: 12px; color: white;">${count}</div>`,
+        html: `<div>${count}</div>`,
         iconSize: [radius * 2, radius * 2], // match size of circle marker
         iconAnchor: [radius, radius], // center text
       }),
@@ -227,7 +223,7 @@ function addLegend(type) {
 
     // Append the legend colors and labels
     labels.forEach((label, index) => {
-      div.innerHTML += `<div><i class="legend-color" style="background:${colors[index]}"></i><strong>${label}</strong></div>`;
+      div.innerHTML += `<div><i class="legend-color" style="background:${colors[index]}"></i>${label}</div>`;
     });
 
     return div;

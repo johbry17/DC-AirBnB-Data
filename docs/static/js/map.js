@@ -142,13 +142,9 @@ function syncDropdownAndOverlay(
     activeLegend = addLegend("Average Price").addTo(map);
     // bubble chart layer
   } else if (selectedOverlayName === "Total Airbnbs") {
-    map.eachLayer((layer) => {
-      if (layer !== baseLayer) {
-        map.removeLayer(layer);
-      }
-    });
     const bubbleLayer = initializeBubbleChartLayer(neighborhoods, listingsData);
     activateOverlay(map, bubbleLayer);
+    activeLegend = null;
     // marker overlays
   } else {
     activateMarkerOverlay(
@@ -174,6 +170,13 @@ function removeOverlays(map) {
 
 // add overlay to map
 function activateOverlay(map, overlay) {
+  // remove all layers except base layer
+  map.eachLayer((layer) => {
+    if (layer !== baseLayer) {
+      map.removeLayer(layer);
+    }
+  });
+  // add overlay, toggle activeOverlay
   map.addLayer(overlay);
   activeOverlay = overlay;
 }
@@ -390,7 +393,7 @@ function zoomIn(
   listingsData,
   priceAvailabilityData
 ) {
-  // toggle buttons and choropleth legend
+  // toggle buttons and choropleth Average Price legend
   toggleButton("total-airbnbs-button", false);
   toggleButton("average-price-button", false);
   if (

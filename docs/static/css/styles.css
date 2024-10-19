@@ -10,7 +10,7 @@ body {
 }
 
 h2 i {
-  padding: 5px; /* icons in head banner */
+  padding: 5px;
 }
 
 #neighborhoods-control {
@@ -30,7 +30,6 @@ h2 i {
   color: #333333;
   font-size: 1.2em;
 }
-
 #neighborhoods-dropdown option {
   white-space: nowrap;
 }
@@ -50,27 +49,12 @@ h2 i {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-direction: row;
   width: 60px;
-  text-align: center;
   margin: 0 auto;
 }
 
-.welcome-box {
-  background-color: #f9f9f9;
-  border: 2px solid #e0e0e0;
-  border-radius: 10px;
-  padding: 10px;
-  color: white;
-  text-align: center;
-  width: 50%;
-  margin: 10px auto;
-  background-image: url("../images/background.jpg");
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center center;
-}
-
-#info-box {
+.welcome-box, #info-box {
   background-color: #f9f9f9;
   border: 2px solid #e0e0e0;
   border-radius: 10px;
@@ -79,10 +63,7 @@ h2 i {
   text-align: center;
   width: 80%;
   margin: 10px auto;
-  background-image: url("../images/background.jpg");
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center center;
+  background: url("../images/background.jpg") center center/cover no-repeat;
 }
 
 .leaflet-container.leaflet-touch-drag {
@@ -92,13 +73,11 @@ h2 i {
   height: 100vh;
 }
 
-.leaflet-control-layers {
+.leaflet-control-layers,
+.leaflet-control-layers-expanded {
   font-size: 12px;
   font-family: Arial;
-  font-weight: normal;
-}
-
-.leaflet-control-layers-expanded {
+  font-weight: bold;
   background-color: #f9f9f9;
   border: 1px solid #ccc;
   border-radius: 10px;
@@ -106,9 +85,6 @@ h2 i {
 }
 
 .leaflet-control-layers-list label {
-  font-size: 12px;
-  font-family: Arial;
-  font-weight: normal;
   color: #333333;
 }
 
@@ -116,7 +92,7 @@ h2 i {
   width: 90%;
   height: 80vh;
   margin: 0 auto;
-  border-color: #e0e0e0;
+  border: 2px solid #2a9d8f;
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   position: relative;
@@ -125,9 +101,33 @@ h2 i {
 
 .marker-popup {
   font-size: 16px;
-  border-color: #e0e0e0;
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.choropleth-label {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  font-size: 15px;
+  color: black;
+  font-weight: bold;
+}
+
+.bubble-text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  font-size: 12px;
+  color: white;
+}
+
+.popup-text-right {
+  display: block;
+  text-align: right;
+  font-weight: bold;
 }
 
 .custom-legend {
@@ -138,9 +138,9 @@ h2 i {
   font-size: 11px;
   line-height: 18px;
   color: #555;
-  font-weight: bold;
 }
 .custom-legend .legend-title {
+  font-weight: bold;
   font-size: 14px;
   margin-bottom: 5px;
 }
@@ -172,7 +172,7 @@ h2 i {
   transition: background-color 0.3s;
 }
 #overlay-control button:hover {
-  background-color: #0056b3;
+  background-color: #00a8cc;
 }
 #overlay-control button:disabled {
   background-color: #6c757d;
@@ -182,6 +182,7 @@ h2 i {
 #tableau-viz {
   margin: 0 auto;
   margin-bottom: 10px;
+  padding: 10px;
   overflow-x: hidden;
   box-sizing: border-box;
   color: #333333;
@@ -209,16 +210,14 @@ h2 i {
 .plot {
   margin-bottom: 10px;
   overflow-x: hidden;
-  box-sizing: border-box;
   color: #333333;
   border: 2px solid #e0e0e0;
   padding: 0px;
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
   height: 500px;
+  box-sizing: border-box;
 }
 @media (min-width: 1200px) {
   .plot {

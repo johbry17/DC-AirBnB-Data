@@ -49,7 +49,6 @@
   <div class="navbar navbar-default navbar-fixed-top">
     <div class="container-fluid">
       <div class="navbar-header">
-        <!-- <h2 style="color: white;">Select a Neighborhood</h2> -->
       </div>
       <div id="neighborhoods-control" class="navbar-center">
         <div class="control-header">
@@ -80,9 +79,11 @@
     </div>
     <span>Choose a neighborhood to zoom in.</span> 
     <br>
-    <span>Click on an Airbnb (<i class="fas fa-map-marker-alt"></i>) to investigate a listing.</span><br>
+    <span>Airbnb (<i class="fas fa-map-pin"></i>) locations are approximate.</span><br>
     <span>Tap <i class="fas fa-layer-group"></i> to change the background.</span><br>
-    <span>Buttons below display <i class="fas fa-info-circle"></i> data.</span><br>
+    <span>Buttons below toggle data.</span><br>
+    <span>Tap <i class="fas fa-map-marked-alt"></i> to open popups.</span>
+    <!-- <span>A Tableau story and plots follow.</span> -->
     <!-- <div>
       <i class="fas fa-map-marked-alt"></i>
       <i class="fas fa-map-pin"></i>
@@ -129,7 +130,7 @@
     <!-- <br> -->
     <div class="neighborhood-toggle">
       Number of Airbnb's in Neighborhood: 
-      <span id="neighborhood-count" style="font-size: 24px;">0</span> 
+      <span id="neighborhood-count" style="font-size: 1.6em;">0</span> 
       of <span id="total-count">0</span><br>
       <u><b style="font-size: 1.2em;">Neighborhood Stats:</b></u><br>
       Mean Price: <span id="neighborhood-mean-price">0</span><br>
@@ -141,7 +142,7 @@
       <u><b style="font-size: 1.2em;">Washington, D.C.</b> (for Comparison):</u><br>
     </div>
     <div id="all-dc-comparison">
-      Number of Airbnb's in city: <span id="total-count-all-dc" style="font-size: 24px;">0</span><br>
+      Number of Airbnb's in city: <span id="total-count-all-dc" style="font-size: 1.6em;">0</span><br>
       <u><b style="font-size: 1.2em;">Washington, D.C. Stats</b></u>
     </div>
     <div>

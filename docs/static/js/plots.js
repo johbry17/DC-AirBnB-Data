@@ -547,7 +547,7 @@ function plotLicensePrice(data, selectedNeighborhood, colors) {
     averagePriceDC["Exempt"].avgPrice,
     averagePriceDC["No License"].avgPrice,
   ];
-  let dcTitle = `Average <b>Price by License Status</b> for Washington, D.C.`;
+  let dcTitle = `Average <b>Price by License Status</b><br>for Washington, D.C.`;
   let dcColors = [colors.cityColor, colors.cityColorLight, colors.defaultGray];
 
   // conditional for DC only or neighborhood and DC
@@ -828,7 +828,7 @@ function plotPropertyTypePrice(data, selectedNeighborhood, colors) {
   // assign DC data to variables
   dcLabels = Object.keys(dcPropertyTypes);
   dcAvgPrices = Object.values(dcPropertyTypes).map((obj) => obj.avgPrice);
-  dcTitle = `Average <b>Price by Property Type</b> for Washington, D.C.`;
+  dcTitle = `Average <b>Price by Property Type</b><br>for Washington, D.C.`;
   dcColors = dcLabels.map((label) => colors.cityColor);
 
   // conditional for DC only or neighborhood and DC
