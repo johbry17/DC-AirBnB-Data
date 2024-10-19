@@ -108,6 +108,20 @@ function initializeBubbleChartLayer(neighborhoods, listingsData) {
   const neighborhoodData = calculateAirbnbCountsPerNeighborhood(listingsData);
   const bubbleLayerGroup = L.layerGroup(); // create layer group for circle markers
 
+  // add neighborhood outlines
+  const neighborhoodsLayer = L.geoJSON(neighborhoods, {
+    style: {
+      color: defaultColors.defaultGray,
+      weight: 2,
+      opacity: 1,
+      fillOpacity: 0, // no fill, just outlines
+    },
+  });
+
+  // add neighborhoods outline to the bubbleLayerGroup
+  bubbleLayerGroup.addLayer(neighborhoodsLayer);
+
+  // loop through neighborhoods and create bubbles
   neighborhoods.features.forEach((feature) => {
     const neighborhood = feature.properties.neighbourhood;
     const count = neighborhoodData[neighborhood] || 0;
@@ -124,7 +138,7 @@ function initializeBubbleChartLayer(neighborhoods, listingsData) {
     const circleMarker = L.circleMarker(latlng, {
       radius: radius,
       fillColor: defaultColors.neighborhoodColor,
-      color: "black",
+      color: defaultColors.defaultGray,
       weight: 1,
       opacity: 1,
       fillOpacity: 0.8,
