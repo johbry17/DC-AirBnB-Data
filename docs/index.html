@@ -61,10 +61,10 @@
   <div class="container">
     <div class="col-md-12 jumbotron text-center" style="background-image: url('./static/images/background.jpg'); background-size: cover; background-repeat: no-repeat; background-position: center center">
       <h1>Airbnb Data Hub DC</h1>
-      <h2><i class="fas fa-map-marked-alt"></i><br>
+      <h2><i class="fas fa-map-marked-alt"></i>
         <i class="fas fa-home"></i> 
         <i class="fas fa-bed"></i> 
-        <i class="fas fa-users"></i><br>
+        <i class="fas fa-users"></i>
       <i class="fas fa-globe"></i>
       </h2>
     </div>
@@ -73,7 +73,7 @@
   <hr class="custom-hr"> <!-- to forcibly separate jumbotron from welcome-box -->
   <!-- Welcome box with background -->
   <div class="welcome-box">
-    <strong>Welcome to the map</strong><br>
+    <!-- <strong>Welcome to the map</strong><br> -->
     <div class="stats-icons">
       <i class="fas fa-home"></i>
       <i class="fas fa-map-marker-alt"></i>
@@ -256,6 +256,7 @@
     if (isGitHubPages || (isLocalhost && !window.location.hostname.includes(':5000'))) {
       // GitHub Pages or localhost for GitHub Pages
       loadScript('./static/js/colors.js');
+      loadScript('./static/js/mapLayers.js');
       loadScript('./static/js/map.js');
       loadScript('./static/js/plots.js');
       loadScript('./static/js/dataUtils.js');
@@ -263,6 +264,7 @@
     } else {
       // Flask or localhost for Flask
       loadScript('/static/js/colors.js');
+      loadScript('/static/js/mapLayers.js');
       loadScript('/static/js/map.js');
       loadScript('/static/js/plots.js');
       loadScript('/static/js/dataUtils.js');
