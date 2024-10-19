@@ -17,13 +17,11 @@ function createMap(neighborhoods, listingsData, priceAvailabilityData) {
 
   addBaseLayerControl(map);
 
-  // initial call for controls, infoBox, plots, neighborhood and choropleth layers
-  neighborhoodsControl(map, neighborhoods, listingsData, priceAvailabilityData);
-  // initializeNeighborhoodsLayer(neighborhoods); // added by neighborhoodsControl
-  const averagePrices = calculateAveragePricePerNeighborhood(listingsData);
+  // initialize dropdown, neighborhood and choropleth layers
+  neighborhoodsControl(map, neighborhoods, listingsData, priceAvailabilityData); // includes neighborhood layer
   const choroplethLayer = initializeChoroplethLayer(
     neighborhoods,
-    averagePrices
+    listingsData
   );
 
   // event listeners for resizing
@@ -97,12 +95,11 @@ function initializeMarkerGroups(listingsData) {
 
 // initialize overlays
 function initializeOverlays(markerGroups, neighborhoods, listingsData) {
-  const averagePrices = calculateAveragePricePerNeighborhood(listingsData);
   return {
     "Airbnb's": markerGroups.default,
     "License Status": markerGroups.license,
     "Property Type": markerGroups.propertyType,
-    "Average Price": initializeChoroplethLayer(neighborhoods, averagePrices),
+    "Average Price": initializeChoroplethLayer(neighborhoods, listingsData),
     "Total Airbnbs": initializeBubbleChartLayer(neighborhoods, listingsData),
   };
 }

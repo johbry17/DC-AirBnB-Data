@@ -34,7 +34,9 @@ function initializeNeighborhoodsLayer(
 }
 
 // create choropleth layer for neighborhood boundaries
-function initializeChoroplethLayer(neighborhoods, averagePrices) {
+function initializeChoroplethLayer(neighborhoods, listingsData) {
+  const averagePrices = calculateAveragePricePerNeighborhood(listingsData);
+  const neighborhoodCounts = calculateAirbnbCountsPerNeighborhood(listingsData);
   const getColor = (price) =>
     d3.scaleSequential(d3.interpolateViridis).domain([50, 300])(price);
 
@@ -44,8 +46,6 @@ function initializeChoroplethLayer(neighborhoods, averagePrices) {
   // layer for the choropleth polygons
   const choroplethLayer = L.geoJSON(neighborhoods, {
     style: (feature) => ({
-      // const neighborhood = feature.properties.neighbourhood;
-      // const avgPrice = averagePrices[neighborhood] || 0;
       // return {
       fillColor: getColor(averagePrices[feature.properties.neighbourhood] || 0),
       weight: 2,
@@ -55,7 +55,11 @@ function initializeChoroplethLayer(neighborhoods, averagePrices) {
       fillOpacity: 1,
       // };
     }),
-    onEachFeature: setChoroplethFeatures(averagePrices, layerGroup),
+    onEachFeature: setChoroplethFeatures(
+      averagePrices,
+      neighborhoodCounts,
+      layerGroup
+    ),
   });
 
   // add choropleth to layer
@@ -65,11 +69,16 @@ function initializeChoroplethLayer(neighborhoods, averagePrices) {
 }
 
 // set features for choropleth layer
-function setChoroplethFeatures(averagePrices, layerGroup) {
+function setChoroplethFeatures(averagePrices, neighborhoodCounts, layerGroup) {
   return (feature, layer) => {
     const neighborhood = feature.properties.neighbourhood;
     const avgPrice = averagePrices[neighborhood] || "No Data";
-    const popupContent = `${neighborhood}<br><span class="popup-text-right">Average Price: $${avgPrice.toFixed(2)}</span>`;
+    const count = neighborhoodCounts[neighborhood] || 0;
+    const popupContent = `${neighborhood}<br>
+    <span class="popup-text-right larger"><b>Average Price: $${avgPrice.toFixed(
+      2
+    )}</b></span>
+    <span class="popup-text-right">Airbnb Count: ${count}</span>`;
 
     // bind popup to layer
     layer.bindPopup(popupContent, { className: "marker-popup" });
@@ -101,6 +110,7 @@ function setChoroplethFeatures(averagePrices, layerGroup) {
 
 // create bubble chart layer of airbnb's per neighborhood
 function initializeBubbleChartLayer(neighborhoods, listingsData) {
+  const averagePrices = calculateAveragePricePerNeighborhood(listingsData);
   const neighborhoodData = calculateAirbnbCountsPerNeighborhood(listingsData);
   const bubbleLayerGroup = L.layerGroup(); // create layer group for circle markers
 
@@ -120,6 +130,7 @@ function initializeBubbleChartLayer(neighborhoods, listingsData) {
   // loop through neighborhoods and create bubbles
   neighborhoods.features.forEach((feature) => {
     const neighborhood = feature.properties.neighbourhood;
+    const avgPrice = averagePrices[neighborhood] || 0;
     const count = neighborhoodData[neighborhood] || 0;
     const radius = Math.sqrt(count) * 2;
 
@@ -139,7 +150,11 @@ function initializeBubbleChartLayer(neighborhoods, listingsData) {
       opacity: 1,
       fillOpacity: 0.8,
     }).bindPopup(
-      `${neighborhood}<br><span class="popup-text-right">Airbnb Count: ${count}</span>`,
+      `${neighborhood}<br>
+        <span class="popup-text-right">Average Price: $${avgPrice.toFixed(
+          2
+        )}</span>
+        <span class="popup-text-right larger"><b>Airbnb Count: ${count}</b></span>`,
       { className: "marker-popup" }
     );
 

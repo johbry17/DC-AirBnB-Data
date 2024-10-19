@@ -172,7 +172,12 @@ h2 i {
 .popup-text-right {
     display: block; 
     text-align: right;
-    font-weight: bold;
+    // font-weight: bold;
+}
+
+.larger {
+    display: block;
+    font-size: 1.2em;
 }
 
 // map legend box
