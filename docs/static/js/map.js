@@ -375,6 +375,7 @@ function resetMapView(
   const colorScheme = getColorScheme();
   createMarkers(listingsData, colorScheme).addTo(map);
   updateInfoBox(listingsData, "Washington, D.C.");
+  update31DaysInfoBox(listingsData, "Washington, D.C.");
   allDCPlots(listingsData, priceAvailabilityData, defaultColors);
 
   // toggle average price button
@@ -437,6 +438,7 @@ function zoomIn(
 
     // update infoBox, and plots
     updateInfoBox(listingsData, selectedNeighborhood);
+    update31DaysInfoBox(listingsData, selectedNeighborhood);
     neighborhoodPlots(
       listingsData,
       selectedNeighborhood,

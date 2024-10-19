@@ -381,7 +381,7 @@ function plotLicenseDonut(data, selectedNeighborhood, colors) {
     licensePercentageDC["Exempt"].percent,
     licensePercentageDC["No License"].percent,
   ];
-  dcTitle = `<b>License Status</b> for Washington, D.C.<br><i style="font-size: .8em;">Short term rentals (STR's) are 30 nights or less<br>'Licensed' is hosted or unhosted STR's<br>Long term stays, hotels, motels can claim 'Exempt'</i>`;
+  dcTitle = `<b>License Status</b><br>for Washington, D.C.`;
   dcColors = [colors.cityColor, colors.cityColorLight, colors.defaultGray];
 
   // conditional for DC only or neighborhood and DC
@@ -497,7 +497,7 @@ function plotLicenseDonut(data, selectedNeighborhood, colors) {
     ];
 
     const layout = {
-      title: `<b>License Status</b> Comparison:<br>Neighborhood <b>vs.</b> Washington, D.C.<br><i style="font-size: .8em;">Short term rentals (STR's) are 30 nights or less<br>'Licensed' is hosted or unhosted STR's<br>Long term stays, hotels, motels can claim 'Exempt'</i>`,
+      title: `<b>License Status</b> Comparison:<br>Neighborhood <b>vs.</b> Washington, D.C.`,
       grid: { rows: 1, columns: 2 },
       legend: {
         orientation: "h",
@@ -1069,7 +1069,10 @@ function plotHostAirbnbs(data, selectedNeighborhood, colors) {
   const layout = {
     title: title,
     showlegend: false,
-    xaxis: { title: { text: "Number of Listings per Host", standoff: 10 }, type: "category" },
+    xaxis: {
+      title: { text: "Number of Listings per Host", standoff: 10 },
+      type: "category",
+    },
     yaxis: { title: "Count" },
     margin: { l: 50, r: 50, t: 100, b: 50 },
   };

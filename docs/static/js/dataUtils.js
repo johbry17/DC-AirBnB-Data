@@ -40,10 +40,10 @@ function calculateMedian(data) {
 }
 
 // calculate average price per neighborhood
-function calculateAveragePricePerNeighborhood(listingsData) {
+function calculateAveragePricePerNeighborhood(data) {
   const neighborhoodPrices = {};
 
-  listingsData.forEach((listing) => {
+  data.forEach((listing) => {
     const neighborhood = listing.neighbourhood;
     const price = parseFloat(listing.price);
 
@@ -66,10 +66,10 @@ function calculateAveragePricePerNeighborhood(listingsData) {
 }
 
 // calculate number of listings per neighborhood
-function calculateAirbnbCountsPerNeighborhood(listingsData) {
+function calculateAirbnbCountsPerNeighborhood(data) {
   const neighborhoodCounts = {};
 
-  listingsData.forEach((listing) => {
+  data.forEach((listing) => {
     const neighborhood = listing.neighbourhood;
     neighborhoodCounts[neighborhood] = neighborhoodCounts[neighborhood]
       ? neighborhoodCounts[neighborhood] + 1
@@ -228,6 +228,18 @@ function getMinimumNights(data) {
   });
 
   return distribution;
+}
+
+// calculate the count and percent of listings with minimum nights exactly 31 days
+function getListingsAt31Days(data) {
+  const totalListings = data.length;
+  const listingsAt31Days = data.filter((item) => item.minimum_nights == 31);
+  const countAt31Days = listingsAt31Days.length;
+
+  // calculate percent
+  const percentAt31Days = ((countAt31Days / totalListings) * 100).toFixed(2);
+
+  return { countAt31Days, percentAt31Days };
 }
 
 // calculate number of airbnbs per host, binned by number of listings, with 10+ listings as one bin

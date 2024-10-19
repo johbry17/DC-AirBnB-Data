@@ -35,7 +35,7 @@ Promise.all([
   createMap(neighborhoodData, data, priceAvailabilityData);
 });
 
-// infoBox
+// main infoBox values
 function updateInfoBox(listingsData, selectedNeighborhood) {
   const allListingsCount = listingsData.length;
   const filteredListings =
@@ -62,7 +62,7 @@ function updateInfoBox(listingsData, selectedNeighborhood) {
     neighborhoodPriceDiff: document.getElementById("mean-price-diff"),
     neighborhoodMedianDiff: document.getElementById("median-price-diff"),
     neighborhoodToggles: document.querySelectorAll(".neighborhood-toggle"),
-    allDcComparison: document.getElementById("all-dc-comparison"),
+    allDcComparison: document.querySelectorAll(".all-dc-comparison"),
   };
 
   // update text content
@@ -81,10 +81,19 @@ function updateInfoBox(listingsData, selectedNeighborhood) {
     elements.neighborhoodMedianPrice.textContent = `$${neighborhoodStats.medianPrice.toFixed(
       2
     )}`;
-    const meanDiff = ((neighborhoodStats.meanPrice - dcStats.meanPrice) / dcStats.meanPrice) * 100;
-    const medianDiff = ((neighborhoodStats.medianPrice - dcStats.medianPrice) / dcStats.medianPrice) * 100;
-    elements.neighborhoodPriceDiff.textContent = `${meanDiff >= 0 ? '+' : ''}${meanDiff.toFixed(0)}%`;
-    elements.neighborhoodMedianDiff.textContent = `${medianDiff >= 0 ? '+' : ''}${medianDiff.toFixed(0)}%`;
+    const meanDiff =
+      ((neighborhoodStats.meanPrice - dcStats.meanPrice) / dcStats.meanPrice) *
+      100;
+    const medianDiff =
+      ((neighborhoodStats.medianPrice - dcStats.medianPrice) /
+        dcStats.medianPrice) *
+      100;
+    elements.neighborhoodPriceDiff.textContent = `${
+      meanDiff >= 0 ? "+" : ""
+    }${meanDiff.toFixed(0)}%`;
+    elements.neighborhoodMedianDiff.textContent = `${
+      medianDiff >= 0 ? "+" : ""
+    }${medianDiff.toFixed(0)}%`;
   }
 
   // toggle visibility of neighborhood comparison stats
@@ -93,6 +102,36 @@ function updateInfoBox(listingsData, selectedNeighborhood) {
   elements.neighborhoodToggles.forEach(
     (toggle) => (toggle.style.display = displayStyle)
   );
-  elements.allDcComparison.style.display =
-    selectedNeighborhood === "Washington, D.C." ? "block" : "none";
+  elements.allDcComparison.forEach(
+    (comparison) =>
+      (comparison.style.display =
+        selectedNeighborhood === "Washington, D.C." ? "block" : "none")
+  );
+}
+
+// 31 minimum nights info box values
+function update31DaysInfoBox(listingsData, selectedNeighborhood) {
+  // conditional for neighborhood filter
+  let filteredListings;
+  if (selectedNeighborhood === "Washington, D.C.") {
+    filteredListings = listingsData;
+  } else {
+    filteredListings = filterListingsByNeighborhood(
+      listingsData,
+      selectedNeighborhood
+    );
+  }
+
+  // get count and percent for 31-day minimum stay
+  const { countAt31Days, percentAt31Days } =
+    getListingsAt31Days(filteredListings);
+
+  // Update the DOM elements inside the info box
+  document.getElementById("count-31-nights").textContent =
+    countAt31Days.toLocaleString();
+  document.getElementById("total-31-nights").textContent =
+    filteredListings.length.toLocaleString();
+  document.getElementById(
+    "percent-31-nights"
+  ).textContent = `${percentAt31Days}%`;
 }

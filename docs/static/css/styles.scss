@@ -53,7 +53,7 @@ $background-image: url('../images/background.jpg');
 
 // general styles
 body {
-    padding-top: 60px; // space for fixed navbar
+    padding-top: 100px; // space for fixed navbar
 }
 
 .navbar {
@@ -61,10 +61,6 @@ body {
     padding: $padding;
     text-align: center;
     border-bottom: 2px solid white;
-}
-
-h2 i {
-    padding: 5px; // spaces icons in jumbotron title banner
 }
 
 // neighborhood drop down
@@ -88,11 +84,6 @@ h2 i {
 }
 
 // misc. styles
-.col-md-12.jumbotron {
-    margin: 60px 0 0 0;
-    color: white;
-}
-
 .custom-hr {
     border: none;
     background-color: white;
@@ -105,8 +96,16 @@ h2 i {
     margin: 0 auto;
 }
 
+h2 i {
+    padding: 5px; // spaces icons in jumbotron title banner
+}
+
 // box styles
-.welcome-box, #info-box {
+.jumbotron {
+    @include box-styling ();
+}
+
+.info-box {
     @include box-styling (80%, 10px auto);
 }
 
@@ -268,4 +267,5 @@ h2 i {
     margin-bottom: 10px;
     overflow-x: hidden; // prevent horizontal overflow
     @include responsive-plot(0px, $border-radius);
+    text-align: center;
 }

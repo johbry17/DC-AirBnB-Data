@@ -1,5 +1,5 @@
 body {
-  padding-top: 60px;
+  padding-top: 100px;
 }
 
 .navbar {
@@ -7,10 +7,6 @@ body {
   padding: 10px;
   text-align: center;
   border-bottom: 2px solid white;
-}
-
-h2 i {
-  padding: 5px;
 }
 
 #neighborhoods-control {
@@ -34,11 +30,6 @@ h2 i {
   white-space: nowrap;
 }
 
-.col-md-12.jumbotron {
-  margin: 60px 0 0 0;
-  color: white;
-}
-
 .custom-hr {
   border: none;
   background-color: white;
@@ -54,7 +45,23 @@ h2 i {
   margin: 0 auto;
 }
 
-.welcome-box, #info-box {
+h2 i {
+  padding: 5px;
+}
+
+.jumbotron {
+  background-color: #f9f9f9;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 10px;
+  color: white;
+  text-align: center;
+  width: 100%;
+  margin: 0 auto;
+  background: url("../images/background.jpg") center center/cover no-repeat;
+}
+
+.info-box {
   background-color: #f9f9f9;
   border: 2px solid #e0e0e0;
   border-radius: 10px;
@@ -222,6 +229,7 @@ h2 i {
   width: 100%;
   height: 500px;
   box-sizing: border-box;
+  text-align: center;
 }
 @media (min-width: 1200px) {
   .plot {
