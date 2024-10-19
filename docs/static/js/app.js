@@ -59,6 +59,8 @@ function updateInfoBox(listingsData, selectedNeighborhood) {
     neighborhoodMedianPrice: document.getElementById(
       "neighborhood-median-price"
     ),
+    neighborhoodPriceDiff: document.getElementById("mean-price-diff"),
+    neighborhoodMedianDiff: document.getElementById("median-price-diff"),
     neighborhoodToggles: document.querySelectorAll(".neighborhood-toggle"),
     allDcComparison: document.getElementById("all-dc-comparison"),
   };
@@ -79,6 +81,10 @@ function updateInfoBox(listingsData, selectedNeighborhood) {
     elements.neighborhoodMedianPrice.textContent = `$${neighborhoodStats.medianPrice.toFixed(
       2
     )}`;
+    const meanDiff = ((neighborhoodStats.meanPrice - dcStats.meanPrice) / dcStats.meanPrice) * 100;
+    const medianDiff = ((neighborhoodStats.medianPrice - dcStats.medianPrice) / dcStats.medianPrice) * 100;
+    elements.neighborhoodPriceDiff.textContent = `${meanDiff >= 0 ? '+' : ''}${meanDiff.toFixed(0)}%`;
+    elements.neighborhoodMedianDiff.textContent = `${medianDiff >= 0 ? '+' : ''}${medianDiff.toFixed(0)}%`;
   }
 
   // toggle visibility of neighborhood comparison stats
