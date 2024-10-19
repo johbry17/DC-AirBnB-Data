@@ -46,14 +46,12 @@ function initializeChoroplethLayer(neighborhoods, listingsData) {
   // layer for the choropleth polygons
   const choroplethLayer = L.geoJSON(neighborhoods, {
     style: (feature) => ({
-      // return {
       fillColor: getColor(averagePrices[feature.properties.neighbourhood] || 0),
       weight: 2,
       opacity: 1,
       color: "white",
       dashArray: "3",
       fillOpacity: 1,
-      // };
     }),
     onEachFeature: setChoroplethFeatures(
       averagePrices,
@@ -68,14 +66,14 @@ function initializeChoroplethLayer(neighborhoods, listingsData) {
   return layerGroup;
 }
 
-// set features for choropleth layer
+// create features for choropleth layer - popups, text markers
 function setChoroplethFeatures(averagePrices, neighborhoodCounts, layerGroup) {
   return (feature, layer) => {
     const neighborhood = feature.properties.neighbourhood;
     const avgPrice = averagePrices[neighborhood] || "No Data";
     const count = neighborhoodCounts[neighborhood] || 0;
     const popupContent = `${neighborhood}<br>
-    <span class="popup-text-right larger"><b>Average Price: $${avgPrice.toFixed(
+    <span class="popup-text-right popup-text-right-larger"><b>Average Price: $${avgPrice.toFixed(
       2
     )}</b></span>
     <span class="popup-text-right">Airbnb Count: ${count}</span>`;
@@ -86,12 +84,8 @@ function setChoroplethFeatures(averagePrices, neighborhoodCounts, layerGroup) {
     // open || close popup
     popupMouseEvents(layer);
 
-    // calculate centroid
-    const centroid = turf.centroid(feature);
-    const latlng = [
-      centroid.geometry.coordinates[1],
-      centroid.geometry.coordinates[0],
-    ];
+    // calculate centroid for placing text markers
+    const latlng = calculateCentroid(feature);
 
     // add create text marker and add to layer
     const textMarker = L.marker(latlng, {
@@ -108,13 +102,40 @@ function setChoroplethFeatures(averagePrices, neighborhoodCounts, layerGroup) {
   };
 }
 
-// create bubble chart layer of airbnb's per neighborhood
-function initializeBubbleChartLayer(neighborhoods, listingsData) {
-  const averagePrices = calculateAveragePricePerNeighborhood(listingsData);
-  const neighborhoodData = calculateAirbnbCountsPerNeighborhood(listingsData);
-  const bubbleLayerGroup = L.layerGroup(); // create layer group for circle markers
+// calculates centroid for choropleth and bubble chart layers
+function calculateCentroid(feature) {
+  const centroid = turf.centroid(feature);
+  return [centroid.geometry.coordinates[1], centroid.geometry.coordinates[0]];
+}
 
-  // add neighborhood outlines
+// handle popup events
+function popupMouseEvents(layer) {
+  let popupOpen = false; // tracks popup state
+
+  layer.on({
+    mouseover() {
+      if (!popupOpen) this.openPopup();
+    },
+    mouseout() {
+      if (!popupOpen) this.closePopup();
+    },
+    click() {
+      popupOpen ? this.closePopup() : this.openPopup();
+      popupOpen = !popupOpen;
+    },
+  });
+}
+
+// create bubble chart layer, - neighoborhood outlines and bubbles of count of airbnbs
+function initializeBubbleChartLayer(neighborhoods, listingsData) {
+  const bubbleLayerGroup = L.layerGroup(); // create layer group for circle markers
+  initializeNeighborhoodOutlines(bubbleLayerGroup, neighborhoods);
+  addBubbles(bubbleLayerGroup, neighborhoods, listingsData);
+  return bubbleLayerGroup;
+}
+
+// create neighborhood outlines layer
+function initializeNeighborhoodOutlines(bubbleLayerGroup, neighborhoods) {
   const neighborhoodsLayer = L.geoJSON(neighborhoods, {
     style: {
       color: defaultColors.defaultGray,
@@ -123,23 +144,22 @@ function initializeBubbleChartLayer(neighborhoods, listingsData) {
       fillOpacity: 0, // no fill, just outlines
     },
   });
-
-  // add neighborhoods outline to the bubbleLayerGroup
   bubbleLayerGroup.addLayer(neighborhoodsLayer);
+}
+
+// create bubbles, text markers, and popups for each neighborhood
+function addBubbles(bubbleLayerGroup, neighborhoods, listingsData) {
+  // process data
+  const averagePrices = calculateAveragePricePerNeighborhood(listingsData);
+  const neighborhoodData = calculateAirbnbCountsPerNeighborhood(listingsData);
 
   // loop through neighborhoods and create bubbles
   neighborhoods.features.forEach((feature) => {
     const neighborhood = feature.properties.neighbourhood;
     const avgPrice = averagePrices[neighborhood] || 0;
     const count = neighborhoodData[neighborhood] || 0;
-    const radius = Math.sqrt(count) * 2;
-
-    // calculate centroid
-    const centroid = turf.centroid(feature);
-    const latlng = [
-      centroid.geometry.coordinates[1],
-      centroid.geometry.coordinates[0],
-    ];
+    const radius = Math.sqrt(count) * 2; // scale radius based on count
+    const latlng = calculateCentroid(feature); // for placing markers
 
     // create circle marker at centroid
     const circleMarker = L.circleMarker(latlng, {
@@ -154,7 +174,7 @@ function initializeBubbleChartLayer(neighborhoods, listingsData) {
         <span class="popup-text-right">Average Price: $${avgPrice.toFixed(
           2
         )}</span>
-        <span class="popup-text-right larger"><b>Airbnb Count: ${count}</b></span>`,
+        <span class="popup-text-right popup-text-right-larger"><b>Airbnb Count: ${count}</b></span>`,
       { className: "marker-popup" }
     );
 
@@ -174,26 +194,6 @@ function initializeBubbleChartLayer(neighborhoods, listingsData) {
 
     // add markers to layer group
     bubbleLayerGroup.addLayer(circleMarker).addLayer(textMarker);
-  });
-
-  return bubbleLayerGroup;
-}
-
-// handle popup events
-function popupMouseEvents(layer) {
-  let popupOpen = false; // tracks popup state
-
-  layer.on({
-    mouseover() {
-      if (!popupOpen) this.openPopup();
-    },
-    mouseout() {
-      if (!popupOpen) this.closePopup();
-    },
-    click() {
-      popupOpen ? this.closePopup() : this.openPopup();
-      popupOpen = !popupOpen;
-    },
   });
 }
 
