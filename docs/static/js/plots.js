@@ -37,7 +37,6 @@ function resizePlots() {
 function allDCPlots(listingsData, priceAvailabilityData, colors) {
   plotPriceAvailability(priceAvailabilityData, "Washington, D.C.");
   updatePricePlot(listingsData, "Washington, D.C.", colors);
-  // document.getElementById("ratings-plot").style.display = "none";
   updateRatingsPlot(listingsData, "Washington, D.C.", colors);
   plotLicenseDonut(listingsData, "Washington, D.C.", colors);
   plotLicensePrice(listingsData, "Washington, D.C.", colors);
@@ -58,7 +57,6 @@ function neighborhoodPlots(
 ) {
   plotPriceAvailability(priceAvailabilityData, selectedNeighborhood);
   updatePricePlot(listingsData, selectedNeighborhood, colors);
-  // document.getElementById("ratings-plot").style.display = "none";
   updateRatingsPlot(listingsData, selectedNeighborhood, colors);
   plotLicenseDonut(listingsData, selectedNeighborhood, colors);
   plotLicensePrice(listingsData, selectedNeighborhood, colors);
@@ -433,8 +431,8 @@ function updateRatingsPlot(listingsData, selectedNeighborhood, colors) {
     },
     title:
       selectedNeighborhood === "Washington, D.C."
-        ? `<b>Ratings</b> for Washington, D.C.<br><i style="font-size: .8em;">N.B., y-axis <b>deceptively</b> starts at 4</i>`
-        : `Neighborhood <b>vs.</b> all of DC<br><b>Ratings</b> Comparison<br><i style="font-size: .8em;">N.B., y-axis <b>deceptively</b> starts at 4</i>`,
+        ? `<b>Ratings</b> for Washington, D.C.<br><i style="font-size: .8em;">N.B., y-axis <b>deceptively</b> starts at 4<br>!! Bad !! Bar charts <b>should start at zero</b></i>`
+        : `Neighborhood <b>vs.</b> all of DC<br><b>Ratings</b> Comparison<br><i style="font-size: .8em;">N.B., y-axis <b>deceptively</b> starts at 4<br>!! Bad !! Bar charts <b>should start at zero</b></i>`,
     legend: {
       orientation: "h",
       y: -0.3,
