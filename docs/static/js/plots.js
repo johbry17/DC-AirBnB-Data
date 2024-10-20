@@ -148,8 +148,84 @@ function plotPriceAvailability(data, selectedNeighborhood) {
     text: availableListings.map((listing) => `${listing.toLocaleString()}`),
   };
 
+  // annotations and dashed lines at 9/18, 12/18, and 3/18
+  const annotations = [
+    {
+      x: '2024-09-18',
+      y: Math.max(...avgPrices),
+      xref: 'x',
+      yref: 'y',
+      text: ' ',
+      showarrow: true,
+      arrowhead: 7,
+      ax: 0,
+      ay: -40
+    },
+    {
+      x: '2024-12-18',
+      y: Math.max(...avgPrices),
+      xref: 'x',
+      yref: 'y',
+      text: 'Quarterly host reset phases',
+      showarrow: true,
+      arrowhead: 7,
+      ax: 0,
+      ay: -40
+    },
+    {
+      x: '2025-03-18',
+      y: Math.max(...avgPrices),
+      xref: 'x',
+      yref: 'y',
+      text: ' ',
+      showarrow: true,
+      arrowhead: 7,
+      ax: 0,
+      ay: -40
+    }
+  ];
+
+  const shapes = [
+    {
+      type: 'line',
+      x0: '2024-09-18',
+      y0: 0,
+      x1: '2024-09-18',
+      y1: Math.max(...avgPrices),
+      line: {
+        color: 'grey',
+        width: 2,
+        dash: 'dashdot'
+      }
+    },
+    {
+      type: 'line',
+      x0: '2024-12-18',
+      y0: 0,
+      x1: '2024-12-18',
+      y1: Math.max(...avgPrices),
+      line: {
+        color: 'grey',
+        width: 2,
+        dash: 'dashdot'
+      }
+    },
+    {
+      type: 'line',
+      x0: '2025-03-18',
+      y0: 0,
+      x1: '2025-03-18',
+      y1: Math.max(...avgPrices),
+      line: {
+        color: 'grey',
+        width: 2,
+        dash: 'dashdot'
+      }
+    }
+  ];
+
   const layout = {
-    title: `<b>Price</b> and <b>Availability</b> Over Time<br>(${selectedNeighborhood})<br><i style='font-size: .8em;'>Hover for details</i>`,
+    title: `<b style="color: orange;">Price</b> and <b style="color: blue;">Availability</b> Over Year<br>(${selectedNeighborhood})<br><i style='font-size: .8em;'>Hover for details</i>`,
     xaxis: { title: "Date" },
     yaxis: {
       title: "Average Price ($)",
@@ -171,12 +247,15 @@ function plotPriceAvailability(data, selectedNeighborhood) {
       xanchor: "center",
       yanchor: "top",
     },
+    annotations: annotations, // add annotations
+    shapes: shapes // add dashed lines
   };
 
   // plot single neighborhood or DC-wide traces
   Plotly.newPlot("price-availability-plot", [trace1, trace2], layout);
 }
 
+// mean and median price comparison for DC and neighborhood
 function updatePricePlot(listingsData, selectedNeighborhood, colors) {
   // calculate price stats for DC and neighborhood
   const dcStats = calculateStats(listingsData);
@@ -277,6 +356,7 @@ function updatePricePlot(listingsData, selectedNeighborhood, colors) {
   Plotly.newPlot(plotContainer, [trace, ...legendTraces], layout);
 }
 
+// plot ratings for all of DC and a neighborhood
 function updateRatingsPlot(listingsData, selectedNeighborhood, colors) {
   // calculate rating stats for DC and neighborhood
   const dcStats = calculateStats(listingsData);
