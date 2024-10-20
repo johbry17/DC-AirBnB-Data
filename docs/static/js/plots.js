@@ -21,7 +21,7 @@ function resizePlots() {
       const containerWidth = container.clientWidth;
       const containerHeight = container.clientHeight;
 
-      // Ensure dimensions are valid
+      // ensure dimensions are valid
       if (containerWidth > 0 && containerHeight > 0) {
         Plotly.relayout(container, {
           width: containerWidth,
@@ -44,7 +44,6 @@ function allDCPlots(listingsData, priceAvailabilityData, colors) {
   plotPropertyTypePrice(listingsData, "Washington, D.C.", colors);
   plotMinimumNights(listingsData, "Washington, D.C.", colors);
   plotHostAirbnbs(listingsData, "Washington, D.C.", colors);
-  document.getElementById("top-20-hosts-table").style.display = "block";
   plotTop10Hosts(listingsData);
 }
 
@@ -65,7 +64,7 @@ function neighborhoodPlots(
   plotPropertyTypePrice(listingsData, selectedNeighborhood, colors);
   plotMinimumNights(listingsData, selectedNeighborhood, colors);
   plotHostAirbnbs(listingsData, selectedNeighborhood, colors);
-  document.getElementById("top-20-hosts-table").style.display = "none";
+  plotTop10Hosts(filterListingsByNeighborhood(listingsData, selectedNeighborhood));
 }
 
 // traces for each plot
@@ -898,24 +897,7 @@ function plotPropertyTypePrice(data, selectedNeighborhood, colors) {
     };
 
     // dummy traces for the legend
-    const legendTraces = [
-      {
-        x: [null],
-        y: [null],
-        mode: "markers",
-        marker: { color: colors.neighborhoodColor, symbol: "square", size: 12 },
-        name: "Neighborhood",
-        showlegend: true,
-      },
-      {
-        x: [null],
-        y: [null],
-        mode: "markers",
-        marker: { color: colors.cityColor, symbol: "square", size: 12 },
-        name: "DC",
-        showlegend: true,
-      },
-    ];
+    const legendTraces = getLegendTraces(colors, selectedNeighborhood);
 
     const layout = {
       title: `Average <b>Price by Property Type</b> Comparison:<br>Neighborhood <b>vs.</b> Washington, D.C.`,
@@ -1119,7 +1101,7 @@ function plotTop10Hosts(data) {
 
   // create layout
   const layout = {
-    title: "<b>Top 20 Hosts</b> with the Most Listings",
+    title: "<b>Top Hosts</b> with the Most Listings",
     margin: { t: 50, l: 25, r: 25, b: 25 },
   };
 

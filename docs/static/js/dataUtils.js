@@ -242,6 +242,24 @@ function getListingsAt31Days(data) {
   return { countAt31Days, percentAt31Days };
 }
 
+// calculate the number of listings per host with multiple properties
+function getMultiPropertyData(data) {
+  const totalListings = data.length;
+
+  // get the distribution of listings per host
+  const distribution = getHostAirbnbs(data);
+
+  // sum count of listings for hosts with multiple properties (2 or more)
+  const multiPropertyListings = Object.entries(distribution)
+    .filter(([key, value]) => key >= 2 || key === "10+")
+    .reduce((sum, [, value]) => sum + value, 0);
+
+  // calculate percent
+  const percentMultiProperties = ((multiPropertyListings / totalListings) * 100).toFixed(2);
+
+  return { multiPropertyListings, totalListings, percentMultiProperties };
+}
+
 // calculate number of airbnbs per host, binned by number of listings, with 10+ listings as one bin
 function getHostAirbnbs(data) {
   let hostCounts = {};

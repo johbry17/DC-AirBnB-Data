@@ -126,7 +126,7 @@ function update31DaysInfoBox(listingsData, selectedNeighborhood) {
   const { countAt31Days, percentAt31Days } =
     getListingsAt31Days(filteredListings);
 
-  // Update the DOM elements inside the info box
+  // populate the HTML
   document.getElementById("count-31-nights").textContent =
     countAt31Days.toLocaleString();
   document.getElementById("total-31-nights").textContent =
@@ -134,4 +134,27 @@ function update31DaysInfoBox(listingsData, selectedNeighborhood) {
   document.getElementById(
     "percent-31-nights"
   ).textContent = `${percentAt31Days}%`;
+}
+
+// multi-property info box values
+function updateMultiListings(listingsData, selectedNeighborhood) {
+  // conditional for neighborhood filter
+  let filteredListings;
+  if (selectedNeighborhood === "Washington, D.C.") {
+    filteredListings = listingsData;
+  } else {
+    filteredListings = filterListingsByNeighborhood(
+      listingsData,
+      selectedNeighborhood
+    );
+  }
+
+  // get count and percent for multi-property hosts
+  const { multiPropertyListings, totalListings, percentMultiProperties } =
+    getMultiPropertyData(filteredListings);
+
+  // populate the HTML
+  document.getElementById("count-multi-properties").textContent = multiPropertyListings.toLocaleString();
+  document.getElementById("total-multi-properties").textContent = totalListings.toLocaleString();
+  document.getElementById("percent-multi-properties").textContent = `${percentMultiProperties}%`;
 }
