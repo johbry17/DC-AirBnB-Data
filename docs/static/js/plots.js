@@ -13,6 +13,7 @@ function resizePlots() {
     "minimum-nights-plot",
     "host-number-of-airbnbs-plot",
     "top-20-hosts-table",
+    "median-price-plot",
   ];
 
   plotIds.forEach((id) => {
@@ -45,6 +46,7 @@ function allDCPlots(listingsData, priceAvailabilityData, colors) {
   plotMinimumNights(listingsData, "Washington, D.C.", colors);
   plotHostAirbnbs(listingsData, "Washington, D.C.", colors);
   plotTop10Hosts(listingsData);
+  plotMedianPricePerNeighborhood(listingsData, "Washington, D.C.", colors);
 }
 
 // master function to call plots for neighborhoods
@@ -64,7 +66,10 @@ function neighborhoodPlots(
   plotPropertyTypePrice(listingsData, selectedNeighborhood, colors);
   plotMinimumNights(listingsData, selectedNeighborhood, colors);
   plotHostAirbnbs(listingsData, selectedNeighborhood, colors);
-  plotTop10Hosts(filterListingsByNeighborhood(listingsData, selectedNeighborhood));
+  plotTop10Hosts(
+    filterListingsByNeighborhood(listingsData, selectedNeighborhood)
+  );
+  plotMedianPricePerNeighborhood(listingsData, selectedNeighborhood, colors);
 }
 
 // traces for each plot
@@ -151,77 +156,77 @@ function plotPriceAvailability(data, selectedNeighborhood) {
   // annotations and dashed lines at 9/18, 12/18, and 3/18
   const annotations = [
     {
-      x: '2024-09-18',
+      x: "2024-09-18",
       y: Math.max(...avgPrices),
-      xref: 'x',
-      yref: 'y',
-      text: ' ',
+      xref: "x",
+      yref: "y",
+      text: " ",
       showarrow: true,
       arrowhead: 7,
       ax: 0,
-      ay: -40
+      ay: -40,
     },
     {
-      x: '2024-12-18',
+      x: "2024-12-18",
       y: Math.max(...avgPrices),
-      xref: 'x',
-      yref: 'y',
-      text: 'Quarterly host reset phases',
+      xref: "x",
+      yref: "y",
+      text: "Quarterly host reset phases",
       showarrow: true,
       arrowhead: 7,
       ax: 0,
-      ay: -40
+      ay: -40,
     },
     {
-      x: '2025-03-18',
+      x: "2025-03-18",
       y: Math.max(...avgPrices),
-      xref: 'x',
-      yref: 'y',
-      text: ' ',
+      xref: "x",
+      yref: "y",
+      text: " ",
       showarrow: true,
       arrowhead: 7,
       ax: 0,
-      ay: -40
-    }
+      ay: -40,
+    },
   ];
 
   const shapes = [
     {
-      type: 'line',
-      x0: '2024-09-18',
+      type: "line",
+      x0: "2024-09-18",
       y0: 0,
-      x1: '2024-09-18',
+      x1: "2024-09-18",
       y1: Math.max(...avgPrices),
       line: {
-        color: 'grey',
+        color: "grey",
         width: 2,
-        dash: 'dashdot'
-      }
+        dash: "dashdot",
+      },
     },
     {
-      type: 'line',
-      x0: '2024-12-18',
+      type: "line",
+      x0: "2024-12-18",
       y0: 0,
-      x1: '2024-12-18',
+      x1: "2024-12-18",
       y1: Math.max(...avgPrices),
       line: {
-        color: 'grey',
+        color: "grey",
         width: 2,
-        dash: 'dashdot'
-      }
+        dash: "dashdot",
+      },
     },
     {
-      type: 'line',
-      x0: '2025-03-18',
+      type: "line",
+      x0: "2025-03-18",
       y0: 0,
-      x1: '2025-03-18',
+      x1: "2025-03-18",
       y1: Math.max(...avgPrices),
       line: {
-        color: 'grey',
+        color: "grey",
         width: 2,
-        dash: 'dashdot'
-      }
-    }
+        dash: "dashdot",
+      },
+    },
   ];
 
   const layout = {
@@ -248,7 +253,7 @@ function plotPriceAvailability(data, selectedNeighborhood) {
       yanchor: "top",
     },
     annotations: annotations, // add annotations
-    shapes: shapes // add dashed lines
+    shapes: shapes, // add dashed lines
   };
 
   // plot single neighborhood or DC-wide traces
@@ -1187,4 +1192,95 @@ function plotTop10Hosts(data) {
 
   // plot chart
   Plotly.newPlot(topHostsContainer, [trace], layout);
+}
+
+// plot median price per neighborhood with highlighted DC and selected neighborhood
+function plotMedianPricePerNeighborhood(
+  listingsData,
+  selectedNeighborhood,
+  colors
+) {
+  // Calculate median price per neighborhood
+  const medianPrices = calculateMedianPricePerNeighborhood(listingsData);
+
+  // get median price for all of DC, add to medianPrices object
+  const dcMedianPrice = calculateStats(listingsData).medianPrice;
+  medianPrices["Washington, D.C."] = dcMedianPrice;
+
+  // convert medianPrices object to an array, then sort
+  const sortedNeighborhoods = Object.keys(medianPrices)
+    .map((neighborhood) => ({
+      neighborhood: neighborhood,
+      medianPrice: medianPrices[neighborhood],
+    }))
+    .sort((a, b) => a.medianPrice - b.medianPrice);
+
+  // map x and y data for all neighborhoods, and shorten names
+  const neighborhoods = sortedNeighborhoods.map((d) =>
+    shortenName(d.neighborhood)
+  );
+  const prices = sortedNeighborhoods.map((d) => d.medianPrice);
+
+  // get the index of DC and selected neighborhood
+  const dcIndex = neighborhoods.findIndex((n) => n === shortenName("Washington, D.C."));
+  const selectedIndex = neighborhoods.findIndex(
+    (n) => n === shortenName(selectedNeighborhood)
+  );
+
+  // highlight selected neighborhood and DC, gray out the rest
+  const colorsArray = neighborhoods.map((n, index) =>
+    index === dcIndex
+      ? colors.cityColor
+      : index === selectedIndex
+      ? colors.neighborhoodColor
+      : colors.defaultGray
+  );
+
+  // dim the non-highlighted bars
+  const opacityArray = neighborhoods.map((n, index) =>
+    index === dcIndex || index === selectedIndex ? 1 : 0.3
+  );
+
+  // create trace
+  const trace = {
+    x: prices,
+    y: neighborhoods,
+    type: "bar",
+    orientation: "h",
+    marker: {
+      color: colorsArray,
+      opacity: opacityArray,
+      line: {
+        color: "black",
+        width: neighborhoods.map((n, index) =>
+          index === dcIndex || index === selectedIndex ? 2 : 0.5
+        ),
+      },
+    },
+    hovertemplate: "%{y}: $%{x:.2f} USD<extra></extra>",
+  };
+
+  // create layout
+  const layout = {
+    title: `<b>Median Price</b> by Neighborhood`,
+    xaxis: {
+      title: "Median Price ($)",
+    },
+    yaxis: {
+      title: "Neighborhood",
+      // automargin: true, // ensures neighborhood names don't get cut off
+    },
+    hovermode: "y unified",
+    margin: {
+      l: 125, // adjust to fit long neighborhood names
+    },
+  };
+
+  // plot the chart
+  Plotly.newPlot("median-price-plot", [trace], layout);
+}
+
+// shorten long neighborhood names with '...'
+function shortenName(name, maxLength = 15) {
+  return name.length > maxLength ? name.slice(0, maxLength - 3) + "..." : name;
 }

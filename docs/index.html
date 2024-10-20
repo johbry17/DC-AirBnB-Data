@@ -133,7 +133,7 @@
       of <span id="total-count">0</span><br>
       <u><b style="font-size: 1.2em;">Neighborhood Stats:</b></u><br>
       Mean Price: <span id="neighborhood-mean-price" style="font-size: 1.2em;">0</span>, <span id="mean-price-diff">0%</span> vs DC<br>
-      Median Price: <span id="neighborhood-median-price" style="font-size: 1.2em;">0</span>,  <span id="median-price-diff">0%</span> vs DC<br>
+      Median Price: <span class="neighborhood-median-price" style="font-size: 1.2em;">0</span>,  <span id="median-price-diff">0%</span> vs DC<br>
       <div class="stats-icons">
         <i class="fas fa-dollar-sign"></i>
         <i class="fas fa-star"></i>
@@ -146,7 +146,7 @@
     </div>
     <div>
       Mean Price: <span id="dc-mean-price">0</span><br>
-      Median Price: <span id="dc-median-price">0</span><br>
+      Median Price: <span class="dc-median-price">0</span><br>
     </div>
   </div>
   <!-- intro to plots, Tableau -->
@@ -260,10 +260,20 @@
         <div id="price-availability-plot" class="plot"></div>
       </div>        
     </div>
+    <div class="info-box">
+      <p>This data set skews expensive. Median, over mean, more accurately represents the norm.</p>
+      <p>DC's median price: <span class="dc-median-price">0</span><span class="neighborhood-toggle">Neighborhood's median price: <span class="neighborhood-median-price">0</span></span></p>
+    </div>
     <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <div id="median-price-plot" class="plot"></div>
+      </div>
       <div class="col-sm-12 col-md-6">
         <div id="ratings-plot" class="plot"></div>
       </div>
+    </div>
+    <div class="info-box">
+      <p>Bad chart - Bar plots should start at zero.</p>
     </div>
   </div>
 

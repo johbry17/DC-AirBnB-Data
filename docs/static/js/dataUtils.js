@@ -255,7 +255,10 @@ function getMultiPropertyData(data) {
     .reduce((sum, [, value]) => sum + value, 0);
 
   // calculate percent
-  const percentMultiProperties = ((multiPropertyListings / totalListings) * 100).toFixed(2);
+  const percentMultiProperties = (
+    (multiPropertyListings / totalListings) *
+    100
+  ).toFixed(2);
 
   return { multiPropertyListings, totalListings, percentMultiProperties };
 }
@@ -309,4 +312,37 @@ function getTopHosts(data) {
   return sortedHosts
     .slice(0, 20)
     .map(([host_id, { name, count }]) => ({ host_id, host_name: name, count }));
+}
+
+// calculate median price per neighborhood
+function calculateMedianPricePerNeighborhood(data) {
+  const neighborhoodPrices = {};
+
+  data.forEach((listing) => {
+    const neighborhood = listing.neighbourhood;
+    const price = parseFloat(listing.price);
+
+    if (!neighborhoodPrices[neighborhood]) {
+      neighborhoodPrices[neighborhood] = [];
+    }
+
+    // collect all prices
+    neighborhoodPrices[neighborhood].push(price);
+  });
+
+  const medianPrices = {};
+  for (const neighborhood in neighborhoodPrices) {
+    // sort prices
+    const prices = neighborhoodPrices[neighborhood].sort((a, b) => a - b);
+
+    const middle = Math.floor(prices.length / 2);
+
+    // calculate median (if even number of elements, take the average of the middle two)
+    medianPrices[neighborhood] =
+      prices.length % 2 !== 0
+        ? prices[middle] // odd number of prices
+        : (prices[middle - 1] + prices[middle]) / 2; // even number of prices
+  }
+
+  return medianPrices;
 }

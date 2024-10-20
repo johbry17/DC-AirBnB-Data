@@ -54,10 +54,10 @@ function updateInfoBox(listingsData, selectedNeighborhood) {
     totalCount: document.getElementById("total-count"),
     totalCountAllDc: document.getElementById("total-count-all-dc"),
     dcMeanPrice: document.getElementById("dc-mean-price"),
-    dcMedianPrice: document.getElementById("dc-median-price"),
+    dcMedianPrice: document.querySelectorAll(".dc-median-price"),
     neighborhoodMeanPrice: document.getElementById("neighborhood-mean-price"),
-    neighborhoodMedianPrice: document.getElementById(
-      "neighborhood-median-price"
+    neighborhoodMedianPrice: document.querySelectorAll(
+      ".neighborhood-median-price"
     ),
     neighborhoodPriceDiff: document.getElementById("mean-price-diff"),
     neighborhoodMedianDiff: document.getElementById("median-price-diff"),
@@ -72,15 +72,17 @@ function updateInfoBox(listingsData, selectedNeighborhood) {
   elements.totalCount.textContent = allListingsCount.toLocaleString();
   elements.totalCountAllDc.textContent = allListingsCount.toLocaleString();
   elements.dcMeanPrice.textContent = `$${dcStats.meanPrice.toFixed(2)}`;
-  elements.dcMedianPrice.textContent = `$${dcStats.medianPrice.toFixed(2)}`;
+  elements.dcMedianPrice.forEach((element) => {
+    element.textContent = `$${dcStats.medianPrice.toFixed(2)}`;
+  });
 
   if (selectedNeighborhood !== "Washington, D.C.") {
     elements.neighborhoodMeanPrice.textContent = `$${neighborhoodStats.meanPrice.toFixed(
       2
     )}`;
-    elements.neighborhoodMedianPrice.textContent = `$${neighborhoodStats.medianPrice.toFixed(
-      2
-    )}`;
+    elements.neighborhoodMedianPrice.forEach((element) => {
+      element.textContent = `$${neighborhoodStats.medianPrice.toFixed(2)}`;
+    });
     const meanDiff =
       ((neighborhoodStats.meanPrice - dcStats.meanPrice) / dcStats.meanPrice) *
       100;
