@@ -156,7 +156,11 @@ function updateMultiListings(listingsData, selectedNeighborhood) {
     getMultiPropertyData(filteredListings);
 
   // populate the HTML
-  document.getElementById("count-multi-properties").textContent = multiPropertyListings.toLocaleString();
-  document.getElementById("total-multi-properties").textContent = totalListings.toLocaleString();
-  document.getElementById("percent-multi-properties").textContent = `${percentMultiProperties}%`;
+  document.getElementById("count-multi-properties").textContent =
+    multiPropertyListings.toLocaleString();
+  document.getElementById("total-multi-properties").textContent =
+    totalListings.toLocaleString();
+  document.getElementById(
+    "percent-multi-properties"
+  ).textContent = `${percentMultiProperties}%`;
 }

@@ -1222,7 +1222,9 @@ function plotMedianPricePerNeighborhood(
   const prices = sortedNeighborhoods.map((d) => d.medianPrice);
 
   // get the index of DC and selected neighborhood
-  const dcIndex = neighborhoods.findIndex((n) => n === shortenName("Washington, D.C."));
+  const dcIndex = neighborhoods.findIndex(
+    (n) => n === shortenName("Washington, D.C.")
+  );
   const selectedIndex = neighborhoods.findIndex(
     (n) => n === shortenName(selectedNeighborhood)
   );
