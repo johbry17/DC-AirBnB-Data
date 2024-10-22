@@ -73,10 +73,10 @@ function setChoroplethFeatures(averagePrices, neighborhoodCounts, layerGroup) {
     const avgPrice = averagePrices[neighborhood] || "No Data";
     const count = neighborhoodCounts[neighborhood] || 0;
     const popupContent = `${neighborhood}<br>
-    <span class="popup-text-right popup-text-right-larger"><b>Average Price: $${avgPrice.toFixed(
-      2
-    )}</b></span>
-    <span class="popup-text-right">Airbnb Count: ${count}</span>`;
+    <span class="popup-text-right popup-text-right-larger"><b>Average Price: $${avgPrice
+      .toFixed(2)
+      .toLocaleString()}</b></span>
+    <span class="popup-text-right">Airbnb Count: ${count.toLocaleString()}</span>`;
 
     // bind popup to layer
     layer.bindPopup(popupContent, { className: "marker-popup" });
@@ -91,7 +91,7 @@ function setChoroplethFeatures(averagePrices, neighborhoodCounts, layerGroup) {
     const textMarker = L.marker(latlng, {
       icon: L.divIcon({
         className: "choropleth-label",
-        html: `<div>$${avgPrice.toFixed(0)}</div>`,
+        html: `<div>$${avgPrice.toFixed(0).toLocaleString()}</div>`,
         iconSize: [100, 50],
         iconAnchor: [50, 25], // anchor point of the text box
       }),
@@ -171,10 +171,10 @@ function addBubbles(bubbleLayerGroup, neighborhoods, listingsData) {
       fillOpacity: 0.8,
     }).bindPopup(
       `${neighborhood}<br>
-        <span class="popup-text-right">Average Price: $${avgPrice.toFixed(
-          2
-        )}</span>
-        <span class="popup-text-right popup-text-right-larger"><b>Airbnb Count: ${count}</b></span>`,
+        <span class="popup-text-right">Average Price: $${avgPrice
+          .toFixed(2)
+          .toLocaleString()}</span>
+        <span class="popup-text-right popup-text-right-larger"><b>Airbnb Count: ${count.toLocaleString()}</b></span>`,
       { className: "marker-popup" }
     );
 
@@ -182,7 +182,7 @@ function addBubbles(bubbleLayerGroup, neighborhoods, listingsData) {
     const textMarker = L.marker(latlng, {
       icon: L.divIcon({
         className: "bubble-text",
-        html: `<div>${count}</div>`,
+        html: `<div>${count.toLocaleString()}</div>`,
         iconSize: [radius * 2, radius * 2], // match size of circle marker
         iconAnchor: [radius, radius], // center text
       }),

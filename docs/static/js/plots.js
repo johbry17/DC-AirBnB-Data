@@ -44,7 +44,7 @@ function allDCPlots(listingsData, priceAvailabilityData, colors) {
   plotPropertyTypePrice(listingsData, "Washington, D.C.", colors);
   plotMinimumNights(listingsData, "Washington, D.C.", colors);
   plotHostAirbnbs(listingsData, "Washington, D.C.", colors);
-  plotTop10Hosts(listingsData);
+  plotTop20Hosts(listingsData);
   plotMedianPricePerNeighborhood(listingsData, "Washington, D.C.", colors);
 }
 
@@ -64,7 +64,7 @@ function neighborhoodPlots(
   plotPropertyTypePrice(listingsData, selectedNeighborhood, colors);
   plotMinimumNights(listingsData, selectedNeighborhood, colors);
   plotHostAirbnbs(listingsData, selectedNeighborhood, colors);
-  plotTop10Hosts(
+  plotTop20Hosts(
     filterListingsByNeighborhood(listingsData, selectedNeighborhood)
   );
   plotMedianPricePerNeighborhood(listingsData, selectedNeighborhood, colors);
@@ -1147,7 +1147,7 @@ function plotHostAirbnbs(data, selectedNeighborhood, colors) {
 }
 
 // show top 10 hosts with the most listings using Plotly table
-function plotTop10Hosts(data) {
+function plotTop20Hosts(data) {
   const topHosts = getTopHosts(data);
   const topHostsContainer = document.getElementById("top-20-hosts-table");
 
@@ -1257,7 +1257,7 @@ function plotMedianPricePerNeighborhood(
         ),
       },
     },
-    hovertemplate: "%{y}: $%{x:.2f} USD<extra></extra>",
+    hovertemplate: "%{y}: $%{x:.2f}<extra></extra>",
   };
 
   // create layout

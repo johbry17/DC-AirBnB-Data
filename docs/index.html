@@ -61,42 +61,42 @@
   <div class="container">
     <div class="col-md-12 jumbotron text-center">
       <h1>Airbnb Data Hub DC</h1>
-      <h2><i class="fas fa-map-marked-alt"></i>
+      <h2 aria-label="Icons for Map, Home, Bed, Users, Globe">
+        <i class="fas fa-map-marked-alt"></i>
         <i class="fas fa-home"></i> 
         <i class="fas fa-bed"></i> 
         <i class="fas fa-users"></i>
-      <i class="fas fa-globe"></i>
+        <i class="fas fa-globe"></i>
       </h2>
     </div>
   </div>
-  <div></div>
   <!-- to forcibly separate jumbotron from welcome-box -->
   <hr class="custom-hr">
   <!-- Welcome box with background -->
   <div class="info-box">
-    <div class="stats-icons">
-      <i class="fas fa-home"></i>
-      <i class="fas fa-map-marker-alt"></i>
+    <div class="stats-icons" aria-label="Home and Location icons">
+      <i class="fas fa-home" aria-hidden="true"></i>
+      <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
     </div>
     <span>Choose a neighborhood to zoom in.</span> 
     <br>
-    <span>Airbnb (<i class="fas fa-map-pin"></i>) locations are approximate.</span><br>
-    <span>Tap <i class="fas fa-layer-group"></i> to change the background.</span><br>
+    <span>Airbnb (<i class="fas fa-map-pin" aria-hidden="true"></i>) locations are approximate.</span><br>
+    <span>Tap <i class="fas fa-layer-group" aria-hidden="true"></i> to change the background.</span><br>
     <span>Buttons below toggle data.</span><br>
-    <span>Tap <i class="fas fa-map-marked-alt"></i> to open popups.</span>
+    <span>Tap <i class="fas fa-map-marked-alt" aria-hidden="true"></i> to open popups.</span>
   </div>
   <!-- Map -->
   <div class="row">
     <div class="col-md-12">
       <div class="map-container">
-        <div id="map-id"></div>
+        <div id="map-id" role="application" aria-label="Map of Washington, D.C. with Airbnb locations."></div>
         <!-- Radio Buttons -->
-        <div id="overlay-control">
-          <button data-overlay="Airbnb's">Airbnb's</button>
-          <button data-overlay="License Status">License Status</button>
-          <button data-overlay="Property Type">Property Type</button>
-          <button id="average-price-button" data-overlay="Average Price">Average Price</button>
-          <button id="total-airbnbs-button" data-overlay="Total Airbnbs">Total Airbnbs</button>
+        <div id="overlay-control" aria-label="Toggle different data layers">
+          <button data-overlay="Airbnb's" aria-label="Show Airbnb's">Airbnb's</button>
+          <button data-overlay="License Status" aria-label="Show License Status">License Status</button>
+          <button data-overlay="Property Type" aria-label="Show Property Type">Property Type</button>
+          <button id="average-price-button" data-overlay="Average Price" aria-label="Show Average Price">Average Price</button>
+          <button id="total-airbnbs-button" data-overlay="Total Airbnbs" aria-label="Show Total Airbnbs">Total Airbnbs</button>
         </div>
       </div>
     </div>
@@ -104,7 +104,7 @@
   <!-- Info Box -->
   <div class="info-box info legend">
     <strong class="neighborhood-toggle" id="neighborhood-name">${selectedNeighborhood}</strong>
-    <i class="fas fa-info-circle"></i>
+    <i class="fas fa-info-circle" aria-hidden="true"></i>
     <div class="neighborhood-toggle">
       Number of Airbnb's in Neighborhood: 
       <span id="neighborhood-count" style="font-size: 1.6em;">0</span> 
@@ -112,9 +112,9 @@
       <u><b style="font-size: 1.2em;">Neighborhood Stats:</b></u><br>
       Mean Price: <span id="neighborhood-mean-price" style="font-size: 1.2em;">0</span>, <span id="mean-price-diff">0%</span> vs DC<br>
       Median Price: <span class="neighborhood-median-price" style="font-size: 1.2em;">0</span>,  <span id="median-price-diff">0%</span> vs DC<br>
-      <div class="stats-icons">
-        <i class="fas fa-dollar-sign"></i>
-        <i class="fas fa-star"></i>
+      <div class="stats-icons" aria-label="Dollar and Star icons for price and rating">
+        <i class="fas fa-dollar-sign" aria-hidden="true"></i>
+        <i class="fas fa-star" aria-hidden="true"></i>
       </div>
       <u><b style="font-size: 1.2em;">Washington, D.C.</b> (for Comparison):</u><br>
     </div>
@@ -135,7 +135,7 @@
   <!-- Tableau Mobile Embed -->
   <div class="col-sm-12 col-md-12">
     <!-- begin tableau css div to center on mobile, at very end of styles.css -->
-    <div id="tableau-viz">
+    <div id="tableau-viz" aria-label="Embedded Tableau visualization of Airbnb data in DC">
       <!-- begin tableau mobile embed code -->
       <div class='tableauPlaceholder' id='viz1727416352687' style='position: relative'>
           <noscript>
@@ -185,10 +185,10 @@
   <div id="plot-container" class="container">
     <div class="row">
       <div class="col-sm-12 col-md-6">
-        <div id="price-plot" class="plot"></div>
+        <div id="price-plot" class="plot" aria-label="Mean and Median Price bar chart"></div>
       </div>
       <div class="col-sm-12 col-md-6">
-        <div id="minimum-nights-plot" class="plot"></div>
+        <div id="minimum-nights-plot" class="plot" aria-label="Minimum nights required for booking bar chart"></div>
       </div>
     </div>
     <div class="info-box">
@@ -202,10 +202,10 @@
     </div>
     <div class="row">
       <div class="col-sm-12 col-md-6">
-        <div id="license-plot" class="plot"></div>
+        <div id="license-plot" class="plot" aria-label="License status donut chart"></div>
       </div>
       <div class="col-sm-12 col-md-6">
-        <div id="license-price-plot" class="plot"></div>
+        <div id="license-price-plot" class="plot" aria-label="Average price by license status bar chart"></div>
       </div>
     </div>
     <div class="info-box">
@@ -213,10 +213,10 @@
     </div>
     <div class="row">
       <div class="col-sm-12 col-md-6">
-        <div id="property-type-plot" class="plot"></div>
+        <div id="property-type-plot" class="plot" aria-label="Property type percentage bar chart"></div>
       </div>
       <div class="col-sm-12 col-md-6">
-        <div id="property-type-price-plot" class="plot"></div>
+        <div id="property-type-price-plot" class="plot" aria-label="Average price by property type bar chart"></div>
       </div>
     </div>
     <div class="info-box">
@@ -225,10 +225,10 @@
     </div>
     <div class="row">
       <div class="col-sm-12 col-md-6">
-        <div id="host-number-of-airbnbs-plot" class="plot"></div>
+        <div id="host-number-of-airbnbs-plot" class="plot" aria-label="Number of Airbnbs per host bar chart"></div>
       </div>
       <div class="col-sm-12 col-md-6">
-        <div id="top-20-hosts-table" class="plot"></div>
+        <div id="top-20-hosts-table" class="plot" aria-label="Table of top 20 hosts offering the most Airbnbs"></div>
       </div>
     </div>
     <div class="info-box">
@@ -236,7 +236,7 @@
     </div>
     <div class="row">
       <div class="col-md-12">
-        <div id="price-availability-plot" class="plot"></div>
+        <div id="price-availability-plot" class="plot" aria-label="Price and Availability of Airbnbs in upcoming year, line chart"></div>
       </div>        
     </div>
     <div class="info-box">
@@ -245,14 +245,14 @@
     </div>
     <div class="row">
       <div class="col-sm-12 col-md-6">
-        <div id="median-price-plot" class="plot"></div>
+        <div id="median-price-plot" class="plot" aria-label="Bar chart of neighborhoods ordered by Median Price"></div>
       </div>
       <div class="col-sm-12 col-md-6">
-        <div id="ratings-plot" class="plot"></div>
+        <div id="ratings-plot" class="plot" aria-label="Mean and Median Ratings bar chart"></div>
       </div>
     </div>
     <div class="info-box">
-      <div class="stats-icons">
+      <div class="stats-icons" aria-label="Icons for Star, Globe, and Hourglass">
         <i class="fas fa-star"></i>
         <i class="fas fa-globe"></i>
         <i class="fas fa-hourglass-end"></i>

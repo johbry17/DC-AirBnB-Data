@@ -65,23 +65,67 @@ function updateInfoBox(listingsData, selectedNeighborhood) {
     allDcComparison: document.querySelectorAll(".all-dc-comparison"),
   };
 
-  // update text content
+  // update text content and aria-labels
   elements.neighborhoodName.textContent = selectedNeighborhood;
+  elements.neighborhoodName.setAttribute(
+    "aria-label",
+    `Neighborhood: ${selectedNeighborhood}`
+  );
   elements.neighborhoodCount.textContent =
     filteredListings.length.toLocaleString();
+  elements.neighborhoodCount.setAttribute(
+    "aria-label",
+    `Number of Airbnbs in neighborhood: ${filteredListings.length.toLocaleString()}`
+  );
   elements.totalCount.textContent = allListingsCount.toLocaleString();
+  elements.totalCount.setAttribute(
+    "aria-label",
+    `Total number of Airbnbs in Washington, D.C.: ${allListingsCount.toLocaleString()}`
+  );
   elements.totalCountAllDc.textContent = allListingsCount.toLocaleString();
-  elements.dcMeanPrice.textContent = `$${dcStats.meanPrice.toFixed(2)}`;
+  elements.totalCountAllDc.setAttribute(
+    "aria-label",
+    `Total number of Airbnbs in Washington, D.C.: ${allListingsCount.toLocaleString()}`
+  );
+  elements.dcMeanPrice.textContent = `$${dcStats.meanPrice
+    .toFixed(2)
+    .toLocaleString()}`;
+  elements.dcMeanPrice.setAttribute(
+    "aria-label",
+    `Mean price of Airbnbs in Washington, D.C.: $${dcStats.meanPrice
+      .toFixed(2)
+      .toLocaleString()}`
+  );
   elements.dcMedianPrice.forEach((element) => {
-    element.textContent = `$${dcStats.medianPrice.toFixed(2)}`;
+    element.textContent = `$${dcStats.medianPrice.toFixed(2).toLocaleString()}`;
+    element.setAttribute(
+      "aria-label",
+      `Median price of Airbnbs in Washington, D.C.: $${dcStats.medianPrice
+        .toFixed(2)
+        .toLocaleString()}`
+    );
   });
 
   if (selectedNeighborhood !== "Washington, D.C.") {
-    elements.neighborhoodMeanPrice.textContent = `$${neighborhoodStats.meanPrice.toFixed(
-      2
-    )}`;
+    elements.neighborhoodMeanPrice.textContent = `$${neighborhoodStats.meanPrice
+      .toFixed(2)
+      .toLocaleString()}`;
+    elements.neighborhoodMeanPrice.setAttribute(
+      "aria-label",
+      `Mean price of Airbnbs in ${selectedNeighborhood}: $${neighborhoodStats.meanPrice
+        .toFixed(2)
+        .toLocaleString()}`
+    );
     elements.neighborhoodMedianPrice.forEach((element) => {
-      element.textContent = `$${neighborhoodStats.medianPrice.toFixed(2)}`;
+      element.textContent = `$${neighborhoodStats.medianPrice
+        .toFixed(2)
+        .toLocaleString()}`;
+      element.setAttribute(
+        "aria-label",
+        `Median price of Airbnbs in ${selectedNeighborhood}: $${neighborhoodStats.medianPrice
+          .toFixed(2)
+          .toLocaleString()}`
+      );
     });
     const meanDiff =
       ((neighborhoodStats.meanPrice - dcStats.meanPrice) / dcStats.meanPrice) *
@@ -92,10 +136,22 @@ function updateInfoBox(listingsData, selectedNeighborhood) {
       100;
     elements.neighborhoodPriceDiff.textContent = `${
       meanDiff >= 0 ? "+" : ""
-    }${meanDiff.toFixed(0)}%`;
+    }${meanDiff.toFixed(0).toLocaleString()}%`;
+    elements.neighborhoodPriceDiff.setAttribute(
+      "aria-label",
+      `Mean price difference: ${meanDiff >= 0 ? "+" : ""}${meanDiff
+        .toFixed(0)
+        .toLocaleString()}%`
+    );
     elements.neighborhoodMedianDiff.textContent = `${
       medianDiff >= 0 ? "+" : ""
-    }${medianDiff.toFixed(0)}%`;
+    }${medianDiff.toFixed(0).toLocaleString()}%`;
+    elements.neighborhoodMedianDiff.setAttribute(
+      "aria-label",
+      `Median price difference: ${medianDiff >= 0 ? "+" : ""}${medianDiff
+        .toFixed(0)
+        .toLocaleString()}%`
+    );
   }
 
   // toggle visibility of neighborhood comparison stats
@@ -128,14 +184,27 @@ function update31DaysInfoBox(listingsData, selectedNeighborhood) {
   const { countAt31Days, percentAt31Days } =
     getListingsAt31Days(filteredListings);
 
-  // populate the HTML
-  document.getElementById("count-31-nights").textContent =
-    countAt31Days.toLocaleString();
-  document.getElementById("total-31-nights").textContent =
-    filteredListings.length.toLocaleString();
-  document.getElementById(
-    "percent-31-nights"
-  ).textContent = `${percentAt31Days}%`;
+  // populate the HTML and add aria-labels
+  const count31NightsElement = document.getElementById("count-31-nights");
+  count31NightsElement.textContent = countAt31Days.toLocaleString();
+  count31NightsElement.setAttribute(
+    "aria-label",
+    `Number of listings with 31-day minimum stay: ${countAt31Days.toLocaleString()}`
+  );
+
+  const total31NightsElement = document.getElementById("total-31-nights");
+  total31NightsElement.textContent = filteredListings.length.toLocaleString();
+  total31NightsElement.setAttribute(
+    "aria-label",
+    `Total number of listings: ${filteredListings.length.toLocaleString()}`
+  );
+
+  const percent31NightsElement = document.getElementById("percent-31-nights");
+  percent31NightsElement.textContent = `${percentAt31Days}%`;
+  percent31NightsElement.setAttribute(
+    "aria-label",
+    `Percentage of listings with 31-day minimum stay: ${percentAt31Days}%`
+  );
 }
 
 // multi-property info box values
@@ -155,12 +224,32 @@ function updateMultiListings(listingsData, selectedNeighborhood) {
   const { multiPropertyListings, totalListings, percentMultiProperties } =
     getMultiPropertyData(filteredListings);
 
-  // populate the HTML
-  document.getElementById("count-multi-properties").textContent =
+  // populate the HTML and add aria-labels
+  const countMultiPropertiesElement = document.getElementById(
+    "count-multi-properties"
+  );
+  countMultiPropertiesElement.textContent =
     multiPropertyListings.toLocaleString();
-  document.getElementById("total-multi-properties").textContent =
-    totalListings.toLocaleString();
-  document.getElementById(
+  countMultiPropertiesElement.setAttribute(
+    "aria-label",
+    `Number of multi-property listings: ${multiPropertyListings.toLocaleString()}`
+  );
+
+  const totalMultiPropertiesElement = document.getElementById(
+    "total-multi-properties"
+  );
+  totalMultiPropertiesElement.textContent = totalListings.toLocaleString();
+  totalMultiPropertiesElement.setAttribute(
+    "aria-label",
+    `Total number of listings: ${totalListings.toLocaleString()}`
+  );
+
+  const percentMultiPropertiesElement = document.getElementById(
     "percent-multi-properties"
-  ).textContent = `${percentMultiProperties}%`;
+  );
+  percentMultiPropertiesElement.textContent = `${percentMultiProperties}%`;
+  percentMultiPropertiesElement.setAttribute(
+    "aria-label",
+    `Percentage of multi-property listings: ${percentMultiProperties}%`
+  );
 }

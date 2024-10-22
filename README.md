@@ -1,24 +1,5 @@
 # DC AirBnB
 
-## Ideas / Notes to self:
-
-ADA aria-labels, toLocaleString
-
-Plots - add sorted list of Max/Median price per neighbourhood, highlight chosen neighbourhood
-
-change plot color based on overlay
-
-Annotate price and availability over time plot
-
---
-
-Use R to get data from local and federal government (Open DC and the census), do an exploratory data analysis, and add the results to the website / Tableau.
-
-<hr>
-
-Development on this project has restarted.
-
-<hr>
 
 ## Table of Contents
 
@@ -69,7 +50,7 @@ Web Plot:
 
 Web Map Images:
 
-![Map](./flask/static/images/Map.png)
+![Map](./resources/images/map.png)
 
 ![Map of Neighborhood](./resources/images/dc_airbnb_neighborhood.png)
 

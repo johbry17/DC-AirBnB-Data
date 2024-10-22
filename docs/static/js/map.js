@@ -296,6 +296,10 @@ function createNeighborhoodDropdown(neighborhoodsInfo) {
       feature.properties.neighbourhood,
       feature.properties.neighbourhood
     );
+    option.setAttribute(
+      "aria-label",
+      `Neighborhood: ${feature.properties.neighbourhood}`
+    );
     dropdown.appendChild(option);
   });
 
