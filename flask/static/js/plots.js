@@ -99,8 +99,8 @@ function getLegendTraces(colors, selectedNeighborhood) {
 function plotPriceAvailability(data, selectedNeighborhood) {
   // data for all of DC
   // !!!!!toggle between GitHub Pages and Flask data filter!!!!
-  const allDCData = data.filter((d) => d.neighbourhood === ""); // filter for GitHub Pages
-  // const allDCData = data.filter((d) => d.neighbourhood === null); // filter for Flask
+  // const allDCData = data.filter((d) => d.neighbourhood === ""); // filter for GitHub Pages
+  const allDCData = data.filter((d) => d.neighbourhood === null); // filter for Flask
   const allDates = allDCData.map((d) => d.date);
   const allAvgPrices = allDCData.map((d) => +d.avg_price);
   const allAvailableListings = allDCData.map((d) => +d.available_listings);
