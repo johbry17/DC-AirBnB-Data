@@ -16,17 +16,19 @@
 
 A detialed analysis of Washington D.C.'s AirBnB's, offering a wide variety of metrics for evaluating the vacation rental market in Washington, DC., utilizing a PostgreSQL database to conduct an exploratory data analysis and present interactive visualiztions to communicate the findings via a live website and a Tableau explanatory data analysis.
 
+The website is configured to run from the client-side only on GitHub Pages. A Flask app and Django version are also developed to create server-side versions, pulling from the PostgreSQL database.
+
 Further analysis will continue after using an API to extract data from the federal census bureau and local DC city government, to compare the impact of the rental market on housing availability and affordability.
 
 ## Usage
 
-The `/docs/` folder contains a GitHub Pages version of the interactive website, hosted live at [johbry17.github.io/DC-AirBnB-Data/](https://johbry17.github.io/DC-AirBnB-Data/).
+The `/docs/` folder contains a GitHub Pages version of the interactive website, hosted live at [johbry17.github.io/DC-AirBnB-Data/](https://johbry17.github.io/DC-AirBnB-Data/). Click on the website and navigate around it. Interact with the charts and map to gather information and evaluate AirBnB's in DC.
 
 A Tableau explanatory data analysis is embedded within the website, and can also be found online at [public.tableau.com/app/profile/bryan.johns6699/viz/DC-Airbnb/DCAirbnbMobile](https://public.tableau.com/app/profile/bryan.johns6699/viz/DC-Airbnb/DCAirbnbMobile). A copy is stored in the root repo as `DC-Airbnb.twbx`.
 
 It all began with an exploratory data analysis, located at `/exploratory_data_analysis/eda.ipynb`.
 
-`/flask/app.py` will launch a Flask server that can host a full stack version of the website. Click on the website and navigate around it. Interact with the charts and map to gather information and evaluate AirBnB's in DC.
+`/django/django_airbnb_dc/python manage.py runserver` deploys a Django version of the website. `/flask/app.py` activates a Flask server that launches a full stack version of the website.
 
 `airbnb.backup` is a backup of the database, that a user can load into a PostgreSQL database. Command line restore syntax: `pg_restore -U username -d dbname -1 /path/to/backup/file`.
 
