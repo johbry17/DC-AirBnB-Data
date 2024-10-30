@@ -70,7 +70,7 @@ Exploratory Data Analysis:
 
 Entity Relationship Diagram:
 
-![ERD](./flask/static/images/ERD.png)
+![ERD](./resources/images/ERD.png)
 
 ## Certificate
 

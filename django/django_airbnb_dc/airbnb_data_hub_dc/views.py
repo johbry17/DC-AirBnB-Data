@@ -1,12 +1,13 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.db.models import Avg, Count
-from.models import Listing, Calendar
+from .models import Listing, Calendar
 
 # Create your views here.
 def index(request):
     return render(request, 'index.html')
 
+# recreate the PostgreSQL view 'SELECT * FROM map_listings' in Django
 def get_listings(request):
     listings = Listing.objects.select_related(
         'host', 'neighbourhood', 'listingcategorical', 'listingreviews', 'minmaxnight'
@@ -43,6 +44,7 @@ def get_listings(request):
     
     return JsonResponse(data, safe=False)
 
+# recreate the PostgreSQL view 'SELECT * FROM price_availability' in Django
 def get_price_availability(request):
     price_availability = Calendar.objects.filter(
         available=True,

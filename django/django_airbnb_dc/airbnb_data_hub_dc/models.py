@@ -1,7 +1,7 @@
 from django.db import models
 
 # Create your models here.
-from django.db import models
+# recreating the database schema from PostgreSQL
 
 class Host(models.Model):
     host_id = models.BigAutoField(primary_key=True)
