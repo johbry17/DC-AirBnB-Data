@@ -40,7 +40,7 @@ Don't forget to .gitignore any files over 100MB.
 
 The ETL process depicted in `data_processing.ipynb` served as the final project for [cs50's Introduction to Databases with SQL](https://cs50.harvard.edu/sql/2024/), which can be found in my [DC-AirBnB-SQL-Database](https://github.com/johbry17/DC-AirBnB-SQL-Database) repo. The Jupyter Notebook not only cleans the data, it automatically loads a PostgreSQL database and extracts relevant data into csv's for the GitHub Pages version of the site, neatly preparing the data for the full-stack Flask version and the static, front-end-only version. The Tableau exploratory data analysis uses the same csv's.
 
-### Bugs
+### Errata
 
 The price-availability plot in the Flask app has formatting issues, and the annotations are off. Remember to toggle between data filters for allDCData in plotPriceAvailability() for Flask and GitHub Pages.
 
