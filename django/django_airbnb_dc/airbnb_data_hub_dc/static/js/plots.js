@@ -1,6 +1,8 @@
 // Description: JavaScript file for creating plots using Plotly.js
+// Note: there is a toggle between Django, GitHub Pages, and Flask
+// see top of plotPriceAvailability function
 
-//resizePlots();
+// resize plots on window resize - dynamic resizing
 function resizePlots() {
   const plotIds = [
     "price-availability-plot",
@@ -94,16 +96,38 @@ function getLegendTraces(colors, selectedNeighborhood) {
   ];
 }
 
-// !!!!!toggle between GitHub Pages and Flask data filter!!!!
+// !!!!!toggle between Django, GitHub Pages, and Flask data filter for all of DC!!!!
 // plot price and availability for all of DC or a neighborhood
 function plotPriceAvailability(data, selectedNeighborhood) {
   // data for all of DC
+
+  // this version aggregates data for Django
+  const dcData = {};
+  data.forEach((d) => {
+    const date = d.date;
+    if (!dcData[date]) {
+      dcData[date] = { totalAvgPrice: 0, totalListings: 0, count: 0 };
+    }
+    dcData[date].totalAvgPrice += parseFloat(d.avg_price);
+    dcData[date].totalListings += parseInt(d.available_listings);
+    dcData[date].count += 1;
+  });
+
+  const allDates = Object.keys(dcData).map((date) => new Date(date));
+  const allAvgPrices = Object.values(dcData).map(
+    (d) => d.totalAvgPrice / d.count
+  );
+  const allAvailableListings = Object.values(dcData).map(
+    (d) => d.totalListings
+  );
+
+  // GitHub Pages and Flask version of all of DC data
   // !!!!!toggle between GitHub Pages and Flask data filter!!!!
-  const allDCData = data.filter((d) => d.neighbourhood === ""); // filter for GitHub Pages
+  // const allDCData = data.filter((d) => d.neighbourhood === ""); // filter for GitHub Pages
   // const allDCData = data.filter((d) => d.neighbourhood === null); // filter for Flask
-  const allDates = allDCData.map((d) => d.date);
-  const allAvgPrices = allDCData.map((d) => +d.avg_price);
-  const allAvailableListings = allDCData.map((d) => +d.available_listings);
+  // const allDates = allDCData.map((d) => d.date);
+  // const allAvgPrices = allDCData.map((d) => +d.avg_price);
+  // const allAvailableListings = allDCData.map((d) => +d.available_listings);
 
   // data for neighborhood
   const neighborhoodData = data.filter(

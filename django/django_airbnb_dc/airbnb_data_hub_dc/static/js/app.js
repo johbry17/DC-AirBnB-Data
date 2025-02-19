@@ -1,25 +1,24 @@
 // Description: Main JavaScript file for the DC Airbnb Data Analysis project
 
+// this section is used for the GitHub Pages or Flask deployment, irrelevant for Django
+
 // variables to check if running on GitHub Pages or Flask app
-const isGitPages = window.location.hostname.includes("github.io"); // for GitHub Pages
-const isHostedLocally =
-  window.location.hostname === "127.0.0.1" ||
-  window.location.hostname === "localhost"; // for testing locally
-const isFlaskApp = isHostedLocally && window.location.port === "5000"; // assuming Flask runs on port 5000
+// const isGitPages = window.location.hostname.includes("github.io"); // for GitHub Pages
+// const isHostedLocally =
+//   window.location.hostname === "127.0.0.1" ||
+//   window.location.hostname === "localhost"; // for testing locally
+// const isFlaskApp = isHostedLocally && window.location.port === "5000"; // assuming Flask runs on port 5000
 
 // set data source based on environment
-const geojson =
-  isGitPages || (isHostedLocally && !isFlaskApp)
-    ? "./static/resources/neighbourhoods_cleaned.geojson"
-    : "/static/resources/neighbourhoods_cleaned.geojson";
-const getData =
-  isGitPages || (isHostedLocally && !isFlaskApp)
-    ? d3.csv("./static/resources/airbnb_data.csv")
-    : fetch("/api/listings").then((response) => response.json());
-const getPriceAvailabilityData =
-  isGitPages || (isHostedLocally && !isFlaskApp)
-    ? d3.csv("./static/resources/price_availability_data.csv")
-    : fetch("/api/price_availability").then((response) => response.json());
+// const geojson =
+//   isGitPages || (isHostedLocally && !isFlaskApp)
+//     ? "./static/resources/neighbourhoods_cleaned.geojson"
+//     : "/static/resources/neighbourhoods_cleaned.geojson";
+
+// Django API endpoints
+const geojson = "/static/resources/neighbourhoods_cleaned.geojson";
+const getData = fetch("/api/listings").then((response) => response.json());
+const getPriceAvailabilityData = fetch("/api/price_availability").then((response) => response.json());
 
 // fetch data and geojson, then create map
 Promise.all([

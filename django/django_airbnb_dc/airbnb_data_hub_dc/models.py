@@ -2,6 +2,11 @@ from django.db import models
 
 # Create your models here.
 # recreating the database schema from PostgreSQL
+# the only exception is the 'minimum_nights' field in the 'Listing' model
+# which comes from MinMaxNight instead of Listing in PostgreSQL
+# it was throwing a decimal.InvalidOperation error when pulled from MinMaxNight...
+# ...for obscure reasons known only to the Gods of Misery and Despair and Endless Coding Frustration
+# see views.py
 
 class Host(models.Model):
     host_id = models.BigAutoField(primary_key=True)
@@ -44,7 +49,9 @@ class Listing(models.Model):
     bathrooms = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
     bedrooms = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
     beds = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    # the only exception to the PostgreSQL schema
+    minimum_nights = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
 
 class ListingCategorical(models.Model):
     listing = models.OneToOneField(Listing, on_delete=models.CASCADE, primary_key=True)
@@ -72,7 +79,7 @@ class Availability(models.Model):
 
 class MinMaxNight(models.Model):
     listing = models.OneToOneField(Listing, on_delete=models.CASCADE, primary_key=True)
-    minimum_nights = models.DecimalField(max_digits=5, decimal_places=2)
+    minimum_nights = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
     maximum_nights = models.DecimalField(max_digits=5, decimal_places=2)
     minimum_minimum_nights = models.DecimalField(max_digits=5, decimal_places=2)
     maximum_minimum_nights = models.DecimalField(max_digits=5, decimal_places=2)

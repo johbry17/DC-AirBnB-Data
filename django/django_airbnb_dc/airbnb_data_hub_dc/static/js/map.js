@@ -1,4 +1,4 @@
-// Description: This file contains the functions to create the map and controls, and to handle user interactions
+// Description: This file contains the functions to create the map, overlays, and controls, and to handle user interactions
 
 // global variables
 let activeOverlay = null;
