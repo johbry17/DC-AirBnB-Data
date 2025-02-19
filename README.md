@@ -62,6 +62,9 @@ Web Map Images:
 
 ![Neighborhood Map Color Coded by Rental Type](./resources/images/dc_airbnb_neighborhood_alt.png)
 
+![Choropleth Map of Average Price per Neighborhood](./resources/images/choropleth.png)
+
+![Bubble Map of Number of AirBnB's per Neighborhood](./resources/images/bubble.png)
 Exploratory Data Analysis:
 
 ![Price Plot](./resources/images/dc_airbnb_price.png)
