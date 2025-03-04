@@ -16,7 +16,7 @@
 
 A detialed analysis of Washington D.C.'s AirBnB's, offering a wide variety of metrics for evaluating the vacation rental market in Washington, DC., utilizing a PostgreSQL database to conduct an exploratory data analysis and present interactive visualiztions to communicate the findings via a live website and a Tableau explanatory data analysis.
 
-The website is configured to run from the client-side only on GitHub Pages. A Flask app and Django version are also developed to create server-side versions, pulling from the PostgreSQL database.
+The website is configured to run from the client-side only on GitHub Pages. A Flask app and Django version are also developed to create server-side versions, the Flask app pulling from the PostgreSQL database, and the Django version pulling from a SQLite database.
 
 Further analysis will continue after using an API to extract data from the federal census bureau and local DC city government, to compare the impact of the rental market on housing availability and affordability.
 
