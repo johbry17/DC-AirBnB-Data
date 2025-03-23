@@ -1,6 +1,7 @@
 # hide config.py and large csv files over 100MB (git won't upload files over 100MB)
 config.py
 resources/data/cleaned_data/reviews_cleaned.csv
+resources/data/cleaned_data/calendar_cleaned.csv
 raw_data/
 
 

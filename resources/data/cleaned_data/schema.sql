@@ -162,8 +162,8 @@ CREATE TABLE "calendar" (
     "date" DATE   NOT NULL,
     "available" BOOLEAN   NOT NULL,
     "price" decimal   NOT NULL,
-    "minimum_nights" INT   NOT NULL,
-    "maximum_nights" INT   NOT NULL,
+    "minimum_nights" INT, -- NOT NULL for Jun 2024
+    "maximum_nights" INT, -- NOT NULL for Jun 2024
     CONSTRAINT "pk_calendar" PRIMARY KEY (
         "id"
      )

@@ -154,10 +154,10 @@ function plotPriceAvailability(data, selectedNeighborhood) {
     text: availableListings.map((listing) => `${listing.toLocaleString()}`),
   };
 
-  // annotations and dashed lines at 9/18, 12/18, and 3/18
+  // annotations and dashed lines at 6/08, 09/09, and 12/08
   const annotations = [
     {
-      x: "2024-09-18",
+      x: "2025-06-08",
       y: Math.max(...avgPrices),
       xref: "x",
       yref: "y",
@@ -168,7 +168,7 @@ function plotPriceAvailability(data, selectedNeighborhood) {
       ay: -40,
     },
     {
-      x: "2024-12-18",
+      x: "2025-09-09",
       y: Math.max(...avgPrices),
       xref: "x",
       yref: "y",
@@ -179,7 +179,7 @@ function plotPriceAvailability(data, selectedNeighborhood) {
       ay: -40,
     },
     {
-      x: "2025-03-18",
+      x: "2025-12-08",
       y: Math.max(...avgPrices),
       xref: "x",
       yref: "y",
@@ -194,9 +194,9 @@ function plotPriceAvailability(data, selectedNeighborhood) {
   const shapes = [
     {
       type: "line",
-      x0: "2024-09-18",
+      x0: "2025-06-08",
       y0: 0,
-      x1: "2024-09-18",
+      x1: "2025-06-08",
       y1: Math.max(...avgPrices),
       line: {
         color: "grey",
@@ -206,9 +206,9 @@ function plotPriceAvailability(data, selectedNeighborhood) {
     },
     {
       type: "line",
-      x0: "2024-12-18",
+      x0: "2025-09-09",
       y0: 0,
-      x1: "2024-12-18",
+      x1: "2025-09-09",
       y1: Math.max(...avgPrices),
       line: {
         color: "grey",
@@ -218,9 +218,9 @@ function plotPriceAvailability(data, selectedNeighborhood) {
     },
     {
       type: "line",
-      x0: "2025-03-18",
+      x0: "2025-12-08",
       y0: 0,
-      x1: "2025-03-18",
+      x1: "2025-12-08",
       y1: Math.max(...avgPrices),
       line: {
         color: "grey",
@@ -863,7 +863,7 @@ function plotPropertyType(data, selectedNeighborhood, colors) {
     text: percents.map((percent) => percent + "%"),
     textposition: "auto",
     hovertemplate:
-      "Percent: <b>%{y}%</b><br>Count: <b>%{customdata.count}</b> of %{customdata.total}<br><extra></extra>",
+      "Percent: <b>%{x}%</b><br>Count: <b>%{customdata.count}</b> of %{customdata.total}<br><extra></extra>",
     customdata: customdata,
     marker: {
       color: markerColors,
