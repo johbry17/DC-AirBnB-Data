@@ -22,4 +22,4 @@ This script reads the .gz file, decompresses it, and writes the output to the sp
 
 Example: 
 
-Expand-GZipFile "C:\Users\johbr\Data-Analyst\Projects\DC-AirBnB-SQL-Database\raw_data\2023_dec\calendar.csv.gz" "C:\Users\johbr\Data-Analyst\Projects\DC-AirBnB-SQL-Database\raw_data\2023_dec\calendar.csv"
+Expand-GZipFile "C:\Users\johbr\Data-Analyst\Projects\DC-AirBnB-Data\resources\data\raw_data\2024_dec\calendar.csv.gz" "C:\Users\johbr\Data-Analyst\Projects\DC-AirBnB-Data\resources\data\raw_data\2024_dec\calendar.csv"
