@@ -35,7 +35,7 @@
     } else {
       // Flask or localhost, for Flask
       favicon.href = '/static/images/favicon.ico';
-      cssLink.href = '/static/css/styles.css';
+      cssLink.href = '/static/css/style.css';
     }
     
     document.head.appendChild(favicon);
@@ -68,6 +68,7 @@
         <i class="fas fa-users"></i>
         <i class="fas fa-globe"></i>
       </h2>
+      <span class="last-scraped"></span>
     </div>
   </div>
   <!-- to forcibly separate jumbotron from welcome-box -->
@@ -126,11 +127,14 @@
       Mean Price: <span id="dc-mean-price">0</span><br>
       Median Price: <span class="dc-median-price">0</span><br>
     </div>
+    -<br>
+    <i class="fas fa-clock"></i> <span class="last-scraped"></span> <i class="fas fa-clock"></i>
   </div>
   <!-- intro to plots, Tableau -->
   <div class="info-box">
     <strong>Tableau Story and Plots</strong><br>
-    <span>Scroll down for more</span>
+    <span>Scroll down for more</span><br>
+    <i class="fas fa-stopwatch"></i> (Snapshot from June 2024) <i class="fas fa-stopwatch"></i>
   </div>
   <!-- Tableau Mobile Embed -->
   <div class="col-sm-12 col-md-12">
@@ -274,6 +278,8 @@
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
   <!-- Turf JS for bubble chart -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Turf.js/6.5.0/turf.min.js"></script>
+  <!-- DayJS for formatting calendar scrape date -->
+  <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
   <!-- Conditional JS Loading -->
   <script>
     // const isGitHubPages = window.location.hostname.includes('github.io');

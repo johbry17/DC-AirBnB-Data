@@ -7,6 +7,7 @@ DROP INDEX IF EXISTS idx_neighbourhood_id;
 DROP INDEX IF EXISTS idx_host_id;
 DROP VIEW IF EXISTS price_availability;
 DROP VIEW IF EXISTS map_listings;
+DROP TABLE IF EXISTS metadata;
 DROP TABLE IF EXISTS calendar;
 DROP TABLE IF EXISTS reviews;
 DROP TABLE IF EXISTS listing_reviews;
@@ -167,6 +168,11 @@ CREATE TABLE "calendar" (
     CONSTRAINT "pk_calendar" PRIMARY KEY (
         "id"
      )
+);
+
+CREATE TABLE metadata (
+    key TEXT PRIMARY KEY,
+    value TEXT NOT NULL
 );
 
 ALTER TABLE "host_listings_count" ADD CONSTRAINT "fk_host_listings_count_host_id" FOREIGN KEY("host_id")

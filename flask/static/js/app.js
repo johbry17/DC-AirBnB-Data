@@ -20,17 +20,29 @@ const getPriceAvailabilityData =
   isGitPages || (isHostedLocally && !isFlaskApp)
     ? d3.csv("./static/resources/price_availability_data.csv")
     : fetch("/api/price_availability").then((response) => response.json());
+const getScrapeDate =
+  isGitPages || (isHostedLocally && !isFlaskApp)
+    ? d3.csv("./static/resources/scraped.csv")
+    : fetch("/api/scrape_date").then((response) => response.json());
 
 // fetch data and geojson, then create map
 Promise.all([
   getData,
   fetch(geojson).then((response) => response.json()),
   getPriceAvailabilityData,
-]).then(([data, neighborhoodData, priceAvailabilityData]) => {
+  getScrapeDate,
+]).then(([data, neighborhoodData, priceAvailabilityData, scrapeDate]) => {
   // filter out listings with price > 3000
   // a few listings have prices above this, errors in data entry
   // like, a $7,000/night dorm room, which should be $70/night
   data = data.filter((listing) => parseFloat(listing.price) <= 3000);
+
+  // populate scrape date
+  const scrapeDateRow = scrapeDate.find(row => row.key === "avg_calendar_last_scraped");
+  const formattedDate = dayjs(scrapeDateRow.value).format('DD MMMM YYYY'); // Format as 13 March 2025
+  document.querySelectorAll(".last-scraped").forEach(el => {
+    el.textContent = `Scraped data as of ~${formattedDate}`;
+  });
 
   createMap(neighborhoodData, data, priceAvailabilityData);
 });
