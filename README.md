@@ -6,7 +6,7 @@
 - [Description](#description)
 - [Usage](#usage)
 - [Gallery](#gallery)
-- [Certificates](#certificates)
+- [Course Certificates](#course-certificates)
 - [References](#references)
 - [Licenses](#licenses)
 - [Acknowledgements](#acknowledgements)
@@ -80,7 +80,7 @@ Entity Relationship Diagram:
 
 ![ERD](./resources/images/ERD.png)
 
-## Certificates
+## Course Certificates
 
 Parts of this project served as capstone's for two courses, the Django version for [cs50’s Web Programming with Python and JavaScript](https://cs50.harvard.edu/web/2020/), and the PostgreSQL database for [cs50's Introduction to Databases with SQL](https://cs50.harvard.edu/sql/2024/).
 
