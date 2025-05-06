@@ -82,7 +82,7 @@ Entity Relationship Diagram:
 
 ## Course Certificates
 
-Parts of this project served as capstone's for two courses, the Django version for [cs50’s Web Programming with Python and JavaScript](https://cs50.harvard.edu/web/2020/), and the PostgreSQL database for [cs50's Introduction to Databases with SQL](https://cs50.harvard.edu/sql/2024/).
+Parts of this project served as capstones for two of Harvard’s free online computer science courses: [cs50’s Web Programming with Python and JavaScript](https://cs50.harvard.edu/web/2020/) (for the Django build), and [cs50's Introduction to Databases with SQL](https://cs50.harvard.edu/sql/2024/) (for the PostgreSQL backend).
 
 ![cs50 Web Certificate](./resources/images/CS50W.png)
 
