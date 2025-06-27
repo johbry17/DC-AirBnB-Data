@@ -1,65 +1,101 @@
 # DC AirBnB
 
+*Explore, visualize, and understand DC’s Airbnb landscape—interactive dashboards and maps powered by open data and modern web tech.*
+
+🔗 [Live Website](https://johbry17.github.io/DC-AirBnB-Data/)  
+📊 [Tableau Dashboard](https://public.tableau.com/app/profile/bryan.johns6699/viz/DC-Airbnb/DCAirbnbMobile)  
+🧠 [Exploratory Data Analysis (EDA)](/exploratory_data_analysis/eda.ipynb)
+
+> ℹ️ Status: This project is maintained as a portfolio example. While not under active development, data and dashboards are refreshed quarterly as new information becomes available.
 
 ## Table of Contents
 
-- [Description](#description)
+- [Project Overview](#project-overview)
+- [Features](#features)
+- [Tools & Technologies](#tools--technologies)
 - [Usage](#usage)
 - [Gallery](#gallery)
-- [Course Certificates](#course-certificates)
 - [References](#references)
-- [Licenses](#licenses)
+- [License](#license)
 - [Acknowledgements](#acknowledgements)
 - [Author](#author)
 
-## Description
+## Project Overview
 
-A detialed analysis of Washington D.C.'s AirBnB's, offering a wide variety of metrics for evaluating the vacation rental market in Washington, DC., utilizing a PostgreSQL database to conduct an exploratory data analysis and present interactive visualiztions to communicate the findings via a live website and a Tableau explanatory data analysis.
+This full-stack project explores the landscape of short-term rentals in Washington, DC. Using data from Inside AirBnB, it combines:
 
-The website is configured to run from the client-side only on GitHub Pages. A Flask app and Django version are also developed to create server-side versions, the Flask app pulling from the PostgreSQL database, and the Django version pulling from a SQLite database.
+- A **live, interactive web dashboard** hosted on GitHub Pages
+- A **Tableau story-style EDA** for strategic analysis
+- A **PostgreSQL backend** with Flask and Django implementations
+- A **Jupyter-based ETL pipeline** that transforms and loads data for multiple outputs
 
-Further analysis will continue after using an API to extract data from the federal census bureau and local DC city government, to compare the impact of the rental market on housing availability and affordability.
+The goal is to visualize the availability, pricing, and neighborhood distribution of short-term rentals and highlight interesting patterns in the DC vacation rental market.
+
+## Features
+
+- 🔄 Dynamic map with multiple layers and neighborhood overlays
+- 📈 Interactive plots aggregating neighborhood trends
+- 🔺 Tableau dashboard for filtering and exploring rental trends
+- 🔹 Clean ETL pipeline to prep and load data across platforms
+- 📊 Choropleth and bubble maps to compare neighborhoods
+- 📅 Flask and Django versions for backend experimentation
+- 📲 Mobile-friendly static version with JavaScript interactivity
+
+## Tools & Technologies
+
+- **Data**: Inside AirBnB, CSV, PostgreSQL, SQLite
+- **Backend**: Flask, Django, SQL, Jupyter, Pandas
+- **Frontend**: JavaScript, Plotly, Leaflet, Bootstrap, HTML/CSS
+- **Visualization**: Tableau, Choropleths, Bubble Maps, Plotly
+- **Deployment**: GitHub Pages, Tableau Public
+
 
 ## Usage
 
-The `/docs/` folder contains a GitHub Pages version of the interactive website, hosted live at [johbry17.github.io/DC-AirBnB-Data/](https://johbry17.github.io/DC-AirBnB-Data/). Click on the website and navigate around it. Interact with the charts and map to gather information and evaluate AirBnB's in DC.
+### 🌐 Website
+- [Visit GitHub Pages version](https://johbry17.github.io/DC-AirBnB-Data/) 
+- Explore listings, prices, and availability
+- Navigate through the embedded Tableau dashboard
 
-A Tableau explanatory data analysis is embedded within the website, and can also be found online at [public.tableau.com/app/profile/bryan.johns6699/viz/DC-Airbnb/DCAirbnbMobile](https://public.tableau.com/app/profile/bryan.johns6699/viz/DC-Airbnb/DCAirbnbMobile). A copy is stored in the root repo as `DC-Airbnb.twbx`.
+### 🔄 ETL Pipeline
+- Edit and run `data_processing.ipynb` to clean and update source data
+- Automatically loads PostgreSQL tables and exports data for Flask and GitHub Pages
 
-It all began with an exploratory data analysis, located at `/exploratory_data_analysis/eda.ipynb`.
+### ⚙️ Full-Stack Versions
+- Flask app: `flask/app.py` (pulls from PostgreSQL)
+- Django app: `django/django_airbnb_dc` (uses SQLite)
 
-`/django/django_airbnb_dc/python manage.py runserver` deploys a Django version of the website. `/flask/app.py` activates a Flask server that launches a full stack version of the website.
+### 📁 Data Backup
+Restore the included PostgreSQL backup:
+```bash
+pg_restore -U <username> -d <dbname> -1 airbnb.backup
+```
 
-`airbnb.backup` is a backup of the database, that a user can load into a PostgreSQL database. Command line restore syntax: `pg_restore -U username -d dbname -1 /path/to/backup/file`.
 
-### Note to self: If updating data...
----
-
-Check for changes at the top of `data_processing.ipynb`. `Run All` to update the data source for both the Flask and GitHub Pages versions of this project. Update the annotations in the `price_availability` JavaScript plot.
-
-Note any alterations necessary to `schema.sql` and `data_processing.ipynb` (the `paths` or `neighbourhoods_dict` at the top), both located in `/resources/data/cleaned_data/`. Pay particular attention to the `map_listings` and `price_availability` views, as they are exported to csv's for GitHub Pages. Don't update Tableau, leave as June 2024.
-
-Don't forget to .gitignore any files over 100MB.
-
----
-
-The ETL process depicted in `data_processing.ipynb` served as the final project for [cs50's Introduction to Databases with SQL](https://cs50.harvard.edu/sql/2024/), which can be found in my [DC-AirBnB-SQL-Database](https://github.com/johbry17/DC-AirBnB-SQL-Database) repo. The Jupyter Notebook not only cleans the data, it automatically loads a PostgreSQL database and extracts relevant data into csv's for the GitHub Pages version of the site, neatly preparing the data for the full-stack Flask version and the static, front-end-only version. The Tableau exploratory data analysis uses the same csv's.
+### Note to Self
+- Run all cells in `data_processing.ipynb` to update the source data
+- Recheck plot annotations in `price_availability.js` after updates
+- Review `schema.sql` and `neighbourhoods_dict` in `data_processing.ipynb`
+- Export updated `map_listings` and `price_availability` views to CSV for GitHub Pages
+- Leave Tableau as-is (June 2024)
+- Ensure no file >100MB is committed
 
 ### Errata
-
-The price-availability plot in the Flask app has formatting issues, and the annotations are off. Remember to toggle between data filters for allDCData in plotPriceAvailability() for Flask and GitHub Pages.
+The Flask / Django version of the price-availability chart has formatting issues. Be sure to toggle the allDCData filter correctly in `plotPriceAvailability()`.
 
 ## Gallery
 
-Tableau:
+Tableau Dashboard:
 
 ![Tableau Plot](./resources/images/dc_airbnb_tableau_rental_type.png)
 
-Web Plot:
+Web Dashboards Plots:
 
 ![Website Plot of Price and Availability, Upcoming Year](./resources/images/dc_airbnb_price_availability_plot.png)
 
-Web Map Images:
+![Minimum Nights Plot](./resources/images/minimum_nights_plots.png)
+
+Interactive Map:
 
 ![Map](./resources/images/map.png)
 
@@ -82,7 +118,9 @@ Entity Relationship Diagram:
 
 ## Course Certificates
 
-Parts of this project served as capstones for two of Harvard’s free online computer science courses: [cs50’s Web Programming with Python and JavaScript](https://cs50.harvard.edu/web/2020/) (for the Django build), and [cs50's Introduction to Databases with SQL](https://cs50.harvard.edu/sql/2024/) (for the PostgreSQL backend).
+Parts of this project served as capstones for two of HarvardX’s free online computer science courses:  
+- [CS50's Web Programming with Python and JavaScript](https://cs50.harvard.edu/web/2020/)
+- [CS50's Introduction to Databases with SQL](https://cs50.harvard.edu/sql/2024/)
 
 ![cs50 Web Certificate](./resources/images/CS50W.png)
 
@@ -92,16 +130,17 @@ Parts of this project served as capstones for two of Harvard’s free online com
 
 Dataset provided by [Inside AirBnB](http://insideairbnb.com/about/).
 
-## Licenses
+## License
 
 [Creative Commons Attribution 4.0 International License](http://creativecommons.org/licenses/by/4.0/)
 
 ## Acknowledgements
 
-Sincerest thanks to Imen Najar for assistance on an early version of this project.
-
-Thanks to Geronimo Perez for feedback and assistance.
+- Thanks to Imen Najar for early insights and support.
+- Thanks to Geronimo Perez for feedback and assistance during development.
 
 ## Author
 
-Bryan Johns, October, 2024
+Bryan Johns, October 2024  
+[bryan.johns.official@gmail.com](mailto:bryan.johns.official@gmail.com) | [LinkedIn](https://www.linkedin.com/in/b-johns/) | [GitHub](https://github.com/johbry17) | [Portfolio](https://johbry17.github.io/portfolio/index.html)
+
