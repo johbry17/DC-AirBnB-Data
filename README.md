@@ -74,11 +74,10 @@ pg_restore -U <username> -d <dbname> -1 airbnb.backup
 
 ### Note to Self
 - Run all cells in `data_processing.ipynb` to update the source data
-- Recheck plot annotations in `price_availability.js` after updates
+- Recheck plotPriceAvailability annotations in `plots.js` after updates
 - Review `schema.sql` and `neighbourhoods_dict` in `data_processing.ipynb`
 - Export updated `map_listings` and `price_availability` views to CSV for GitHub Pages
 - Leave Tableau as-is (June 2024)
-- Ensure no file >100MB is committed
 
 ### Errata
 The Flask / Django version of the price-availability chart has formatting issues. Be sure to toggle the allDCData filter correctly in `plotPriceAvailability()`.

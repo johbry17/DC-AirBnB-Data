@@ -35,12 +35,23 @@ Promise.all([
   // filter out listings with price > 3000
   // a few listings have prices above this, errors in data entry
   // like, a $7,000/night dorm room, which should be $70/night
-  data = data.filter((listing) => parseFloat(listing.price) <= 3000);
+
+  // options: filter them out:
+  // data = data.filter((listing) => parseFloat(listing.price) <= 3000);
+
+  // or, divide them by 100 to fix the price
+  data.forEach((listing) => {
+    if (parseFloat(listing.price) > 3000) {
+      listing.price = (parseFloat(listing.price) / 100).toString();
+    }
+  });
 
   // populate scrape date
-  const scrapeDateRow = scrapeDate.find(row => row.key === "avg_calendar_last_scraped");
-  const formattedDate = dayjs(scrapeDateRow.value).format('DD MMMM YYYY'); // Format as 13 March 2025
-  document.querySelectorAll(".last-scraped").forEach(el => {
+  const scrapeDateRow = scrapeDate.find(
+    (row) => row.key === "avg_calendar_last_scraped"
+  );
+  const formattedDate = dayjs(scrapeDateRow.value).format("DD MMMM YYYY"); // Format as 13 March 2025
+  document.querySelectorAll(".last-scraped").forEach((el) => {
     el.textContent = `Scraped data as of ~${formattedDate}`;
   });
 

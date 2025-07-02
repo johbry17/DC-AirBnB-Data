@@ -231,7 +231,7 @@ function plotPriceAvailability(data, selectedNeighborhood) {
   ];
 
   const layout = {
-    title: `<b style="color: orange;">Price</b> and <b style="color: blue;">Availability</b> Over Year<br>(${selectedNeighborhood})<br><i style='font-size: .8em;'>Hover for details</i>`,
+    title: `<b style="color: orange;">Price</b> and <b style="color: blue;">Availability</b> Over Year<br>(${selectedNeighborhood})<br><i style='font-size: .8em;'>Hover for details, most recent data not available</i>`,
     xaxis: { title: "Date" },
     yaxis: {
       title: "Average Price ($)",
