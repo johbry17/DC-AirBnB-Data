@@ -269,25 +269,115 @@ function createPriceLabels() {
   return labelContainer;
 }
 
-// initialize markers with custom color options based on a property
+// // initialize markers with custom color options based on a property
+// function createMarkers(data, colorScheme = null) {
+//   // process data for license status
+//   data = setLicenseStatus(data);
+
+//   // empty marker layer
+//   const markers = L.layerGroup();
+
+//   // loop to populate markers
+//   data.forEach((listing) => {
+//     let markerColor = defaultColors.airbnbs; // default color
+
+//     // determine marker color based on colorScheme parameter
+//     if (colorScheme === "license") {
+//       markerColor =
+//         licenseColors[listing.licenseCategory] || licenseColors.default;
+//     } else if (colorScheme === "propertyType") {
+//       markerColor =
+//         propertyTypeColors[listing.room_type] || propertyTypeColors.default;
+//     }
+
+//     // marker design
+//     const markerOptions = {
+//       radius: 3,
+//       fillColor: markerColor,
+//       color: "black",
+//       weight: 1,
+//       fillOpacity: 1,
+//       interactive: true,
+//     };
+
+//     const marker = L.circleMarker(
+//       [listing.latitude, listing.longitude],
+//       markerOptions
+//     );
+//     marker.bindPopup(createPopupContent(listing), {
+//       className: "marker-popup",
+//     });
+
+//     // open || close popup
+//     popupMouseEvents(marker);
+
+//     // bring marker to front on hover
+//     marker.bringToFront();
+
+//     markers.addLayer(marker);
+//   });
+
+//   return markers;
+// }
+
+// // populate popups
+// function createPopupContent(listing) {
+//   const price = parseFloat(listing.price).toLocaleString("en-US", {
+//     style: "currency",
+//     currency: "USD",
+//   });
+//   const hostVerified =
+//     listing.host_identity_verified === "True" ? "Verified" : "Unverified";
+//   const hoverDescription = listing.hover_description
+//     ? `<h4><b>${listing.hover_description}</b></h4>`
+//     : "<h4><b>Description not available</b></h4>";
+//   const rating = listing.review_scores_rating
+//     ? `${listing.review_scores_rating} \u2605`
+//     : "No rating yet";
+//   const license = listing.license
+//     ? listing.license.split(":")[0].trim()
+//     : "No License";
+
+//   return `
+//       ${hoverDescription}
+//       <a href="${listing.listing_url}" target="_blank">Link to listing</a><br>
+//       <b>Price:</b> ${price}<br>
+//       <b>Property Type:</b> ${listing.room_type}<br>
+//       <b>Property Subtype:</b> ${listing.property_type}<br>
+//       <b>Accommodates:</b> ${listing.accommodates}<br>
+//       <b>Rating:</b> ${rating}<br>
+//       <b>Host:</b> ${listing.host_name}<br>
+//       <b>Host Verified:</b> ${hostVerified}<br>
+//       <b>Host Total Airbnbs:</b> ${listing.host_listings_count}<br>
+//       <b>License:</b> ${license}<br>
+//     `;
+// }
+
+// create markers grouped by lat/long, optional color by license status or property type
 function createMarkers(data, colorScheme = null) {
-  // process data for license status
+  // get license status for each listing
   data = setLicenseStatus(data);
 
   // empty marker layer
   const markers = L.layerGroup();
 
-  // loop to populate markers
-  data.forEach((listing) => {
-    let markerColor = defaultColors.airbnbs; // default color
+  // group listings by coordinates
+  const grouped = groupListingsByLatLon(data);
 
-    // determine marker color based on colorScheme parameter
+  // loop to populate markers
+  Object.values(grouped).forEach((listingsAtLocation) => {
+    const { latitude, longitude } = listingsAtLocation[0];
+
+    // if applicable, assign color based on colorScheme
+    let markerColor = defaultColors.airbnbs; // default color
     if (colorScheme === "license") {
       markerColor =
-        licenseColors[listing.licenseCategory] || licenseColors.default;
+        licenseColors[listingsAtLocation[0].licenseCategory] ||
+        licenseColors.default;
     } else if (colorScheme === "propertyType") {
       markerColor =
-        propertyTypeColors[listing.room_type] || propertyTypeColors.default;
+        propertyTypeColors[listingsAtLocation[0].room_type] ||
+        propertyTypeColors.default;
     }
 
     // marker design
@@ -300,45 +390,58 @@ function createMarkers(data, colorScheme = null) {
       interactive: true,
     };
 
-    const marker = L.circleMarker(
-      [listing.latitude, listing.longitude],
-      markerOptions
-    );
-    marker.bindPopup(createPopupContent(listing), {
+    // create marker
+    const marker = L.circleMarker([latitude, longitude], markerOptions);
+
+    // bind popup to marker
+    marker.bindPopup(createPopupContentForGroup(listingsAtLocation), {
       className: "marker-popup",
+      maxWidth: 400,
     });
 
-    // open || close popup
+    // open || close popup, bring to front on hover
     popupMouseEvents(marker);
-
-    // bring marker to front on hover
     marker.bringToFront();
 
+    // add marker to layerGroup
     markers.addLayer(marker);
   });
 
   return markers;
 }
 
-// populate popups
-function createPopupContent(listing) {
-  const price = parseFloat(listing.price).toLocaleString("en-US", {
-    style: "currency",
-    currency: "USD",
+// group listings by lat/lon for multiple listings at same location
+function groupListingsByLatLon(data) {
+  const grouped = {};
+  data.forEach((listing) => {
+    const key = `${listing.latitude},${listing.longitude}`;
+    if (!grouped[key]) grouped[key] = [];
+    grouped[key].push(listing);
   });
-  const hostVerified =
-    listing.host_identity_verified === "True" ? "Verified" : "Unverified";
-  const hoverDescription = listing.hover_description
-    ? `<h4><b>${listing.hover_description}</b></h4>`
-    : "<h4><b>Description not available</b></h4>";
-  const rating = listing.review_scores_rating
-    ? `${listing.review_scores_rating} \u2605`
-    : "No rating yet";
-  const license = listing.license
-    ? listing.license.split(":")[0].trim()
-    : "No License";
+  return grouped;
+}
 
-  return `
+// populate popups for multiple listings
+function createPopupContentForGroup(listings) {
+  const content = listings
+    .map((listing) => {
+      const price = parseFloat(listing.price).toLocaleString("en-US", {
+        style: "currency",
+        currency: "USD",
+      });
+      const hostVerified =
+        listing.host_identity_verified === "True" ? "Verified" : "Unverified";
+      const hoverDescription = listing.hover_description
+        ? `<h4><b>${listing.hover_description}</b></h4>`
+        : "<h4><b>Description not available</b></h4>";
+      const rating = listing.review_scores_rating
+        ? `${listing.review_scores_rating} \u2605`
+        : "No rating yet";
+      const license = listing.license
+        ? listing.license.split(":")[0].trim()
+        : "No License";
+
+      return `
       ${hoverDescription}
       <a href="${listing.listing_url}" target="_blank">Link to listing</a><br>
       <b>Price:</b> ${price}<br>
@@ -351,4 +454,9 @@ function createPopupContent(listing) {
       <b>Host Total Airbnbs:</b> ${listing.host_listings_count}<br>
       <b>License:</b> ${license}<br>
     `;
+    })
+    .join("<hr>");
+
+  // wrap in scrollable container
+  return `<div style="max-height:300px;overflow-y:auto;">${content}</div>`;
 }
