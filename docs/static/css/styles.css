@@ -112,6 +112,26 @@ h2 i {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
+.leaflet-popup-close-button {
+  top: -15px !important;
+  right: -15px !important;
+  color: black !important;
+  background-color: white !important;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+}
+.leaflet-popup-close-button:hover {
+  color: #2a9d8f !important;
+}
+
 .choropleth-label {
   display: flex;
   justify-content: center;
@@ -174,7 +194,7 @@ h2 i {
   z-index: 1000;
 }
 #overlay-control button {
-  background-color: #0085A1;
+  background-color: #0085a1;
   color: white;
   border: none;
   border-radius: 5px;

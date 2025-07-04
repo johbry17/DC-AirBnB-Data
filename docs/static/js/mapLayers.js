@@ -394,7 +394,7 @@ function createMarkers(data, colorScheme = null) {
     const marker = L.circleMarker([latitude, longitude], markerOptions);
 
     // bind popup to marker
-    marker.bindPopup(createPopupContentForGroup(listingsAtLocation), {
+    marker.bindPopup(createPopupContentForGroup(listingsAtLocation, markerColor), {
       className: "marker-popup",
       maxWidth: 400,
     });
@@ -422,7 +422,7 @@ function groupListingsByLatLon(data) {
 }
 
 // populate popups for multiple listings
-function createPopupContentForGroup(listings) {
+function createPopupContentForGroup(listings, markerColor = "#333") {
   const content = listings
     .map((listing) => {
       const price = parseFloat(listing.price).toLocaleString("en-US", {
@@ -458,5 +458,5 @@ function createPopupContentForGroup(listings) {
     .join("<hr>");
 
   // wrap in scrollable container
-  return `<div style="max-height:300px;overflow-y:auto;">${content}</div>`;
+  return `<div style="max-height:300px;overflow-y:auto; border: 4px solid ${markerColor}; border-radius: 10px; padding: 16px;">${content}</div>`;
 }
