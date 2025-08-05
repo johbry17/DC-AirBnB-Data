@@ -1,4 +1,4 @@
-# DC AirBnB
+# Capital CrashPad: DC Short-Term Rental Explorer
 
 *Explore, visualize, and understand DC’s Airbnb landscape—interactive dashboards and maps powered by open data and modern web tech.*
 
