@@ -3,8 +3,8 @@
 *Explore, visualize, and understand DC’s Airbnb landscape—interactive dashboards and maps powered by open data and modern web tech.*
 
 🔗 [Live Website](https://johbry17.github.io/DC-AirBnB-Data/)  
-📊 [Tableau Dashboard](https://public.tableau.com/app/profile/bryan.johns6699/viz/DC-Airbnb/DCAirbnbMobile)  
-🧠 [Exploratory Data Analysis (EDA)](/exploratory_data_analysis/eda.ipynb)
+🔗 [Tableau Dashboard](https://public.tableau.com/app/profile/bryan.johns6699/viz/DC-Airbnb/DCAirbnbMobile)  
+🔗 [Exploratory Data Analysis (EDA)](/exploratory_data_analysis/eda.ipynb)
 
 > ℹ️ Status: This project is maintained as a portfolio example. While not under active development, data and dashboards are refreshed quarterly as new information becomes available.
 
@@ -33,13 +33,13 @@ The goal is to visualize the availability, pricing, and neighborhood distributio
 
 ## Features
 
-- 🔄 Dynamic map with multiple layers and neighborhood overlays
-- 📈 Interactive plots aggregating neighborhood trends
-- 🔺 Tableau dashboard for filtering and exploring rental trends
-- 🔹 Clean ETL pipeline to prep and load data across platforms
-- 📊 Choropleth and bubble maps to compare neighborhoods
-- 📅 Flask and Django versions for backend experimentation
-- 📲 Mobile-friendly static version with JavaScript interactivity
+- Dynamic map with multiple layers and neighborhood overlays
+- Interactive plots aggregating neighborhood trends
+- Tableau dashboard for filtering and exploring rental trends
+- Clean ETL pipeline to prep and load data across platforms
+- Choropleth and bubble maps to compare neighborhoods
+- Flask and Django versions for backend experimentation
+- Mobile-friendly static version with JavaScript interactivity
 
 ## Tools & Technologies
 
@@ -52,20 +52,20 @@ The goal is to visualize the availability, pricing, and neighborhood distributio
 
 ## Usage
 
-### 🌐 Website
+### Website
 - [Visit GitHub Pages version](https://johbry17.github.io/DC-AirBnB-Data/) 
 - Explore listings, prices, and availability
 - Navigate through the embedded Tableau dashboard
 
-### 🔄 ETL Pipeline
+### ETL Pipeline
 - Edit and run `data_processing.ipynb` to clean and update source data
 - Automatically loads PostgreSQL tables and exports data for Flask and GitHub Pages
 
-### ⚙️ Full-Stack Versions
+### Full-Stack Versions
 - Flask app: `flask/app.py` (pulls from PostgreSQL)
 - Django app: `django/django_airbnb_dc` (uses SQLite)
 
-### 📁 Data Backup
+### Data Backup
 Restore the included PostgreSQL backup:
 ```bash
 pg_restore -U <username> -d <dbname> -1 airbnb.backup
