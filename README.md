@@ -1,5 +1,7 @@
 # Capital CrashPad: Visualizing the Airbnb Market in Washington, DC
 
+![GitHub last commit](https://img.shields.io/github/last-commit/johbry17/DC-AirBnB-Data)
+
 *Explore, visualize, and understand DC’s Airbnb landscape—interactive dashboards and maps powered by open data and modern web tech.*
 
 🔗 [Live Website](https://johbry17.github.io/DC-AirBnB-Data/)  
