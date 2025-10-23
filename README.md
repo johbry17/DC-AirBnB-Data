@@ -8,7 +8,7 @@
 🔗 [Tableau Dashboard](https://public.tableau.com/app/profile/bryan.johns6699/viz/DC-Airbnb/DCAirbnbMobile)  
 🔗 [Exploratory Data Analysis (EDA)](/exploratory_data_analysis/eda.ipynb)
 
-> ℹ️ Status: This project is maintained as a portfolio example. While not under active development, data and dashboards are refreshed quarterly as new information becomes available.
+> ℹ️ Status: This project is maintained as a portfolio example. While not under active development, data and dashboards are refreshed semiannually as new information becomes available.
 
 ## Table of Contents
 
@@ -143,5 +143,6 @@ Dataset provided by [Inside AirBnB](http://insideairbnb.com/about/).
 ## Author
 
 Bryan Johns, October 2024  
-[bryan.johns@informedwanderer.com](mailto:bryan.johns@informedwanderer.com) | [LinkedIn](https://www.linkedin.com/in/b-johns/) | [GitHub](https://github.com/johbry17) | [Portfolio](https://informedwanderer.com)
+[bryan.johns@informedwanderer.com](mailto:bryan.johns@informedwanderer.com) | [LinkedIn](https://www.linkedin.com/in/b-johns/) | [GitHub](https://github.com/johbry17) | [Portfolio](https://informedwanderer.com)  
+— Data fluent, human literate.
 
